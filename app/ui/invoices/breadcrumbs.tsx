@@ -15,7 +15,7 @@ export default function Breadcrumbs({
 }) {
   return (
     <nav aria-label="Breadcrumb" className="mb-6 block">
-      <ol>/*I revoved some classes here so the ACME LOGO and Luisaiana Google font wouldnt affect vercel connecting the database*/
+      <ol>{/*I revoved some classes here so the ACME LOGO and Luisaiana Google font wouldnt affect vercel connecting the database*/}
         {breadcrumbs.map((breadcrumb, index) => (
           <li
             key={breadcrumb.href}
