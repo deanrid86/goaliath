@@ -86,3 +86,14 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type LessonDetail = {
+  lessonID: number;
+  lesson: string;
+  lessonNotes: string;
+  lessonType: string;
+  lessonUse: string;
+  lessonSource: string;
+  lessonAuthor: string;
+  lessonDate: string;
+};
