@@ -180,12 +180,7 @@ const revenue = [
   { month: 'Dec', revenue: 0 },
 ];
 
-module.exports = {
-  users,
-  customers,
-  invoices,
-  revenue,
-};
+
 
 const lessonFields = [
 {
@@ -309,3 +304,11 @@ const lessonFields = [
   lessonDate: 28/11/2023,
 }
 ];
+
+module.exports = {
+  users,
+  customers,
+  invoices,
+  revenue,
+  lessonFields,
+};
