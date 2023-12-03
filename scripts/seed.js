@@ -186,7 +186,7 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
     const insertedLessons = await Promise.all(
       lessonfields.map(
         (lesson) => client.sql`
-        INSERT INTO lessonfields (lessonid, lessonidea, lessonnotes, lessontype, lessonuse, lessonSource, lessonauthor, lessondate)
+        INSERT INTO lessonfields (lessonid, "lessonidea", lessonnotes, lessontype, lessonuse, lessonSource, lessonauthor, lessondate)
         VALUES (${lesson.lessonid}, ${lesson.lessonidea}, ${lesson.lessonnotes}, ${lesson.lessontype}, ${lesson.lessonuse}, ${lesson.lessonsource}, ${lesson.lessonauthor}, ${lesson.lessondate} )
         ON CONFLICT (lessonid) DO NOTHING;
       `,
