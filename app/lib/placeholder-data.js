@@ -244,7 +244,7 @@ const lessonfields = [
   lessondate: "28/11/2023",
 },
 {
-  lessonid: "c0d0a8ba-1620-459c-ae0d-98c8c97eb1cf",
+  lessonid: "2bd8398a-2a43-4668-823e-f137fffc4797",
   lesson: 'Pursue what is meaningful not what is expedient.',
   lessonnotes: 'Choosing meaningful pursuits over quick gains contributes to a fulfilling life. Peterson encourages aligning actions with long-term values, fostering a sense of purpose.',
   lessontype: 'Life Purpose',
@@ -264,7 +264,7 @@ const lessonfields = [
   lessondate: "28/11/2023",
 },
 {
-  lessonid: "1cbfbb8f-b63a-4190-98c1-f91156c757dc",
+  lessonid: "dedd4aa8-a50a-4b9d-bc67-8a7dc9f90041",
   lesson: 'Assume that the person you are listening to might know something you dont.',
   lessonnotes: 'Encouraging open-mindedness, Peterson advises active listening. Being receptive to others perspectives fosters continuous learning and understanding.',
   lessontype: 'Communication',
