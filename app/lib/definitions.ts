@@ -89,7 +89,7 @@ export type InvoiceForm = {
 
 export type LessonDetail = {
   lessonid: string;
-  lifelesson: string;
+  lessonidea: string;
   lessonnotes: string;
   lessontype: string;
   lessonuse: string;

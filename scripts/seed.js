@@ -170,7 +170,7 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
     const createTable = await client.sql` 
     CREATE TABLE IF NOT EXISTS lessonfields (
       lessonid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      lifelesson VARCHAR(5000) NOT NULL,
+      lessonidea VARCHAR(5000) NOT NULL,
       lessonnotes VARCHAR(5000) NOT NULL,
       lessontype VARCHAR(250) NOT NULL,
       lessonuse VARCHAR(250) NOT NULL,
@@ -186,8 +186,8 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
     const insertedLessons = await Promise.all(
       lessonfields.map(
         (lesson) => client.sql`
-        INSERT INTO lessonfields (lessonid, lifelesson, lessonnotes, lessontype, lessonuse, lessonSource, lessonauthor, lessondate)
-        VALUES (${lesson.lessonid}, ${lesson.lifelesson}, ${lesson.lessonnotes}, ${lesson.lessontype}, ${lesson.lessonuse}, ${lesson.lessonsource}, ${lesson.lessonauthor}, ${lesson.lessondate} )
+        INSERT INTO lessonfields (lessonid, lessonidea, lessonnotes, lessontype, lessonuse, lessonSource, lessonauthor, lessondate)
+        VALUES (${lesson.lessonid}, ${lesson.lessonidea}, ${lesson.lessonnotes}, ${lesson.lessontype}, ${lesson.lessonuse}, ${lesson.lessonsource}, ${lesson.lessonauthor}, ${lesson.lessondate} )
         ON CONFLICT (lessonid) DO NOTHING;
       `,
       ),
