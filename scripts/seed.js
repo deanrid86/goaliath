@@ -4,6 +4,7 @@ const {
   customers,
   revenue,
   users,
+  lessonfields,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -160,6 +161,50 @@ async function seedRevenue(client) {
   }
 }
 
+async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+
+    // Create the "Lessons" table if it doesn't exist
+    const createTable = await client.sql` 
+    CREATE TABLE IF NOT EXISTS lessonfields (
+      lessonid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      lifelesson VARCHAR(5000) NOT NULL,
+      lessonnotes VARCHAR(5000) NOT NULL,
+      lessontype VARCHAR(250) NOT NULL,
+      lessonuse VARCHAR(250) NOT NULL,
+      lessonsource VARCHAR(250) NOT NULL,
+      lessonauthor VARCHAR(250) NOT NULL,
+      lessondate VARCHAR(20) NOT NULL
+    );
+  `;
+
+    console.log(`Created "lessons" table`);
+
+    // Insert data into the "lessons" table
+    const insertedLessons = await Promise.all(
+      lessonfields.map(
+        (lesson) => client.sql`
+        INSERT INTO lessonfields (lessonid, lifelesson, lessonnotes, lessontype, lessonuse, lessonSource, lessonauthor, lessondate)
+        VALUES (${lesson.lessonid}, ${lesson.lifelesson}, ${lesson.lessonnotes}, ${lesson.lessontype}, ${lesson.lessonuse}, ${lesson.lessonsource}, ${lesson.lessonauthor}, ${lesson.lessondate} )
+        ON CONFLICT (lessonid) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedLessons.length} lessons`);
+
+    return {
+      createTable,
+      lessonfields: insertedLessons,
+    };
+  } catch (error) {
+    console.error('Error seeding lessons:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -167,6 +212,7 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await seedLessons(client);
 
   await client.end();
 }

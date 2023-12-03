@@ -88,12 +88,12 @@ export type InvoiceForm = {
 };
 
 export type LessonDetail = {
-  lessonID: number;
-  lesson: string;
-  lessonNotes: string;
-  lessonType: string;
-  lessonUse: string;
-  lessonSource: string;
-  lessonAuthor: string;
-  lessonDate: string;
+  lessonid: string;
+  lifelesson: string;
+  lessonnotes: string;
+  lessontype: string;
+  lessonuse: string;
+  lessonsource: string;
+  lessonauthor: string;
+  lessondate: string;
 };
