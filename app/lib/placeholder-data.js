@@ -192,7 +192,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },  
 {
   lessonid: "02e9e141-9daa-446b-bba7-7ba0d0153e37",
@@ -203,7 +203,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "4f3c4e05-2762-4e07-9486-cdb4ac479e76",
@@ -214,7 +214,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "9490a9fb-e095-4a00-a55c-65d29605c5ab",
@@ -225,7 +225,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "adb4f27d-f7f9-4251-9e59-be4dc006bb4c",
@@ -236,7 +236,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "c0d0a8ba-1620-459c-ae0d-98c8c97eb1cf",
@@ -247,7 +247,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "2bd8398a-2a43-4668-823e-f137fffc4797",
@@ -258,7 +258,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "a0a7531e-9e67-4469-ab76-28ad6b4cbdab",
@@ -269,7 +269,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "dedd4aa8-a50a-4b9d-bc67-8a7dc9f90041",
@@ -280,7 +280,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "1cbfbb8f-b63a-4190-98c1-f91156c757dc",
@@ -291,7 +291,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "794b8c93-ab11-4006-9931-18e9be91865d",
@@ -302,7 +302,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
   lessonid: "0d8651ee-f170-4235-9747-f24c5ffd11d1",
@@ -313,7 +313,7 @@ const lessonfields = [
   lessonsource: '12 Rules for Life: An Antidote to Chaos',
   lessonauthor: "Jordon Peterson",
   lessondate: "28/11/2023",
-  lessonimage_url: '/lesson_images/JordonPeterson.png',
+  lessonimage_URL: '/lesson_images/JordanPeterson.png',
 }
 ];
 

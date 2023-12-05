@@ -9,7 +9,7 @@ export default async function LatestLessons() {
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className = "mb-4 text-xl md:text-2xl" > {/* className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
-        Latest Invoices
+        Latest Lessons
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {/* NOTE: comment in this code when you get to this point in the course */}
@@ -28,11 +28,11 @@ export default async function LatestLessons() {
               >
                 <div className="flex items-center">
                   <Image
-                    src={lesson.lessonimage_url}
-                    alt={`${lesson.lesson}'s profile picture`}
+                    src={lesson.lessonimage_URL}
+                    alt={`${lesson.lessonauthor}'s profile picture`}
                     className="mr-4 rounded-full"
-                    width={32}
-                    height={32}
+                    width={60}
+                    height={60}
                   />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
