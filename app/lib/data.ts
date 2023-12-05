@@ -7,6 +7,7 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  LessonDetail,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -37,12 +38,14 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   noStore();
   try {
-    const data = await sql<LatestInvoiceRaw>`
+  const data = await sql<LatestInvoiceRaw>` 
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
       LIMIT 5`;
+
+      {/*LatestInvoiceRaw is an object in defitions that shows how it wants the properties of the invoice to be displayed. i.e. name "string", email: "string". The SQL then has to return that data in that format*/}
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
@@ -239,3 +242,22 @@ export async function getUser(email: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+
+export async function fetchLatestLessons() {
+  noStore();
+  try {
+  const data = await sql<LessonDetail>` 
+      SELECT lessonfields.lesson, lessonfields.lessonnotes
+      FROM lessonfields
+      ORDER BY lessonfields.lessondate DESC
+      LIMIT 12`;
+
+      const latestLessons = data.rows.map((lesson) => ({
+        ...lesson,
+      }));
+      return latestLessons;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest lessons.');
+    }
+  }

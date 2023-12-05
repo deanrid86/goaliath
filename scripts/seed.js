@@ -170,13 +170,13 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
     const createTable = await client.sql` 
     CREATE TABLE IF NOT EXISTS lessonfields (
       lessonid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      lesson VARCHAR(5000) NOT NULL,
-      lessonnotes VARCHAR(5000) NOT NULL,
+      lesson VARCHAR(250) NOT NULL,
+      lessonnotes TEXT NOT NULL,
       lessontype VARCHAR(250) NOT NULL,
       lessonuse VARCHAR(250) NOT NULL,
       lessonsource VARCHAR(250) NOT NULL,
       lessonauthor VARCHAR(250) NOT NULL,
-      lessondate VARCHAR(20) NOT NULL
+      lessondate VARCHAR(250) NOT NULL
     );
   `;
 
