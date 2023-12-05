@@ -261,3 +261,26 @@ export async function fetchLatestLessons() {
       throw new Error('Failed to fetch the latest lessons.');
     }
   }
+
+  export async function fetchLessonsPages(query: string) {
+    noStore();
+    try {
+      const count = await sql`SELECT COUNT(*)
+      FROM lessonfields
+      WHERE
+      lessonfields.lesson ILIKE ${`%${query}%`} OR
+      lessonfields.lessonnotes ILIKE ${`%${query}%`} OR
+      lessonfields.lessontype ILIKE ${`%${query}%`} OR
+      lessonfields.lessonuse ILIKE ${`%${query}%`} OR
+      lessonfields.lessonsource ILIKE ${`%${query}%`} OR
+      lessonfields.lessonauthor ILIKE ${`%${query}%`} OR
+      lessonfields.lessondate::text ILIKE ${`%${query}%`} OR
+      `;
+  
+      const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+      return totalPages;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch total number of lessons.');
+    }
+  }
