@@ -274,10 +274,10 @@ export async function fetchLatestLessons() {
       lessonfields.lessonuse ILIKE ${`%${query}%`} OR
       lessonfields.lessonsource ILIKE ${`%${query}%`} OR
       lessonfields.lessonauthor ILIKE ${`%${query}%`} OR
-      lessonfields.lessondate::text ILIKE ${`%${query}%`} OR
+      lessonfields.lessondate::text ILIKE ${`%${query}%`}
       `;
   
-      const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE_LES);
       return totalPages;
     } catch (error) {
       console.error('Database Error:', error);
@@ -294,30 +294,20 @@ export async function fetchFilteredLessons(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE_LES;
 
   try {
-    const invoices = await sql<LessonsTable>`
+    const lessons = await sql<LessonDetail>`
       SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
+        lessonfields.lessonnotes,
+        lessonfields.lessontype
+      FROM lessonfields
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
+      lessonfields.lesson ILIKE ${`%${query}%`} OR
+      lessonfields.lessonnotes ILIKE ${`%${query}%`} 
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
+    return lessons.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch lessons.');
   }
 }

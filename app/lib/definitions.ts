@@ -96,7 +96,8 @@ export type LessonDetail = {
   lessonsource: string;
   lessonauthor: string;
   lessondate: string;
-  lessonimage_URL: string;
+  lessonimage_url: string;
   lessonstatus: 'use' | 'dont use';
 };
+
 

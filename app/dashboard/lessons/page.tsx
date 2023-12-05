@@ -1,8 +1,7 @@
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/lessons/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
+import Table from '@/app/ui/lessons/table';
 import { CreateLesson } from '@/app/ui/lessons/buttons';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchLessonsPages } from '@/app/lib/data';
  
