@@ -5,6 +5,7 @@ const {
   revenue,
   users,
   lessonfields,
+  income,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -157,6 +158,41 @@ async function seedRevenue(client) {
     };
   } catch (error) {
     console.error('Error seeding revenue:', error);
+    throw error;
+  }
+}
+
+async function seedIncome(client) {
+  try {
+    // Create the "income" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS income (
+        month VARCHAR(4) NOT NULL UNIQUE,
+        income INT NOT NULL
+      );
+    `;
+
+    console.log(`Created "income" table`);
+
+    // Insert data into the "income" table
+    const insertedIncome = await Promise.all(
+      income.map(
+        (inc) => client.sql`
+        INSERT INTO income (month, income)
+        VALUES (${inc.month}, ${inc.income})
+        ON CONFLICT (month) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedIncome.length} income`);
+
+    return {
+      createTable,
+      income: insertedIncome,
+    };
+  } catch (error) {
+    console.error('Error seeding income:', error);
     throw error;
   }
 }

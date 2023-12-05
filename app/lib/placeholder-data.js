@@ -180,7 +180,20 @@ const revenue = [
   { month: 'Dec', revenue: 0 },
 ];
 
-
+const income = [
+  { month: 'Jan', income: 0 },
+  { month: 'Feb', income: 0 },
+  { month: 'Mar', income: 0 },
+  { month: 'Apr', income: 0 },
+  { month: 'May', income: 0 },
+  { month: 'Jun', income: 0 },
+  { month: 'Jul', income: 0 },
+  { month: 'Aug', income: 0 },
+  { month: 'Sep', income: 700 },
+  { month: 'Oct', income: 1400 },
+  { month: 'Nov', income: 1100 },
+  { month: 'Dec', income: 0 },
+];
 
 const lessonfields = [
 {
