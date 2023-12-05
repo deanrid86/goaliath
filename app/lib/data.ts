@@ -284,3 +284,40 @@ export async function fetchLatestLessons() {
       throw new Error('Failed to fetch total number of lessons.');
     }
   }
+
+  const ITEMS_PER_PAGE_LES = 6;
+export async function fetchFilteredLessons(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE_LES;
+
+  try {
+    const invoices = await sql<LessonsTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`}
+      ORDER BY invoices.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return invoices.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}

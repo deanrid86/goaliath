@@ -25,7 +25,7 @@ export function UpdateLesson({ id }: { id: string }) {
   );
 }
 /*Need to sort out delete capability*/
-export function DeleteLessons({ id }: { id: string }) {
+export function DeleteLesson({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id);
   return (
     <>
