@@ -1,6 +1,7 @@
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import IncomeChart from '@/app/ui/dashboard/income-chart';
+import ExpenditureChart from '@/app/ui/dashboard/expenditure-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import LatestLessons from '@/app/ui/dashboard/latest-lessons';
 import {  fetchLatestInvoices, fetchCardData, fetchLatestLessons } from '@/app/lib/data';
@@ -44,6 +45,7 @@ export default async function Page() {
         </Suspense>
         <LatestLessons />
         <IncomeChart />
+        <ExpenditureChart />
       </div>
     </main>
   );

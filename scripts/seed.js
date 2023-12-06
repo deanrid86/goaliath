@@ -5,7 +5,7 @@ const {
   revenue,
   users,
   lessonfields,
-  income,
+  income
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -197,6 +197,40 @@ async function seedIncome(client) {
   }
 }
 
+async function seedExpenditure(client) {
+  try {
+    // Create the "expenditure" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS expenditure (
+        exp VARCHAR(15) NOT NULL UNIQUE,
+        cost INT NOT NULL
+      );
+    `;
+
+    console.log(`Created "expenditure" table`);
+
+    // Insert data into the "expenditure" table
+    const insertedIncome = await Promise.all(
+      expenditure.map(
+        (expen) => client.sql`
+        INSERT INTO expenditure (exp, cost)
+        VALUES (${expen.exp}, ${expen.cost})
+        ON CONFLICT (expen) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedExpenditure.length} expenditure`);
+
+    return {
+      createTable,
+      expenditure: insertedExpenditure,
+    };
+  } catch (error) {
+    console.error('Error seeding expenditure:', error);
+    throw error;
+  }
+}
 async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -214,7 +248,14 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
       lessonauthor VARCHAR(250) NOT NULL,
       lessondate VARCHAR(250) NOT NULL
     );
+
+    ALTER TABLE lessonfields
+      ALTER COLUMN lesson TYPE text,
+      ALTER COLUMN lessonnotes TYPE text;
   `;
+
+ 
+
 
     console.log(`Created "lessons" table`);
 
@@ -248,7 +289,9 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await seedIncome(client);
   await seedLessons(client);
+  await seedExpenditure(client);
 
   await client.end();
 }

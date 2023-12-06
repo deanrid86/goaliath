@@ -35,7 +35,13 @@ export type Income = {
   month: string;
   income: number;
 
-}
+};
+
+export type Expenditure = {
+  exp: string;
+  cost: number;
+
+};
 
 export type LatestInvoice = {
   id: string;

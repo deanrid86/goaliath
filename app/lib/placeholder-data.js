@@ -195,6 +195,22 @@ const income = [
   { month: 'Dec', income: 0 },
 ];
 
+const expenditure = [
+  { exp: 'Loan', cost: 270 },
+  { exp: 'Rent', cost: 200 },
+  { exp: 'Mobile', cost: 40 },
+  { exp: 'Electricity', cost: 45 },
+  { exp: 'Gas', cost: 10 },
+  { exp: 'Spotify', cost: 10 },
+  { exp: 'Audible', cost: 10 },
+  { exp: 'Internet', cost: 40 },
+  { exp: 'Council Tax', cost: 75 },
+  { exp: 'Food', cost: 200 },
+  { exp: 'Travel', cost: 120 },
+  { exp: 'Credit Card', cost: 60 },
+  
+];
+
 const lessonfields = [
 {
   lessonid: "79d7fbdf-3fa1-4263-8072-4f7444319028",
@@ -335,7 +351,10 @@ module.exports = {
   customers,
   invoices,
   revenue,
+  income,
   lessonfields,
+  expenditure,
+
 };
 
 
