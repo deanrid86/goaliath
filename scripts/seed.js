@@ -5,7 +5,8 @@ const {
   revenue,
   users,
   lessonfields,
-  income
+  income,
+  expenditure
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -210,12 +211,12 @@ async function seedExpenditure(client) {
     console.log(`Created "expenditure" table`);
 
     // Insert data into the "expenditure" table
-    const insertedIncome = await Promise.all(
+    const insertedExpenditure = await Promise.all(
       expenditure.map(
-        (expen) => client.sql`
+        (exp) => client.sql`
         INSERT INTO expenditure (exp, cost)
-        VALUES (${expen.exp}, ${expen.cost})
-        ON CONFLICT (expen) DO NOTHING;
+        VALUES (${exp.exp}, ${exp.cost})
+        ON CONFLICT (exp) DO NOTHING;
       `,
       ),
     );

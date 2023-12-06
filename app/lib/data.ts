@@ -359,3 +359,4 @@ export async function fetchExpenditure() {
     throw new Error('Failed to fetch expenditure data.');
   }
 }
+
