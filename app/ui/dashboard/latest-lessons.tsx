@@ -18,7 +18,7 @@ export default async function LatestLessons() {
           {latestLessons.map((lesson, i) => {
             return (
               <div
-                key={lesson.lessonid}
+                key={lesson.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -28,7 +28,7 @@ export default async function LatestLessons() {
               >
                 <div className="flex items-center">
                   <Image
-                    src={lesson.lessonimage_URL}
+                    src='/lesson_images/JordanPeterson.png'
                     alt={`${lesson.lessonauthor}'s profile picture`}
                     className="mr-4 rounded-full"
                     width={60}

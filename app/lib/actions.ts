@@ -34,7 +34,7 @@ export async function createInvoice(formData: FormData) {
   }
 
   const FormSchemaLesson = z.object({
-    lessonid: z.string(),
+    id: z.string(),
     lesson: z.string(),
     lessonnotes: z.string(),
     lessontype: z.string(),
@@ -44,7 +44,7 @@ export async function createInvoice(formData: FormData) {
     lessondate: z.string(),
   });
 
-  const CreateLesson = FormSchemaLesson.omit({ lessonid: true, lessondate: true });
+  const CreateLesson = FormSchemaLesson.omit({ id: true, lessondate: true });
 
   export async function createLesson(formData: FormData) {
       const { lesson, lessonnotes, lessontype, lessonuse, lessonsource, lessonauthor } = CreateLesson.parse({
@@ -95,4 +95,36 @@ export async function updateInvoice(id: string, formData: FormData) {
 export async function deleteInvoice(id: string) {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
+  }
+
+
+
+
+  const UpdateLesson = FormSchemaLesson.omit({ id: true, lessondate: true });
+
+  export async function updateLesson(id: string,formData: FormData) {
+    const { lesson, lessonnotes, lessontype, lessonuse, lessonsource, lessonauthor } = UpdateLesson.parse({
+      lesson: formData.get('lesson'),
+      lessonnotes: formData.get('lessonnotes'),
+      lessontype: formData.get('lessontype'),
+      lessonuse: formData.get('lessonuse'),
+      lessonsource: formData.get('lessonsource'),
+      lessonauthor: formData.get('lessonauthor'),
+    });
+
+   
+   
+    await sql`
+      UPDATE lessonfields
+      SET lesson = ${lesson}, lessonnotes= ${lessonnotes}, lessontype = ${lessontype}, lessonuse = ${lessonuse}, lessonsource = ${lessonsource}, lessonauthor = ${lessonauthor}
+      WHERE id = ${id}
+    `;
+   
+    revalidatePath('/dashboard/lessons');
+    redirect('/dashboard/lessons');
+  }
+
+  export async function deleteLesson(id: string) {
+    await sql`DELETE FROM lessonfields WHERE id = ${id}`;
+    revalidatePath('/dashboard/lessons');
   }

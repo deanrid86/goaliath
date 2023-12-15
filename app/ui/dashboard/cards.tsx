@@ -3,6 +3,10 @@ import {
   ClockIcon,
   UserGroupIcon,
   InboxIcon,
+  AcademicCapIcon,
+  CurrencyPoundIcon,
+  ViewfinderCircleIcon,
+  CalculatorIcon,
 } from '@heroicons/react/24/outline';
 {/*import { lusitana } from '@/app/ui/fonts';*/}
 
@@ -11,6 +15,10 @@ const iconMap = {
   customers: UserGroupIcon,
   pending: ClockIcon,
   invoices: InboxIcon,
+  lesson: AcademicCapIcon, 
+  expenditure: CurrencyPoundIcon,
+  buffer: ViewfinderCircleIcon,
+  minimum: CalculatorIcon
 };
 
 export default async function CardWrapper() {
@@ -37,7 +45,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected';
+  type: 'invoices' | 'customers' | 'pending' | 'collected'| 'lesson'| 'expenditure'| 'buffer'| 'minimum';
 }) {
   const Icon = iconMap[type];
 

@@ -10,6 +10,7 @@ import {
   LessonDetail,
   Income,
   Expenditure,
+  LessonForm,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -181,6 +182,36 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchLessonById(id: string) {
+  noStore();
+  if (id === undefined || id === 'undefined') {
+    throw new Error('Invalid lesson ID');
+  }
+  try {
+    const data = await sql<LessonForm>`
+    SELECT 
+      lessonfields.id, 
+      lessonfields.lessonauthor, 
+      lessonfields.lesson, 
+      lessonfields.lessontype, 
+      lessonfields.lessonuse
+    FROM lessonfields
+    WHERE lessonfields.id = ${id};
+    `;
+
+    const lesson = data.rows.map((lesson) => ({
+      ...lesson,
+    }));
+
+    return lesson[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    console.error('Failed SQL Query:', error.query); // Add this line to log the failed query
+    throw new Error('Failed to fetch lesson.');
+  }
+}
+
+
 export async function fetchCustomers() {
   noStore();
   try {
@@ -245,6 +276,26 @@ export async function getUser(email: string) {
   }
 }
 
+export async function fetchLessons() {
+  noStore();
+  try {
+  const data = await sql<LessonDetail>` 
+      SELECT lessonfields.id, lessonfields.lessonauthor, lessonfields.lesson, lessonfields.lessontype, lessonfields.lessonuse, 
+      FROM lessonfields
+      ORDER BY lessonfields.lessondate DESC
+      `;
+
+      const EditLessons = data.rows.map((lesson) => ({
+        ...lesson,
+      }));
+      return EditLessons;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the lessons.');
+    }
+  }
+
+
 export async function fetchLatestLessons() {
   noStore();
   try {
@@ -298,11 +349,17 @@ export async function fetchFilteredLessons(
   try {
     const lessons = await sql<LessonDetail>`
       SELECT
-        lessonfields.lessonnotes,
-        lessonfields.lessontype
+        lessonfields.id,
+        lessonfields.lessonauthor,
+        lessonfields.lesson,
+        lessonfields.lessontype,
+        lessonfields.lessonuse
       FROM lessonfields
       WHERE
+      lessonfields.lessonauthor ILIKE ${`%${query}%`} OR
+      lessonfields.lessontype ILIKE ${`%${query}%`} OR
       lessonfields.lesson ILIKE ${`%${query}%`} OR
+      lessonfields.lessonuse ILIKE ${`%${query}%`} OR
       lessonfields.lessonnotes ILIKE ${`%${query}%`} 
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
@@ -360,3 +417,68 @@ export async function fetchExpenditure() {
   }
 }
 
+export async function fetchCardDataFinance() {
+  noStore();
+  try {
+    // You can probably combine these into a single SQL query
+    // However, we are intentionally splitting them to demonstrate
+    // how to initialize multiple queries in parallel with JS.
+    const lessonCountPromise = sql `SELECT COUNT(DISTINCT lesson) FROM lessonfields`;
+    const totalExpenditurePromise = sql`SELECT exp, SUM(cost) as total_cost
+    FROM expenditure
+    GROUP BY exp;`;
+
+    const data = await Promise.all([
+      lessonCountPromise,
+      totalExpenditurePromise,
+    ]);
+
+    const numberOfLessons = Number(data[0].rows[0].count ?? '0');
+    const totalMonthlyExpenditure = data[1].rows.reduce(
+      (total, row) => total + Number(row.total_cost),
+      0
+    );
+    
+      const bufferExpenditure = totalMonthlyExpenditure * 1.3;
+
+      const minimumDailyEarnings = bufferExpenditure / 30;
+    
+
+    return {
+      bufferExpenditure,
+      numberOfLessons,
+      totalMonthlyExpenditure,
+      minimumDailyEarnings
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch card data.');
+  }
+}
+
+export async function fetchLessonByLesson(id: string) {
+  noStore();
+  try {
+    const data = await sql<LessonForm>`
+      SELECT
+        lessonfields.lesson,
+        lessonfields.lessonnotes,
+        lessonfields.lessontype,
+        lessonfields.lessonuse,
+        lessonfields.lessonsource,
+        lessonfields.lessonauthor,
+       
+      FROM lessonfields
+      WHERE lessonfields.lesson = ${id};
+    `;
+
+    const lesson = data.rows.map((lesson) => ({
+      ...lesson,
+    }));
+
+    return lesson[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch lesson.');
+  }
+}

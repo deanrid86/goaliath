@@ -211,9 +211,16 @@ const expenditure = [
   
 ];
 
+function getTotalCost(expenditureArray) {
+  return expenditureArray.reduce((total, item) => total + item.cost, 0);
+}
+
+const totalCost = getTotalCost(expenditure);
+console.log('Total Expenditure:', totalCost);
+
 const lessonfields = [
 {
-  lessonid: "79d7fbdf-3fa1-4263-8072-4f7444319028",
+  id: "79d7fbdf-3fa1-4263-8072-4f7444319028",
   lesson: 'Stand up straight with your shoulders back.',
   lessonnotes: 'Peterson emphasizes the importance of adopting a posture of confidence and assertiveness. According to Peterson, body language not only influences how others perceive us but also affects our self-perception. Standing tall and maintaining good posture signals strength and resilience, both to the external world and to oneself. This rule encourages individuals to face lifes challenges with courage, embodying a metaphorical readiness to confront adversity. By physically presenting oneself confidently, individuals may find it easier to navigate the complexities of existence and build a foundation for personal growth and success.',
   lessontype: 'Physical Improvement',
@@ -224,7 +231,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },  
 {
-  lessonid: "02e9e141-9daa-446b-bba7-7ba0d0153e37",
+  id: "02e9e141-9daa-446b-bba7-7ba0d0153e37",
   lesson: 'Treat yourself like someone you are responsible for helping.',
   lessonnotes: 'Peterson advocates for self-compassion, encouraging individuals to care for themselves as they would for others. Recognizing ones worth and addressing personal needs fosters a positive, nurturing mindset.',
   lessontype: 'Self-Compassion',
@@ -235,7 +242,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "4f3c4e05-2762-4e07-9486-cdb4ac479e76",
+  id: "4f3c4e05-2762-4e07-9486-cdb4ac479e76",
   lesson: 'Make friends with people who want the best for you.',
   lessonnotes: 'Building supportive connections is crucial. Peterson advises seeking relationships where mutual growth and well-being are prioritized, promoting a positive and constructive social environment.',
   lessontype: 'Social Relationships',
@@ -246,7 +253,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "9490a9fb-e095-4a00-a55c-65d29605c5ab",
+  id: "9490a9fb-e095-4a00-a55c-65d29605c5ab",
   lesson: 'Compare yourself to who you were yesterday, not to who someone else is today.',
   lessonnotes: 'Focusing on personal progress rather than external benchmarks cultivates self-improvement. Peterson encourages individuals to set realistic goals and measure success relative to their unique journeys.',
   lessontype: 'Self-Reflection',
@@ -257,7 +264,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "adb4f27d-f7f9-4251-9e59-be4dc006bb4c",
+  id: "adb4f27d-f7f9-4251-9e59-be4dc006bb4c",
   lesson: 'Do not let your children do anything that makes you dislike them.',
   lessonnotes: 'Parenting advice from Peterson emphasizes the importance of instilling discipline and values in children. Building a positive relationship requires setting boundaries and guiding with love.',
   lessontype: 'Parenting',
@@ -268,7 +275,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "c0d0a8ba-1620-459c-ae0d-98c8c97eb1cf",
+  id: "c0d0a8ba-1620-459c-ae0d-98c8c97eb1cf",
   lesson:'Set your house in perfect order before you criticize the world.',
   lessonnotes: 'Before addressing external issues, Peterson suggests addressing personal challenges. Organizing ones life creates a stable foundation for making meaningful contributions to the broader community.',
   lessontype: 'Personal Development',
@@ -279,7 +286,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "2bd8398a-2a43-4668-823e-f137fffc4797",
+  id: "2bd8398a-2a43-4668-823e-f137fffc4797",
   lesson: 'Pursue what is meaningful not what is expedient.',
   lessonnotes: 'Choosing meaningful pursuits over quick gains contributes to a fulfilling life. Peterson encourages aligning actions with long-term values, fostering a sense of purpose.',
   lessontype: 'Life Purpose',
@@ -290,7 +297,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "a0a7531e-9e67-4469-ab76-28ad6b4cbdab",
+  id: "a0a7531e-9e67-4469-ab76-28ad6b4cbdab",
   lesson: 'Tell the truth, or at least dont lie.',
   lessonnotes: 'Honesty, according to Peterson, is fundamental for personal integrity. Being truthful, even in challenging situations, builds trust and authentic connections.',
   lessontype: 'Integrity',
@@ -301,7 +308,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "dedd4aa8-a50a-4b9d-bc67-8a7dc9f90041",
+  id: "dedd4aa8-a50a-4b9d-bc67-8a7dc9f90041",
   lesson: 'Assume that the person you are listening to might know something you dont.',
   lessonnotes: 'Encouraging open-mindedness, Peterson advises active listening. Being receptive to others perspectives fosters continuous learning and understanding.',
   lessontype: 'Communication',
@@ -312,7 +319,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "1cbfbb8f-b63a-4190-98c1-f91156c757dc",
+  id: "1cbfbb8f-b63a-4190-98c1-f91156c757dc",
   lesson: 'Be precise in your speech.',
   lessonnotes: 'Clarity in communication is essential for effective expression. Peterson emphasizes the importance of articulating thoughts accurately to avoid misunderstandings.',
   lessontype: 'Communication',
@@ -323,7 +330,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "794b8c93-ab11-4006-9931-18e9be91865d",
+  id: "794b8c93-ab11-4006-9931-18e9be91865d",
   lesson: 'Do not bother children when they are skateboarding.',
   lessonnotes: 'Acknowledging the importance of risk-taking and exploration in youth, Peterson suggests allowing children to engage in activities that promote independence and resilience.',
   lessontype: 'Parenting',
@@ -334,7 +341,7 @@ const lessonfields = [
   lessonimage_url: '/lesson_images/JordanPeterson.png',
 },
 {
-  lessonid: "0d8651ee-f170-4235-9747-f24c5ffd11d1",
+  id: "0d8651ee-f170-4235-9747-f24c5ffd11d1",
   lesson: 'Pet a cat when you encounter one on the street.',
   lessonnotes: 'Encouraging small, positive actions in daily life, Peterson uses this rule metaphorically to highlight the significance of finding joy in simple moments.',
   lessontype: 'Life Satisfaction',

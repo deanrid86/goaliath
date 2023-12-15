@@ -100,7 +100,7 @@ export type InvoiceForm = {
 };
 
 export type LessonDetail = {
-  lessonid: string;
+  id: string;
   lesson: string;
   lessonnotes: string;
   lessontype: string;
@@ -112,4 +112,15 @@ export type LessonDetail = {
   lessonstatus: 'use' | 'dont use';
 };
 
+export type LessonForm = {
 
+  id: string;
+  lesson: string;
+  lessonnotes: string;
+  lessontype: string;
+  lessonuse: string;
+  lessonsource: string;
+  lessonauthor: string;
+  lessondate: string;
+
+};
