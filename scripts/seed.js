@@ -283,6 +283,55 @@ async function seedLessons(client) { {/*Start of Lessons Seed for Database*/}
   }
 }
 
+async function seedGoals(client) { {/*Start of Lessons Seed for Database*/}
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+
+    // Create the "Goals" table if it doesn't exist
+    const createTable = await client.sql` 
+    CREATE TABLE IF NOT EXISTS goals (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      goaltype VARCHAR(10) NOT NULL,
+      goal TEXT NOT NULL,
+      goalnotes TEXT NOT NULL,
+      goaltimeline VARCHAR(5) NOT NULL,
+      goalurgency VARCHAR(5) NOT NULL,
+      goalrealisation TEXT NOT NULL,
+      goalreminder VARCHAR(5) NOT NULL,
+      goalachieved VARCHAR(5) NOT NULL,
+      goaldate VARCHAR(20) NOT NULL
+    );
+  `;
+
+ 
+
+
+    console.log(`Created "goals" table`);
+
+    // Insert data into the "goals" table
+    const insertedGoals = await Promise.all(
+      goals.map(
+        (goa) => client.sql`
+        INSERT INTO goals (id, goaltype, goal, goalnotes, goaltimeline, goalurgency, goalrealisation, goalreminder, goalachieved, goaldate)
+        VALUES (${goa.id}, ${goa.goaltype}, ${goa.goal}, ${goa.goalnotes}, ${goa.goaltimeline}, ${goa.goalurgency}, ${goa.goalrealisation}, ${goa.goalreminder}, ${goa.goalachieved} , ${goa.goaldate}  )
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedGoals.length} goals`);
+
+    return {
+      createTable,
+      goals: insertedGoals,
+    };
+  } catch (error) {
+    console.error('Error seeding goals:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -293,6 +342,8 @@ async function main() {
   await seedIncome(client);
   await seedLessons(client);
   await seedExpenditure(client);
+  await seedGoals(client);
+
 
   await client.end();
 }

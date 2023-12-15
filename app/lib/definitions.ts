@@ -124,3 +124,19 @@ export type LessonForm = {
   lessondate: string;
 
 };
+
+export type GoalDetail = {
+
+  id: string;
+  goaltype: string;
+  goal: string;
+  goalnotes: string;
+  goaltimeline: number;
+  goalurgency: number;
+  goalrealisation: string;
+  goaldate: string;
+  goalreminder: 'yes' | 'no';
+  goalachieved: 'yes' | 'no';
+
+
+};

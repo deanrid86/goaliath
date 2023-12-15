@@ -1,8 +1,8 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteLesson } from '@/app/lib/actions';
+import { deleteGoal } from '@/app/lib/actions';
 
-export function CreateLesson() {
+export function CreateGoal() {
   return (
     <Link
       href="/dashboard/lessons/create"
@@ -14,10 +14,10 @@ export function CreateLesson() {
   );
 }
 
-export function UpdateLesson({ id }: { id: string }) {
+export function UpdateGoal({ id }: { id: string }) {
   return (
     <Link
-    href={`/dashboard/lessons/${id}/edit`}
+    href={`/dashboard/goals/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -25,10 +25,10 @@ export function UpdateLesson({ id }: { id: string }) {
   );
 }
 /*Need to sort out delete capability*/
-export function DeleteLesson({ id }: { id: string }) {
-  const deleteLessonWithId = deleteLesson.bind(null, id);
+export function DeleteGoal({ id }: { id: string }) {
+  const deleteGoalWithId = deleteGoal.bind(null, id);
   return (
-    <form action={deleteLessonWithId}>
+    <form action={deleteGoalWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

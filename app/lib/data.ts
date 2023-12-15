@@ -11,6 +11,7 @@ import {
   Income,
   Expenditure,
   LessonForm,
+  GoalDetail,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -338,6 +339,31 @@ export async function fetchLatestLessons() {
     }
   }
 
+  export async function fetchGoalsPages(query: string) {
+    noStore();
+    try {
+      const count = await sql`SELECT COUNT(*)
+      FROM goals
+      WHERE
+      goals.goaltype ILIKE ${`%${query}%`} OR
+      goals.goal ILIKE ${`%${query}%`} OR
+      goals.goalnotes ILIKE ${`%${query}%`} OR
+      goals.goaltimeline ILIKE ${`%${query}%`} OR
+      goals.goalurgency ILIKE ${`%${query}%`} OR
+      goals.goalrealisation ILIKE ${`%${query}%`} OR
+      goals.goalreminder ILIKE ${`%${query}%`} OR
+      goals.goalachieved ILIKE ${`%${query}%`} OR
+      goals.goaldate::text ILIKE ${`%${query}%`}
+      `;
+  
+      const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE_GOA);
+      return totalPages;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch total number of goals.');
+    }
+  }
+
   const ITEMS_PER_PAGE_LES = 6;
 export async function fetchFilteredLessons(
   query: string,
@@ -371,6 +397,42 @@ export async function fetchFilteredLessons(
   }
 }
 
+const ITEMS_PER_PAGE_GOA = 6;
+export async function fetchFilteredGoals(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE_GOA;
+
+  try {
+    const goals = await sql<GoalDetail>`
+      SELECT
+        goals.id,
+        goals.goaltype,
+        goals.goal,
+        goals.goalnotes,
+        goals.goaltimeline,
+        goals.goalurgency,
+        goals.goalrealisation,
+        goals.goalreminder,
+        goals.goalachieved
+      FROM goals
+      WHERE
+      goals.goaltype ILIKE ${`%${query}%`} OR
+      goals.goal ILIKE ${`%${query}%`} OR
+      goals.goalnotes ILIKE ${`%${query}%`} OR
+      goals.goaltimeline ILIKE ${`%${query}%`} OR
+      goals.goalurgency ILIKE ${`%${query}%`} 
+      LIMIT ${ITEMS_PER_PAGE_GOA} OFFSET ${offset}
+    `;
+
+    return goals.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goals.');
+  }
+}
 export async function fetchIncome() {
   noStore();
   // Add noStore() here prevent the response from being cached.

@@ -128,3 +128,8 @@ export async function deleteInvoice(id: string) {
     await sql`DELETE FROM lessonfields WHERE id = ${id}`;
     revalidatePath('/dashboard/lessons');
   }
+
+  export async function deleteGoal(id: string) {
+    await sql`DELETE FROM goals WHERE id = ${id}`;
+    revalidatePath('/dashboard/goals');
+  }

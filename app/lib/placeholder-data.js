@@ -353,6 +353,45 @@ const lessonfields = [
 }
 ];
 
+const goaldata = [
+{
+  id: "eb0d0313-19c0-4b9c-9041-54c35b22860e",
+  goaltype: "Having",
+  goal: "A black Ferrari",
+  goalnotes: "Must be no older than 2015 and have less than 100k miles on the clock",
+  goaldate: "15/12/2023",
+  goaltimeline: 6, //Months//
+  goalurgency: 5, //Out of 5//
+  goalrealisation: "I will know I have achieved this when the Ferrari is on my drive",
+  goalreminder: "yes",
+  goalachieved: "no",
+},
+{
+  id: "e7dbc86e-fe2b-4128-ab31-1d6ba8c4b745",
+  goaltype: "Doing",
+  goal: "Travelling around Japan for a month",
+  goalnotes: "Visit Tokyo for a week then see the rest o the country for 3 weeks",
+  goaldate: "15/12/2023",
+  goaltimeline: 3,  //Months//
+  goalurgency: 3,  //Out of 5//
+  goalrealisation: "When I have a photo album to look back on of all my adventures in Japan",
+  goalreminder: "no",
+  goalachieved: "yes",
+},
+{
+  id: "51cf5f12-4c8b-4909-a0d7-d2f20bcc5ec7",
+  goaltype: "Being",
+  goal: "An excellent chef",
+  goalnotes: "Master 7 dishes from a Michellin Star Cookbook",
+  goaldate: "15/12/2023",
+  goaltimeline: 1,  //Months//
+  goalurgency: 4,  //Out of 5//
+  goalrealisation: "When my family have rated every dish I have cooked for a week as delicious",
+  goalreminder: "yes",
+  goalachieved: "no",
+}
+]
+
 module.exports = {
   users,
   customers,
@@ -361,6 +400,7 @@ module.exports = {
   income,
   lessonfields,
   expenditure,
+  goaldata,
 
 };
 
