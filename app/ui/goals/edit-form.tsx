@@ -1,44 +1,41 @@
+'use client';
 
-import Link from 'next/link';
+import {GoalDetail} from '@/app/lib/definitions';
 import {
-    ChatBubbleBottomCenterTextIcon,
-    FaceSmileIcon,
-    FilmIcon,
-    FingerPrintIcon,
-    IdentificationIcon,
-    LightBulbIcon,
-    UserCircleIcon,
-    ClockIcon,
-    CheckIcon
-    
+  CheckIcon,
+  ClockIcon,
+  CurrencyDollarIcon,
+  UserCircleIcon,
+  FingerPrintIcon,
+  ChatBubbleBottomCenterTextIcon,
+  IdentificationIcon
 } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { createGoals} from '@/app/lib/actions';
-import { GoalDetail } from '@/app/lib/definitions';
+import { updateGoal} from '@/app/lib/actions';
 
-
-export default function Form ({ goals }: { goals: GoalDetail[] }) {
+export default function EditGoalsForm({goals}:{goals: GoalDetail;}) {
+  const updateGoalWithId = updateGoal.bind(null, goals.id);
   return (
-    
-    <form action={createGoals}>
+    <form action={updateGoalWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Goal Type */}
-        <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Choose Goal Type
+       {/* Goal Type */}
+       <div className="mb-4">
+          <label htmlFor="goaltype" className="mb-2 block text-sm font-medium">
+            Goal Type
           </label>
           <div className="relative">
             <select
               id="goaltype"
               name="goaltype"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
+              defaultValue={goals.goaltype}
             >
               <option value="" disabled>
-                Select a Goal Type
+                Select a Goal
               </option>
               {goals.map((goal) => (
-                <option key={goal.id} value={goal.id}>
+                <option key={goal.id} value={goal.goaltype}>
                   {goal.goaltype}
                 </option>
               ))}
@@ -57,6 +54,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
                     <input
                         id="goal"
                         name="goal"
+                        defaultValue={goal.goal}
                         placeholder="Enter Goal"
                         className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                     />
@@ -75,6 +73,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
               <input
                 id="goalnotes"
                 name="goalnotes"
+                defaultValue={goal.goalnotes}
                 placeholder="Enter Goal Notes"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -95,6 +94,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
               <input
                 id="goalrealisation"
                 name="goalrealisation"
+                defaultValue={goal.goalrealisation}
                 placeholder="Enter what you will see when your goal is realised"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -114,6 +114,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
                 id="goaltimeline"
                 name="goaltimeline"
                 placeholder="Enter Goal Timeline"
+                defaultValue={goal.goaltimeline}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
               <IdentificationIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -131,6 +132,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
               <input
                 id="goalurgency"
                 name="goalurgency"
+                defaultValue={goal.goalurgency}
                 placeholder="Enter Goal Urgency"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -233,7 +235,7 @@ export default function Form ({ goals }: { goals: GoalDetail[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Goals</Button>
+        <Button type="submit">Edit Goals</Button>
       </div>
       </div>
     </form>

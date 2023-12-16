@@ -44,6 +44,8 @@ export async function createInvoice(formData: FormData) {
     lessondate: z.string(),
   });
 
+  
+
   const CreateLesson = FormSchemaLesson.omit({ id: true, lessondate: true });
 
   export async function createLesson(formData: FormData) {
@@ -66,7 +68,70 @@ export async function createInvoice(formData: FormData) {
     revalidatePath('/dashboard/lessons');
     redirect('/dashboard/lessons');
     }
+
+    const FormSchemaGoal = z.object({
+      id: z.string(),
+      goaltype: z.string(),
+      goal: z.string(),
+      goalnotes: z.string(),
+      goaltimeline: z.string(),
+      goalurgency: z.string(),
+      goalrealisation: z.string(),
+      goalreminder: z.enum(['no', 'yes']),
+      goalachieved: z.enum(['no', 'yes']),
+      goaldate: z.string(),
+    });
+
+    const CreateGoals = FormSchemaGoal.omit({ id: true, goaldate: true });
+
+  export async function createGoals(formData: FormData) {
+      const { goaltype, goal, goalnotes, goaltimeline, goalurgency, goalrealisation, goalreminder, goalachieved } = CreateGoals.parse({
+        goaltype: formData.get('goaltype'),
+        goal: formData.get('goal'),
+        goalnotes: formData.get('goalnotes') || '',
+        goaltimeline: formData.get('goaltimeline'),
+        goalurgency: formData.get('goalurgency'),
+        goalrealisation: formData.get('goalrealisation'),
+        goalreminder: formData.get('goalreminder'),
+        goalachieved: formData.get('goalachieved'),
+      });
+      
+      const date = new Date().toISOString().split('T')[0];
   
+      await sql`
+      INSERT INTO goals (goaltype, goal, goalnotes, goaltimeline, goalurgency, goalrealisation, goalreminder, goalachieved, goaldate)
+      VALUES (${goaltype}, ${goal}, ${goalnotes}, ${goaltimeline}, ${goalurgency}, ${goalrealisation}, ${goalreminder},${goalachieved}, ${date})
+    `;
+  
+    revalidatePath('/dashboard/goals');
+    redirect('/dashboard/goals');
+    }
+  
+    const UpdateGoals = FormSchemaGoal.omit({ id: true, goaldate: true });
+
+  export async function updateGoal(id: string, formData: FormData) {
+    const { goaltype, goal, goalnotes, goaltimeline, goalurgency, goalrealisation, goalreminder, goalachieved } = UpdateGoals.parse({
+        goaltype: formData.get('goaltype'),
+        goal: formData.get('goal'),
+        goalnotes: formData.get('goalnotes') || '',
+        goaltimeline: formData.get('goaltimeline'),
+        goalurgency: formData.get('goalurgency'),
+        goalrealisation: formData.get('goalrealisation'),
+        goalreminder: formData.get('goalreminder'),
+        goalachieved: formData.get('goalachieved'),
+    });
+
+   
+   
+    await sql`
+      UPDATE goals
+      SET goaltype = ${goaltype}, goal= ${goal}, goalnotes = ${goalnotes}, goaltimeline = ${goaltimeline}, goalurgency = ${goalurgency}, goalrealisation = ${goalrealisation}, goalreminder = ${goalreminder}, goalachieved = ${goalachieved}
+      WHERE id = ${id}
+    `;
+   
+    revalidatePath('/dashboard/goals');
+    redirect('/dashboard/goals');
+  }
 
   // Use Zod to update the expected types
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });

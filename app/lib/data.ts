@@ -212,6 +212,38 @@ export async function fetchLessonById(id: string) {
   }
 }
 
+export async function fetchGoalById(id: string) {
+  noStore();
+  if (id === undefined || id === 'undefined') {
+    throw new Error('Invalid goal ID');
+  }
+  try {
+    const data = await sql<GoalDetail>`
+    SELECT 
+      goals.id, 
+      goals.goaltype, 
+      goals.goal, 
+      goals.goalnotes, 
+      goals.goaltimeline,
+      goals.goalurgency,
+      goals.goalrealisation,
+      goals.goalreminder,
+      goals.goalachieved
+    FROM goals
+    WHERE goals.id = ${id};
+    `;
+
+    const goal = data.rows.map((goal) => ({
+      ...goal,
+    }));
+
+    return goal[0];
+  } catch (error: any) {
+    console.error('Database Error:', error);
+    console.error('Failed SQL Query:', error.query); // Add this line to log the failed query
+    throw new Error('Failed to fetch goal.');
+  }
+}
 
 export async function fetchCustomers() {
   noStore();
@@ -295,6 +327,25 @@ export async function fetchLessons() {
       throw new Error('Failed to fetch the lessons.');
     }
   }
+
+  export async function fetchGoals() {
+    noStore();
+    try {
+    const data = await sql<GoalDetail>` 
+        SELECT goals.id, goals.goaltype, goals.goal, goals.goalnotes, goals.goaltimeline, goals.goalurgency, goals.goalrealisation, goals.goalreminder, goals.goalachieved
+        FROM goals
+        ORDER BY goals.goaldate DESC
+        `;
+  
+        const EditGoals = data.rows.map((goal) => ({
+          ...goal,
+        }));
+        return EditGoals;
+      } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch the goals.');
+      }
+    }
 
 
 export async function fetchLatestLessons() {
@@ -387,7 +438,7 @@ export async function fetchFilteredLessons(
       lessonfields.lesson ILIKE ${`%${query}%`} OR
       lessonfields.lessonuse ILIKE ${`%${query}%`} OR
       lessonfields.lessonnotes ILIKE ${`%${query}%`} 
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      LIMIT ${ITEMS_PER_PAGE_LES} OFFSET ${offset}
     `;
 
     return lessons.rows;
@@ -518,29 +569,3 @@ export async function fetchCardDataFinance() {
   }
 }
 
-export async function fetchLessonByLesson(id: string) {
-  noStore();
-  try {
-    const data = await sql<LessonForm>`
-      SELECT
-        lessonfields.lesson,
-        lessonfields.lessonnotes,
-        lessonfields.lessontype,
-        lessonfields.lessonuse,
-        lessonfields.lessonsource,
-        lessonfields.lessonauthor,
-       
-      FROM lessonfields
-      WHERE lessonfields.lesson = ${id};
-    `;
-
-    const lesson = data.rows.map((lesson) => ({
-      ...lesson,
-    }));
-
-    return lesson[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch lesson.');
-  }
-}

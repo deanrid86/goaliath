@@ -6,7 +6,8 @@ const {
   users,
   lessonfields,
   income,
-  expenditure
+  expenditure,
+  goaldata
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -292,7 +293,7 @@ async function seedGoals(client) { {/*Start of Lessons Seed for Database*/}
     const createTable = await client.sql` 
     CREATE TABLE IF NOT EXISTS goals (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      goaltype VARCHAR(10) NOT NULL,
+      goaltype VARCHAR(255) NOT NULL,
       goal TEXT NOT NULL,
       goalnotes TEXT NOT NULL,
       goaltimeline VARCHAR(5) NOT NULL,
@@ -311,7 +312,7 @@ async function seedGoals(client) { {/*Start of Lessons Seed for Database*/}
 
     // Insert data into the "goals" table
     const insertedGoals = await Promise.all(
-      goals.map(
+      goaldata.map(
         (goa) => client.sql`
         INSERT INTO goals (id, goaltype, goal, goalnotes, goaltimeline, goalurgency, goalrealisation, goalreminder, goalachieved, goaldate)
         VALUES (${goa.id}, ${goa.goaltype}, ${goa.goal}, ${goa.goalnotes}, ${goa.goaltimeline}, ${goa.goalurgency}, ${goa.goalrealisation}, ${goa.goalreminder}, ${goa.goalachieved} , ${goa.goaldate}  )
@@ -324,7 +325,7 @@ async function seedGoals(client) { {/*Start of Lessons Seed for Database*/}
 
     return {
       createTable,
-      goals: insertedGoals,
+      goaldata: insertedGoals,
     };
   } catch (error) {
     console.error('Error seeding goals:', error);

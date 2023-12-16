@@ -3,7 +3,7 @@ import Search from '@/app/ui/search';
 import Table from '@/app/ui/goals/table';
 import { CreateGoal } from '@/app/ui/goals/buttons';
 import { Suspense } from 'react';
-import { fetchGoalsPages } from '@/app/lib/data';
+import { fetchGoalsPages,fetchGoals } from '@/app/lib/data';
  
 export default async function Page({
   searchParams,

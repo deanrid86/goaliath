@@ -3,8 +3,9 @@ import { UpdateGoal, DeleteGoal } from '@/app/ui/goals/buttons';
 import GoalsStatus from '@/app/ui/goals/status';
 import { fetchFilteredGoals } from '@/app/lib/data';
 import { goaldata } from '@/app/lib/placeholder-data';
+import { PuzzlePieceIcon, ShoppingCartIcon, SparklesIcon, TrophyIcon } from '@heroicons/react/24/outline';
 
-export default async function LessonsTable({
+export default async function GoalsTable({
   query,
   currentPage,
 }: {
@@ -20,7 +21,7 @@ export default async function LessonsTable({
           <div className="md:hidden">
             {goals?.map((goal) => (
               <div
-                key={goal.id}
+                key={goal.goaltype}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
@@ -31,7 +32,7 @@ export default async function LessonsTable({
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${goal.goaltype}'s profile picture`}
+                        alt={`${goal.goaltype} picture`}
                       />
                       <p>{goal.goal}</p>
                     </div>
@@ -49,13 +50,13 @@ export default async function LessonsTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Author
+                  Goal Type
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Goal
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Goal
+                  Goal Notes
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Goal Timeline
@@ -73,13 +74,10 @@ export default async function LessonsTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                    <Image
-                        src= '/lesson_images/JordanPeterson.png'
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt="An alternative table"
-                      />
+                    
+                    {goal.goaltype === 'Having' && <ShoppingCartIcon />}
+                    {goal.goaltype === 'Doing' && <PuzzlePieceIcon />}
+                    {goal.goaltype === 'Being' && <TrophyIcon />}
                       <p>{goal.goaltype}</p>
                     </div>
                   </td>
