@@ -21,17 +21,38 @@ const config: Config = {
           400: 'rgb(0, 100, 120)',
           500: 'rgb(0, 100, 100)',
           600: 'rgb(0, 100, 80)',
-        } 
-      },
-    },
-    keyframes: {
-      shimmer: {
-        '100%': {
-          transform: 'translateX(100%)',
         },
+        black: {
+          300: 'rgb(64, 64, 64)',
+          400: 'rgb(43, 43, 43)',
+          500: 'rgb(22, 22, 22)',
+          600: 'rgb(0, 0, 0)',
+        },
+        puple: {
+          600: 'rgb(131, 0, 131',
+
+        },
+        green: {
+          600: 'rgb(81, 218, 76',
+
+        },
+
+      },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+        spin: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+      },
+      animation: {
+        'spin-slow': 'spin 2s linear infinite',
       },
     },
   },
   plugins: [require('@tailwindcss/forms')],
 };
+
 export default config;

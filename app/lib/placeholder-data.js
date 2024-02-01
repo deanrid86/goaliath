@@ -392,6 +392,7 @@ const goaldata = [
 }
 ]
 
+
 module.exports = {
   users,
   customers,
@@ -401,6 +402,7 @@ module.exports = {
   lessonfields,
   expenditure,
   goaldata,
+  
 
 };
 

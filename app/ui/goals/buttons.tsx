@@ -24,7 +24,7 @@ export function UpdateGoal({ id }: { id: string }) {
     </Link>
   );
 }
-/*Need to sort out delete capability*/
+
 export function DeleteGoal({ id }: { id: string }) {
   const deleteGoalWithId = deleteGoal.bind(null, id);
   return (

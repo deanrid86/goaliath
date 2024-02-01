@@ -112,6 +112,14 @@ export type LessonDetail = {
   lessonstatus: 'use' | 'dont use';
 };
 
+export type GoalPlannerDetail = {
+  chatID: string;
+  chatTime: string;
+  userGoal: string;
+  userTimeline: string;
+  userHours: string;
+  
+};
 export type LessonForm = {
 
   id: string;
@@ -131,8 +139,8 @@ export type GoalDetail = {
   goaltype: string;
   goal: string;
   goalnotes: string;
-  goaltimeline: number;
-  goalurgency: number;
+  goaltimeline: string;
+  goalurgency: string;
   goalrealisation: string;
   goaldate: string;
   goalreminder: 'yes' | 'no';
@@ -147,8 +155,8 @@ export type GoalForm = {
   goaltype: string;
   goal: string;
   goalnotes: string;
-  goaltimeline: number;
-  goalurgency: number;
+  goaltimeline: string;
+  goalurgency: string;
   goalrealisation: string;
   goaldate: string;
   goalreminder: 'yes' | 'no';

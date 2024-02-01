@@ -17,12 +17,12 @@ export default async function GoalsTable({
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="rounded-lg bg-black-600 p-2 md:pt-0">
           <div className="md:hidden">
             {goals?.map((goal) => (
               <div
                 key={goal.goaltype}
-                className="mb-2 w-full rounded-md bg-white p-4"
+                className="mb-2 w-full rounded-md bg-black-600 p-4 text-blue"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
@@ -46,7 +46,7 @@ export default async function GoalsTable({
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+          <table className="hidden min-w-full text-blue md:table bg-black-600">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
@@ -66,7 +66,7 @@ export default async function GoalsTable({
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white">
+            <tbody className="bg-black-300 text-white">
               {goals?.map((goal) => (
                 <tr
                   key={goal.id}

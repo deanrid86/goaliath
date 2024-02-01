@@ -12,9 +12,11 @@ import {
   Expenditure,
   LessonForm,
   GoalDetail,
+  GoalPlannerDetail,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+import axios from 'axios';
 
 export async function fetchRevenue() {
   noStore();
@@ -348,6 +350,26 @@ export async function fetchLessons() {
     }
 
 
+export const createAssistant = async () => {
+  try {
+    const response = await axios.post('https://api.openai.com/v1/beta/assistants', {
+      name: "Goal Assistant",
+      instructions: "You are my personal life coach and goal scheduler.",
+      tools: [{ type: "code_interpreter" }, { type: "retrieval" }],
+      model: "gpt-4-1106-preview"
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'OpenAI-Beta': 'assistants=v1'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating goal assistant:", error);
+  }
+};
+
+
 export async function fetchLatestLessons() {
   noStore();
   try {
@@ -365,10 +387,29 @@ export async function fetchLatestLessons() {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest lessons.');
     }
+
+  }
+export async function fetchLatestGoals() {
+  noStore();
+  try {
+  const data = await sql<GoalPlannerDetail>` 
+      SELECT goalplanner.userGoal, goalplanner.userTimeline,goalplanner.userHours
+      FROM goalplanner
+      LIMIT 4`;
+  
+      const latestGoals = data.rows.map((goal) => ({
+        ...goal,
+      }));
+      return latestGoals;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest goals.');
+    }
   }
 
   export async function fetchLessonsPages(query: string) {
     noStore();
+    console.log('Database URL:', process.env.POSTGRES_URL);
     try {
       const count = await sql`SELECT COUNT(*)
       FROM lessonfields
@@ -430,7 +471,8 @@ export async function fetchFilteredLessons(
         lessonfields.lessonauthor,
         lessonfields.lesson,
         lessonfields.lessontype,
-        lessonfields.lessonuse
+        lessonfields.lessonuse,
+        lessonfields.lessonnotes
       FROM lessonfields
       WHERE
       lessonfields.lessonauthor ILIKE ${`%${query}%`} OR
@@ -529,6 +571,8 @@ export async function fetchExpenditure() {
     throw new Error('Failed to fetch expenditure data.');
   }
 }
+
+
 
 export async function fetchCardDataFinance() {
   noStore();

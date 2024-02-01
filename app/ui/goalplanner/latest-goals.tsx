@@ -2,23 +2,24 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 {/*import { lusitana } from '@/app/ui/fonts';*/}
-import { fetchLatestLessons } from '@/app/lib/data';
+import { fetchLatestGoals } from '@/app/lib/data';
 
-export default async function LatestLessons() { 
-  const latestLessons = await fetchLatestLessons();
+
+export default async function LatestGoalsCard() { 
+  const latestGoals = await fetchLatestGoals();
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className = "mb-4 text-xl md:text-2xl text-white" > {/* className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
-        Latest Lessons
+        Latest Goals
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-black-300 text-blue p-4">
         {/* NOTE: comment in this code when you get to this point in the course */}
 
         <div className="bg-gray-box px-6">
-          {latestLessons.map((lesson, i) => {
+          {latestGoals.map((goal, i) => {
             return (
               <div
-                key={lesson.id}
+                key={goal.chatTime}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -29,24 +30,24 @@ export default async function LatestLessons() {
                 <div className="flex items-center">
                   <Image
                     src='/lesson_images/JordanPeterson.png'
-                    alt={`${lesson.lessonauthor}'s profile picture`}
+                    alt={`'s profile picture`}
                     className="mr-4 rounded-full"
                     width={60}
                     height={60}
                   />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {lesson.lesson}
+                      {goal.userGoal}
                     </p>
                     <p className="hidden text-sm text-white sm:block">
-                      {lesson.lessonnotes}
+                      {goal.userTimeline}
                     </p>
                   </div>
                 </div>
                 <p
                   className="truncate text-sm font-medium md:text-base" 
                 >
-                  {lesson.lessontype}
+                  {goal.userHours}
                 </p>
               </div>
             );

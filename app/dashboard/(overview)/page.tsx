@@ -29,7 +29,7 @@ export default async function Page() {
   const latestLessons = await fetchLatestLessons();
   return (
     <main>
-      <h1 className ="2mb-4 text-xl md:text-2xl"> {/*className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
+      <h1 className ="2mb-4 text-xl md:text-2xl text-white"> {/*className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
         Dashboard
       </h1>
       {/*<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

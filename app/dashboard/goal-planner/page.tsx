@@ -45,7 +45,7 @@ export default  function Page() {
   interface APIResult {
     [key: string]: StepDetail;
   }
-  // Function to toggle the showGoals state
+  // Function to toggle the showGoals states
   const toggleShowGoals = () => {
     setShowGoals(!showGoals);
   };

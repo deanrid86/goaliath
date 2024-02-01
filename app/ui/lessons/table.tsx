@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { UpdateLesson, DeleteLesson } from '@/app/ui/lessons/buttons';
-import LessonsStatus from '@/app/ui/lessons/status';
 import { fetchFilteredLessons } from '@/app/lib/data';
-import { lessonfields } from '@/app/lib/placeholder-data';
+import { insertActionData } from '@/app/lib/actions';
+
 
 export default async function LessonsTable({
   query,
@@ -12,6 +12,16 @@ export default async function LessonsTable({
   currentPage: number;
 }) {
   const lessons = await fetchFilteredLessons(query, currentPage);
+
+  const handleAddToActions = async ( lessonauthor:string, lesson:string, lessonnotes:string) => {
+    try {
+      await insertActionData (lessonauthor, lesson, lessonnotes);
+      console.log('Added to Today\'s Actions');
+    } catch (error) {
+      console.error('Error adding to Today\'s Actions:', error);
+    }
+  };
+  
 
   return (
     <div className="mt-6 flow-root">
@@ -38,6 +48,7 @@ export default async function LessonsTable({
                     <p className="text-sm text-gray-500">{lesson.lessontype}</p>
                   </div>
                   <div className="flex justify-end gap-2">
+                    
                     <UpdateLesson id={lesson.id} />
                     <DeleteLesson id={lesson.id} />
                   </div>
@@ -94,6 +105,11 @@ export default async function LessonsTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                    <button
+                       onClick={() => handleAddToActions(lesson.lessonauthor, lesson.lesson, lesson.lessonnotes)}
+                        className='flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>
+                        Add to Todays Actions
+                        </button>
                       <UpdateLesson id={lesson.id} />
                       <DeleteLesson id={lesson.id} />
                     </div>

@@ -21,9 +21,13 @@ const links = [
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'Lessons', href: '/dashboard/lessons', icon: AcademicCapIcon },
+  { name: 'Daily Lessons Script', href: '/dashboard/lessons', icon: AcademicCapIcon },
   { name: 'Goals', href: '/dashboard/goals', icon: RocketLaunchIcon },
+  { name: 'Goal Planner', href: '/dashboard/goal-planner', icon: UserGroupIcon },
+  { name: 'Todays Actions', href: '/dashboard/todaysactions', icon: RocketLaunchIcon},
+  { name: 'Extreme Practice', href: '/dashboard/practice', icon: UserGroupIcon },
+  { name: 'Finances', href: '/dashboard/finances', icon: UserGroupIcon },
 ];
 
 
@@ -38,9 +42,9 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] grow items-center justify-center gap-2 rounded-md text-white bg-black-500 p-3 text-sm font-medium hover:bg-black-600 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
+                'bg-black-600 text-blue': pathname === link.href,
               },
             )}
           >

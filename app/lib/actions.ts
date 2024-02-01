@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 const FormSchema = z.object({
     id: z.string(),
@@ -198,3 +199,51 @@ export async function deleteInvoice(id: string) {
     await sql`DELETE FROM goals WHERE id = ${id}`;
     revalidatePath('/dashboard/goals');
   }
+
+  // Function to insert chat data into the database
+export async function insertChatData( chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
+  try {
+    // Generate a unique UUID
+    const uniqueID = uuidv4();
+    await sql`
+      INSERT INTO goalplanner (uniqueID, chatid, chatTime, goalResult, userGoal, userTimeline, userHours)
+      VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
+    `;
+
+    console.log('Chat data inserted into the database.');
+  } catch (error) {
+    console.error('Error inserting chat data into the database:', error);
+  }
+}
+
+  // Function to insert chat data into the database
+  export async function insertCoachData(chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
+    try {
+      // Generate a unique UUID
+      const uniqueID = uuidv4();
+      await sql`
+        INSERT INTO goalplanner (uniqueID, chatid, chatTime, goalResult, userGoal, userTimeline, userHours)
+        VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
+      `;
+  
+      console.log('Chat data inserted into the database.');
+    } catch (error) {
+      console.error('Error inserting chat data into the database:', error);
+    }
+  }
+
+  export async function insertActionData(lessonauthor:string,  lesson: string, lessonnotes: string) {
+    try {
+      // Generate a unique UUID
+      const uniqueID = uuidv4();
+      await sql`
+        INSERT INTO todays_actions (actionid, lessonauthor, lesson, lessonnotes)
+        VALUES (${uniqueID}, ${lessonauthor}, ${lesson}, ${lessonnotes})
+      `;
+  
+      console.log('Action data inserted into the database.');
+    } catch (error) {
+      console.error('Error inserting Action data into the database:', error);
+    }
+  }
+
