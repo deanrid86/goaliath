@@ -7,10 +7,11 @@ import { insertChatData } from '@/app/lib/actions';
 import StrategyDisplay from '@/app/ui/goalplanner/strategy_display';
 import LatestGoalsCard from '@/app/ui/goalplanner/latest-goals';
 import {fetchLatestGoals} from '@/app/lib/data';
+import { Card } from '@/app/ui/goalplanner/cards';
 
 
 
-export default  function Page() {
+export default function Page() {
   const [goalResult, setGoalResult] = useState('');
   const [userFirstGoal, setUserFirstGoal] = useState('');
   const [userFirstGoalTimeline, setUserFirstGoalTimeline] = useState('');
@@ -191,44 +192,109 @@ useEffect(() => {
   return (
     <div>
       <div className="space-y-4">
+        <div >
+          <h1 className='text-white text-xl'>Goal Planner</h1>
+        </div>
+        <div >
+          <h3 className='text-white text-xl bg-black-300 rounded-xl p-2'>Your Latest Goals</h3>
+        </div>
+        {/*4 Cards above the inputs displaying the last four goals*/}
+        <div className='min-w-full flex justify-around bg-black-300 rounded-xl'> 
+          <div className="w-1/5 rounded-xl p-2 bg-red-500 m-2 border border-black-600 border-solid">
+            <Card title="Goal 1" value="My Goal" type="goals" color="bg-red-600"/>
+            <Card title="Goal 1" value="Time 1" type="month" color="bg-red-600"/>
+            <Card title="Goal 1" value="Measure 1" type="days" color="bg-red-600"/>
+          </div>
+          <div className="w-1/5 rounded-xl p-2 bg-cyan-500 m-2 border border-black-600 border-solid">
+            <Card title="Goal 2" value="My Goal2" type="goals" color="bg-cyan-600"/>
+            <Card title="Goal 2" value="Time 2" type="month" color="bg-cyan-600"/>
+            <Card title="Goal 2" value="Measure 2" type="days" color="bg-cyan-600"/>
+          </div>
+          <div className="w-1/5 rounded-xl p-2 bg-green-600 m-2 border border-black-600 border-solid">
+            <Card title="Goal 3" value="My Goal3" type="goals" color="bg-green-500"/>
+            <Card title="Goal 3" value="Time 3" type="month" color="bg-green-500"/>
+            <Card title="Goal 3" value="Measure 3" type="days" color="bg-green-500"/>
+          </div>
+          <div className="w-1/5 rounded-xl p-2 bg-purple-600 m-2 border border-black-600 border-solid">
+            <Card title="Goal 4" value="My Goal4" type="goals" color="bg-purple-400"/>
+            <Card title="Goal 4" value="Time 4" type="month" color="bg-purple-400"/>
+            <Card title="Goal 4" value="Measure 4" type="days" color="bg-purple-400"/>
+          </div>
+       </div>
+
+       <div >
+          <h3 className='text-white text-xl bg-black-300 rounded-xl p-2'>What Do You Want To Achieve?</h3>
+       </div>
         
-        <h1 className='text-white'>Goal Planner</h1>
-        <div>
-          <p>
-            
+       <div className = "rounded-xl flex min-w-full bg-black-300 ">
+       <div className="w-1/2 m-2 p-2">
+    {/* Goal Input */}
+    <div className="flex items-center my-2">
+      <label htmlFor="goalInput" className="mr-2 text-white w-48">Enter your first goal:</label>
+      <input
+        id="goalInput"
+        type="text"
+        placeholder='e.g. Start an online business'
+        value={userFirstGoal}
+        onChange={(e) => setUserFirstGoal(e.target.value)}
+        className='flex-grow text-black rounded-lg p-2'
+      />
+    </div>
+
+    {/* Timeline Input */}
+    <div className="flex items-center my-2">
+      <label htmlFor="timelineInput" className="mr-2 text-white w-48">Approximate time to achieve (Months):</label>
+      <input
+        id="timelineInput"
+        type="number"
+        placeholder='e.g. 12'
+        value={userFirstGoalTimeline}
+        onChange={(e) => setUserFirstGoalTimeline(e.target.value)}
+        className='flex-grow text-black rounded-lg p-2'
+      />
+    </div>
+
+    {/* Hours Per Day Input */}
+    <div className="flex items-center my-2">
+      <label htmlFor="hoursInput" className="mr-2 text-white w-48">Free hours per day:</label>
+      <input
+        id="hoursInput"
+        type="number"
+        placeholder='e.g. 3'
+        value={userFirstGoalAvailableHours}
+        onChange={(e) => setUserFirstGoalAvailableHours(e.target.value)}
+        className='flex-grow text-black rounded-lg p-2'
+      />
+    </div>
+  </div>
+       
+        <div className='bg-black-500 p-2 m-2 rounded-xl w-1/2'>
+          <p className="text-white">We aim to assist you in achieving your goals effectively. Please provide the following information:
+            <br/>
+            <br/>
+            Your primary goal.
+            <br/>
+            The desired timeline for achieving this goal.
+            <br/>
+            The number of free hours you can dedicate to this goal daily.
+            <br/>
+            <br/>
+            We will use AI to create a personalized schedule and blueprint to maximize your chances of success. Your goal schedule outline will be displayed below on the left, and you can request detailed plans for each milestone on the right.
           </p>
         </div>
-
-        {/* Timeline Input */}
-        <div className="flex items-center">
-          <label htmlFor="timelineInput" className="mr-2 text-white w-48">Approximate time to achieve (Months):</label>
-          <input
-            id="timelineInput"
-            type="number"
-            placeholder='Enter your expected  goal timeframe....'
-            value={userFirstGoalTimeline}
-            onChange={(e) => setUserFirstGoalTimeline(e.target.value)}
-            className='text-black rounded-lg p-2 block flex-grow'
-          />
-        </div>
-
-        {/* Hours Per Day Input */}
-        <div className="flex items-center">
-          <label htmlFor="hoursInput" className="mr-2 text-white w-48">Free hours per day:</label>
-          <input
-            id="hoursInput"
-            type="number"
-            placeholder='Enter the amount of free hours a day to achieve your goal....'
-            value={userFirstGoalAvailableHours}
-            onChange={(e) => setUserFirstGoalAvailableHours(e.target.value)}
-            className='text-black rounded-lg p-2 block flex-grow'
-          />
         </div>
 
 
         <button onClick={GoaltoChat} className='flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>{isLoading ? <LoadingSpinner /> : "Start a Plan"}</button>
+       
+        <div >
+          <h3 className='text-white text-xl bg-black-300 rounded-xl p-2'>Your Big Plan</h3>
+        </div>
 
-        <div className='bg-white p-4 rounded-lg'>
+        <div className = "flex min-w-full">
+          
+        <div className='bg-black-300 p-4 rounded-lg w-1/2 p-2 m-2'>
+        <h1 className='text-white'>Goal Structure</h1>
         {parsedGoalResult && Object.entries(parsedGoalResult).map(([stepKey, stepValue], index) => (
         <div key={index} className='bg-gray-100 p-4 rounded-lg'>
           <p>
@@ -239,7 +305,8 @@ useEffect(() => {
 ))}
           </div>
         
-        <div className="api-response bg-white p-4 rounded-lg">
+        <div className="api-response bg-black-300 p-4 rounded-lg w-1/2 p-2 m-2">
+        <h1 className='text-white'>Goal Specifics</h1>
         {parsedAPIResult && Object.entries(parsedAPIResult as APIResult).map(([stepKey, stepDetails], index) => (
   <div key={index} className='bg-gray-100 p-4 rounded-lg'>
     <p><strong>{stepKey}</strong>: {stepDetails.description}</p>
@@ -247,7 +314,7 @@ useEffect(() => {
   </div>
 ))}
       </div>
-      
+      </div>
       </div>
     </div>
   );

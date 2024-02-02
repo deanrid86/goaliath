@@ -47,19 +47,19 @@ import {
     title,
     value,
     type,
-    color = 'bg-black-300', // Default color if none is provided
+    color,
   }: {
     title: string;
     value: number | string;
     type: 'invoices' | 'customers' | 'pending' | 'collected'| 'lesson'| 'expenditure'| 'buffer'| 'minimum' | 'goals' | 'month' | 'days';
-    color?: string;
+    color: string;
   }) {
     const Icon = iconMap[type];
   
     return (
-      <div className="rounded-xl ${color} p-2 shadow-sm">
+      <div className={` ${color} p-2 shadow-sm`}>
         <div className="flex p-4">
-          {Icon ? <Icon className="h-5 w-5 text-white" /> : null}
+          {Icon ? <Icon className="h-5 w-5 text-black" /> : null}
           <h3 className="ml-2 text-sm font-medium text-blue text-center">{title}</h3>
         </div>
         <p className="text-white text-center justify-end"> {/*className={`${lusitana.className}

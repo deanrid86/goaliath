@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Pagination from '@/app/ui/lessons/pagination';
 import Search from '@/app/ui/search';
