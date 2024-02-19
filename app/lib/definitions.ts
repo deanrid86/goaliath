@@ -113,11 +113,22 @@ export type LessonDetail = {
 };
 
 export type GoalPlannerDetail = {
-  chatID: string;
-  chatTime: string;
-  userGoal: string;
-  userTimeline: string;
-  userHours: string;
+  uniqueid: string;
+  chatid: string;
+  chattime: string;
+  usergoal: string;
+  usertimeline: string;
+  userhours: string;
+  
+};
+
+export type GoalPlannerStep = {
+  specificuniqueid: string;
+  specificgoalresult: string;
+  specificchatid: string;
+  specificchattime: Date;
+  specificparsedresult: string;
+  
   
 };
 export type LessonForm = {
@@ -161,6 +172,17 @@ export type GoalForm = {
   goaldate: string;
   goalreminder: 'yes' | 'no';
   goalachieved: 'yes' | 'no';
+
+
+};
+
+export type GoalStepForm = {
+
+  uniqueid: string;
+  date: string;
+  goalstep: string;
+  stephours: string;
+  
 
 
 };

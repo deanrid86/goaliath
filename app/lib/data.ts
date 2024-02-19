@@ -13,6 +13,9 @@ import {
   LessonForm,
   GoalDetail,
   GoalPlannerDetail,
+  GoalPlannerStep,
+  GoalStepForm,
+
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -389,21 +392,91 @@ export async function fetchLatestLessons() {
     }
 
   }
-export async function fetchLatestGoals() {
-  noStore();
-  try {
-  const data = await sql<GoalPlannerDetail>` 
-      SELECT goalplanner.userGoal, goalplanner.userTimeline,goalplanner.userHours
-      FROM goalplanner
-      LIMIT 4`;
+  export async function fetchLatestGoals() {
+    noStore();
+    try {
+      const data = await sql<GoalPlannerDetail>`
+        SELECT goalplanner.uniqueid, goalplanner.usergoal, goalplanner.usertimeline, goalplanner.userhours, goalplanner.chatid
+        FROM goalplanner
+        LIMIT 4`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
   
       const latestGoals = data.rows.map((goal) => ({
         ...goal,
       }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestGoals:", latestGoals);
+  
       return latestGoals;
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest goals.');
+    }
+  }
+
+  export async function fetchLatestGoalStep() {
+    noStore();
+    try {
+        const data = await sql<GoalPlannerStep>`
+            SELECT goalplannerspecific.specificuniqueid, goalplannerspecific.specificparsedresult
+            FROM goalplannerspecific
+            ORDER BY goalplannerspecific.specificchattime DESC
+            LIMIT 1`;
+
+        // Log the raw data response from the query
+        console.log("Raw data responses:", data);
+
+        const latestGoalStep = data.rows.map((step) => {
+            // Initialize a variable to hold the parsed result
+            let parsedResult;
+            try {
+                // Attempt to parse specificparsedresult into an object
+                parsedResult = JSON.parse(step.specificparsedresult);
+            } catch (error) {
+                console.error('Error parsing specificparsedresult:', error);
+                // Handle the error or set parsedResult to a default value
+                parsedResult = {}; // Setting to an empty object as an example
+            }
+
+            return {
+                ...step,
+                specificparsedresult: parsedResult,
+            };
+        });
+
+        // Log the processed data that will be returned
+        console.log("Processed latestGoalStep:", latestGoalStep);
+
+        return latestGoalStep;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch the latest goal step.');
+    }
+}
+
+
+  export async function fetchGoalStepInput() {
+    noStore();
+    try {
+      const data = await sql<GoalStepForm>`
+        SELECT goalstepinput.unique_id, goalstepinput.date, goalstepinput.goalstep, goalstepinput.stephours
+        FROM goalstepinput
+        LIMIT 5`;
+  
+     
+  
+      const goalStepInput = data.rows.map((step) => ({
+        ...step,
+      }));
+  
+  
+      return goalStepInput;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest goal step.');
     }
   }
 

@@ -3,10 +3,11 @@ import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import IncomeChart from '@/app/ui/dashboard/income-chart';
 import ExpenditureChart from '@/app/ui/dashboard/expenditure-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
-import LatestLessons from '@/app/ui/dashboard/latest-lessons';
-import {  fetchLatestInvoices, fetchCardData, fetchLatestLessons,fetchCardDataFinance } from '@/app/lib/data';
+import LatestGoals from '@/app/ui/dashboard/latest-lessons2';
+import {  fetchLatestInvoices, fetchCardData, fetchLatestLessons,fetchCardDataFinance, fetchLatestGoals } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton } from '@/app/ui/skeletons';
+
 
 
 
@@ -27,6 +28,7 @@ export default async function Page() {
     minimumDailyEarnings
     } = await fetchCardDataFinance();
   const latestLessons = await fetchLatestLessons();
+  const latestGoals = await fetchLatestGoals();
   return (
     <main>
       <h1 className ="2mb-4 text-xl md:text-2xl text-white"> {/*className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
@@ -56,8 +58,9 @@ export default async function Page() {
           <LatestInvoices />
         </Suspense>*/}
         <IncomeChart />
-        <LatestLessons />
+        <LatestGoals />
         <ExpenditureChart />
+
         
       </div>
     </main>

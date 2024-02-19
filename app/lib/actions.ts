@@ -200,13 +200,14 @@ export async function deleteInvoice(id: string) {
     revalidatePath('/dashboard/goals');
   }
 
+ 
   // Function to insert chat data into the database
-export async function insertChatData( chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
+export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
   try {
-    // Generate a unique UUID
-    const uniqueID = uuidv4();
+    
+    //After several weeks of frustration with API, I found that the API will call the vercel database if you keep column names small caps (and when calling on pages also)!!!
     await sql`
-      INSERT INTO goalplanner (uniqueID, chatid, chatTime, goalResult, userGoal, userTimeline, userHours)
+      INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours)
       VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
     `;
 
@@ -217,25 +218,24 @@ export async function insertChatData( chatID: string, chatTime:string,  goalResu
 }
 
   // Function to insert chat data into the database
-  export async function insertCoachData(chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
+  export async function insertCoachData(specificuniqueID:string, apiResponse: string, stepChatId: string , stepChatTime: string, parsedAPIResult: string) {
     try {
-      // Generate a unique UUID
-      const uniqueID = uuidv4();
+      
       await sql`
-        INSERT INTO goalplanner (uniqueID, chatid, chatTime, goalResult, userGoal, userTimeline, userHours)
-        VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
+        INSERT INTO goalplannerspecific (specificuniqueid, specificgoalresult, specificchatid, specificchattime, specificparsedresult )
+        VALUES (${specificuniqueID}, ${apiResponse}, ${stepChatId}, TO_TIMESTAMP(${stepChatTime}, 'DD/MM/YYYY, HH24:MI:SS'), ${JSON.stringify(parsedAPIResult)})
       `;
   
-      console.log('Chat data inserted into the database.');
+      console.log('Specific Chat data inserted into the database.');
     } catch (error) {
-      console.error('Error inserting chat data into the database:', error);
+      console.error('Error inserting specific chat data into the database:', error);
     }
   }
 
-  export async function insertActionData(lessonauthor:string,  lesson: string, lessonnotes: string) {
+  export async function insertActionData(uniqueID: string, lessonauthor:string,  lesson: string, lessonnotes: string) {
     try {
       // Generate a unique UUID
-      const uniqueID = uuidv4();
+     
       await sql`
         INSERT INTO todays_actions (actionid, lessonauthor, lesson, lessonnotes)
         VALUES (${uniqueID}, ${lessonauthor}, ${lesson}, ${lessonnotes})
@@ -247,3 +247,119 @@ export async function insertChatData( chatID: string, chatTime:string,  goalResu
     }
   }
 
+  
+
+  const FormSchemaGoalChat = z.object({
+    chatID: z.string(),
+    uniqueID: z.string(),
+    chatTime: z.string(),
+    goalResult: z.string(),
+    userGoal: z.string(),
+    userTimeline: z.string(),
+    userHours: z.string(),
+    
+  });
+
+
+  const CreateGoal = FormSchemaGoalChat.omit({ chatID: true, uniqueID: true });
+
+  export async function createGoal(formData: FormData) {
+      const { chatTime, goalResult, userGoal, userTimeline, userHours } = CreateGoal.parse({
+        chatTime: formData.get('chatTime'),
+        goalResult: formData.get('goalResult'),
+        userGoal: formData.get('userGoal') || '',
+        userTimeline: formData.get('userTimeline'),
+        userHours: formData.get('userHours'),
+      });
+      
+  
+      await sql`
+      INSERT INTO goalplanner (chatTime, goalResult, userGoal, userTimeline, userHours)
+      VALUES (${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
+    `;
+  
+    revalidatePath('/dashboard/goal-planner');
+    redirect('/dashboard/goal-planner');
+    }
+
+
+    const FormSchemaGoalStep = z.object({
+      uniqueid: z.string(),
+      date: z.string(),
+      goalstep: z.string(),
+      stephours: z.string(),
+      
+    });
+
+    const CreateGoalStep = FormSchemaGoalStep.omit({uniqueid: true });
+
+    export async function createGoalStep(formData: FormData) {
+        const { date, goalstep, stephours } = CreateGoalStep.parse({
+          date: formData.get('date'),
+          goalstep: formData.get('goalstep'),
+          stephours: formData.get('stephours') || '',
+          
+        });
+        
+        const uniqueid = uuidv4();
+    
+        await sql`
+        INSERT INTO goalstepinput (unique_id, date, goalstep, stephours)
+        VALUES (${uniqueid}, ${date}, ${goalstep}, ${stephours})
+      `;
+    
+      revalidatePath('/dashboard/todaysactions');
+      redirect('/dashboard/todaysactions');
+      }
+
+      const UpdateGoalStep = FormSchemaGoalStep.omit({ uniqueid: true});
+
+  export async function updateGoalStep(uniqueid: string,formData: FormData) {
+    const { date, goalstep, stephours } = UpdateGoalStep.parse({
+      date: formData.get('date'),
+      goalstep: formData.get('goalstep'),
+      stephours: formData.get('stephours'),
+    });
+
+   
+   
+    await sql`
+      UPDATE goalstepinput
+      SET date = ${date}, goalstep= ${goalstep}, stephours = ${stephours}
+      WHERE unique_id = ${uniqueid}
+    `;
+   
+    revalidatePath('/dashboard/lessons');
+    redirect('/dashboard/lessons');
+  }
+
+      export async function deleteStepInput(uniqueid: string) {
+        await sql`DELETE FROM goalstepinput WHERE unique_id = ${uniqueid}`;
+        revalidatePath('/dashboard/todaysactions');
+      }
+
+      export async function sendEmail ()  {
+       
+        
+        try {
+            const response = await fetch('http://localhost:3000/dashboard/todaysactions/api', { // Adjust the API route as necessary
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subject: 'Today\'s Goals to Complete',
+                    message: 'Here are the goals for today:',
+                }),
+            });
+            if (response.ok) {
+                console.log ('Email Sent Successfully');
+                (''); // Optionally clear the input field after sending
+            } else {
+                throw new Error('Email sending failed');
+            }
+        } catch (error) {
+            console.error("Failed to send email:", error);
+            ('Failed to Send Email');
+        }
+    };

@@ -1,14 +1,17 @@
-import DeanCard from "@/app/ui/dashboard/deancar";
+import React from "react";
 
-export default function Page () {
+export default async function Page () {
     return (
         <div>
-            <h1 className="text-white">My Daily Lessons Script</h1>
-            <DeanCard>
-                Dean Ridings
-            </DeanCard>
-            <DeanCard>Sausage</DeanCard>
-            <DeanCard>Gran Gran</DeanCard>
+            <div className='text-white text-xl p-2 m-2'>
+              <h1 >Daily Lesson Script</h1>
+            </div>
+            <div className='text-white text-xl bg-black-300 rounded-xl p-2 m-2'>
+                <h3 >Here is your daily script and rules to practice and live by</h3>
+            </div>
+            <div className='text-white bg-black-300 rounded-xl p-2 m-2'>
+                <p >Daily Script Bla Bla</p>
+            </div>
         </div>
     )
 };

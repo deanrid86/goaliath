@@ -25,12 +25,18 @@ export default async function Page({
 
   return (
     <div className="w-full"> {/*Div with a full width container*/}
-      <div className="flex w-full items-center justify-between"> {/* div element with a combination of flex and width settings, aligning its children in the center and justifying the space between them.*/}
-        <h1 className="text-2xl text-white">Lessons</h1>
+      <div className="flex w-full items-center justify-between p-2"> {/* div element with a combination of flex and width settings, aligning its children in the center and justifying the space between them.*/}
+        <h1 className="text-2xl text-white ">Lessons</h1>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+      <div>
+        <h2 className='text-white text-xl bg-black-300 rounded-xl p-2'>Search for a lesson you have learned from a book or other resource</h2>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8 p-2">
         <Search placeholder="Search lessons..." />
         <CreateLesson />
+      </div>
+      <div>
+        <h2 className='text-white text-xl bg-black-300 rounded-xl p-2'>My Lesson List</h2>
       </div>
         <Suspense key={query + currentPage}>
         <Table query={query} currentPage={currentPage} />

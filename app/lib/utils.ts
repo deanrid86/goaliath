@@ -21,6 +21,14 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
+export function getDateDaysFromToday(days: number): string {
+  const today = new Date();
+  today.setDate(today.getDate() + days);
+  
+  // Return the date in YYYY-MM-DD format
+  return today.toISOString().split('T')[0];
+}
+
 export const generateYAxis = (revenue: Revenue[]) => {
   // Calculate what labels we need to display on the y-axis
   // based on highest record and in 1000s
