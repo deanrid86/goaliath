@@ -10,7 +10,7 @@ import {
     ArrowUpIcon,
     CalendarDaysIcon,
   } from '@heroicons/react/24/outline';
-  {/*import { lusitana } from '@/app/ui/fonts';*/}
+  import {capitalizeFirstWord} from '@/app/lib/utils';
   
   const iconMap = {
     collected: BanknotesIcon,
@@ -45,9 +45,8 @@ import {
           {Icon ? <Icon className="h-5 w-5 text-black" /> : null}
           <h3 className="ml-2 text-sm font-medium text-blue text-center">{title}</h3>
         </div>
-        <p className="text-white text-center justify-end"> {/*className={`${lusitana.className}
-            truncate rounded-xl bg-white px-4 py-8 text-center text-2xl`}*/}
-          {value}
+        <p className="text-black text-center justify-end">
+        {typeof value === 'string' ? capitalizeFirstWord(value) : value}
         </p>
       </div>
     );

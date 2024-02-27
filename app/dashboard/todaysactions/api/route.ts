@@ -37,7 +37,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         return `<li><strong>${stepKey}:</strong> ${description}<br/>Timeframe: ${timeframe.value} days</li>`;
       }).join('');
 
-      return `<div><strong>Goal ID:</strong> ${goal.specificuniqueid}<ul>${stepsHtml}</ul></div>`;
+      return `<div><strong>Goal ID:</strong> ${goal.id}<ul>${stepsHtml}</ul></div>`;
     }).join('');
 
     // Configure the mail transporter

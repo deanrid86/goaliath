@@ -218,15 +218,16 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
 }
 
   // Function to insert chat data into the database
-  export async function insertCoachData(specificuniqueID:string, apiResponse: string, stepChatId: string , stepChatTime: string, parsedAPIResult: string) {
+  export async function insertCoachData(id:string, apiResponse: string, stepChatId: string , stepChatTime: string, parsedAPIResult: string, statuscomplete: string, statusadd: string ) {
     try {
       
       await sql`
-        INSERT INTO goalplannerspecific (specificuniqueid, specificgoalresult, specificchatid, specificchattime, specificparsedresult )
-        VALUES (${specificuniqueID}, ${apiResponse}, ${stepChatId}, TO_TIMESTAMP(${stepChatTime}, 'DD/MM/YYYY, HH24:MI:SS'), ${JSON.stringify(parsedAPIResult)})
+        INSERT INTO goalplannerspecific (id, specificgoalresult, specificchatid, specificchattime, specificparsedresult, statuscomplete, statusadd )
+        VALUES (${id}, ${apiResponse}, ${stepChatId}, TO_TIMESTAMP(${stepChatTime}, 'DD/MM/YYYY, HH24:MI:SS'), ${JSON.stringify(parsedAPIResult)}, ${statuscomplete}, ${statusadd})
       `;
   
       console.log('Specific Chat data inserted into the database.');
+      console.log ("DEANNNNNNNN",id)
     } catch (error) {
       console.error('Error inserting specific chat data into the database:', error);
     }
@@ -284,58 +285,111 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
 
 
     const FormSchemaGoalStep = z.object({
-      uniqueid: z.string(),
+      id: z.string(),
       date: z.string(),
       goalstep: z.string(),
       stephours: z.string(),
+      statuscomplete: z.enum(['not complete', 'complete']),
+      statusadd: z.enum(['dont add to list', 'add to list']),
       
     });
 
-    const CreateGoalStep = FormSchemaGoalStep.omit({uniqueid: true });
+    const CreateGoalStep = FormSchemaGoalStep.omit({id: true });
 
     export async function createGoalStep(formData: FormData) {
-        const { date, goalstep, stephours } = CreateGoalStep.parse({
+        const { date, goalstep, stephours, statuscomplete, statusadd} = CreateGoalStep.parse({
           date: formData.get('date'),
           goalstep: formData.get('goalstep'),
-          stephours: formData.get('stephours') || '',
+          stephours: formData.get('stephours'),
+          statuscomplete: formData.get('statuscomplete') || 'not complete', // Default value
+          statusadd: formData.get('statusadd') || 'dont add to list', // Default value
           
         });
         
-        const uniqueid = uuidv4();
+        
     
         await sql`
-        INSERT INTO goalstepinput (unique_id, date, goalstep, stephours)
-        VALUES (${uniqueid}, ${date}, ${goalstep}, ${stephours})
+        INSERT INTO goalstepinput ( date, goalstep, stephours, statuscomplete, statusadd )
+        VALUES ( ${date}, ${goalstep}, ${stephours}, ${statuscomplete}, ${statusadd} )
       `;
     
-      revalidatePath('/dashboard/todaysactions');
-      redirect('/dashboard/todaysactions');
+      revalidatePath('/dashboard/todaysactions/stepinput');
+      redirect('/dashboard/todaysactions/stepinput');
       }
 
-      const UpdateGoalStep = FormSchemaGoalStep.omit({ uniqueid: true});
+      const UpdateGoalStep = FormSchemaGoalStep.omit({ id: true});
 
-  export async function updateGoalStep(uniqueid: string,formData: FormData) {
-    const { date, goalstep, stephours } = UpdateGoalStep.parse({
+  export async function updateGoalStep(id: string,formData: FormData) {
+    const { date, goalstep, stephours,statuscomplete, statusadd } = UpdateGoalStep.parse({
       date: formData.get('date'),
       goalstep: formData.get('goalstep'),
       stephours: formData.get('stephours'),
+      statuscomplete: formData.get('statuscomplete'),
+      statusadd: formData.get('statusadd'),
     });
 
    
    
     await sql`
       UPDATE goalstepinput
-      SET date = ${date}, goalstep= ${goalstep}, stephours = ${stephours}
-      WHERE unique_id = ${uniqueid}
+      SET date = ${date}, goalstep= ${goalstep}, stephours = ${stephours}, statuscomplete = ${statuscomplete}, statusadd = ${statusadd}
+      WHERE id = ${id}
     `;
    
-    revalidatePath('/dashboard/lessons');
-    redirect('/dashboard/lessons');
+    revalidatePath('/dashboard/todaysactions/stepinput');
+    redirect('/dashboard/todaysactions/stepinput');
   }
 
-      export async function deleteStepInput(uniqueid: string) {
-        await sql`DELETE FROM goalstepinput WHERE unique_id = ${uniqueid}`;
-        revalidatePath('/dashboard/todaysactions');
+  const FormSchemaGoalStepAI = z.object({
+    id: z.string(),
+    statuscomplete: z.enum(['No', 'Yes']),
+    statusadd: z.enum(['No', 'Yes']),
+    
+  });
+
+  const UpdateGoalStepAI = FormSchemaGoalStepAI.omit({ id: true});
+
+  export async function updateGoalStepAI(id: string,formData: FormData) {
+    const { statuscomplete, statusadd } = UpdateGoalStepAI.parse({
+
+      statuscomplete: formData.get('statuscomplete'),
+      statusadd: formData.get('statusadd'),
+    });
+
+   
+   
+    await sql`
+      UPDATE goalplannerspecific
+      SET statuscomplete = ${statuscomplete}, statusadd = ${statusadd}
+      WHERE id = ${id}
+    `;
+   
+    revalidatePath('/dashboard/todaysactions');
+    redirect('/dashboard/todaysactions');
+  }
+
+  {/*export async function updateInvoice(id: string, formData: FormData) {
+    const { customerId, amount, status } = UpdateInvoice.parse({
+      customerId: formData.get('customerId'),
+      amount: formData.get('amount'),
+      status: formData.get('status'),
+    });
+   
+    const amountInCents = amount * 100;
+   
+    await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
+   
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices'); 
+  }*/}
+
+      export async function deleteStepInput(id: string) {
+        await sql`DELETE FROM goalstepinput WHERE id = ${id}`;
+        revalidatePath('/dashboard/todaysactions/stepinput');
       }
 
       export async function sendEmail ()  {

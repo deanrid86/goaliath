@@ -92,12 +92,22 @@ export type CustomerField = {
   name: string;
 };
 
+export type GoalInputForm = {
+  id: string;
+  date: string;
+  goalstep: string;
+  stephours: string;
+  statuscomplete: 'not complete' | 'complete';
+  statusadd: 'dont add to list' | 'add to list';
+};
+
 export type InvoiceForm = {
   id: string;
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
 };
+
 
 export type LessonDetail = {
   id: string;
@@ -123,11 +133,13 @@ export type GoalPlannerDetail = {
 };
 
 export type GoalPlannerStep = {
-  specificuniqueid: string;
+  id: string;
   specificgoalresult: string;
   specificchatid: string;
   specificchattime: Date;
   specificparsedresult: string;
+  statuscomplete: 'No' | 'Yes';
+  statusadd: 'No' | 'Yes';
   
   
 };
@@ -178,7 +190,7 @@ export type GoalForm = {
 
 export type GoalStepForm = {
 
-  uniqueid: string;
+  id: string;
   date: string;
   goalstep: string;
   stephours: string;

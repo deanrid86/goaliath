@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 
-//This is the origional page
+
 export default function Page() {
   const [goalResult, setGoalResult] = useState('');
   const [userFirstGoal, setUserFirstGoal] = useState('');
@@ -188,12 +188,8 @@ useEffect(() => {
   const saveCoachData = async () => {
     if (parsedAPIResult) {
       try {
-        const id = uuidv4();
-        const statuscomplete ='No';
-        const statusadd = 'No'
-        
-
-        await insertCoachData (id, apiResponse, stepChatId , stepChatTime, parsedAPIResult, statuscomplete, statusadd );
+        const specificuniqueID = uuidv4();
+        await insertCoachData (specificuniqueID, apiResponse, stepChatId , stepChatTime, parsedAPIResult );
         
         console.log('Specific Data saved to database successfully');
       } catch (error) {

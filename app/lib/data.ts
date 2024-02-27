@@ -15,6 +15,8 @@ import {
   GoalPlannerDetail,
   GoalPlannerStep,
   GoalStepForm,
+  GoalInputForm,
+  
 
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -421,7 +423,7 @@ export async function fetchLatestLessons() {
     noStore();
     try {
         const data = await sql<GoalPlannerStep>`
-            SELECT goalplannerspecific.specificuniqueid, goalplannerspecific.specificparsedresult
+            SELECT goalplannerspecific.id, goalplannerspecific.specificparsedresult, goalplannerspecific.statuscomplete, goalplannerspecific.statusadd
             FROM goalplannerspecific
             ORDER BY goalplannerspecific.specificchattime DESC
             LIMIT 1`;
@@ -457,12 +459,36 @@ export async function fetchLatestLessons() {
     }
 }
 
+export async function fetchGoalStepById(id: string) {
+  noStore();
+  console.log('Fetching goal step by ID:', id); // Logging for debugging
+  try {
+    const data = await sql<GoalPlannerStep>`
+      SELECT
+      goalplannerspecific.id, 
+      goalplannerspecific.specificparsedresult
+      FROM goalplannerspecific
+      WHERE goalplannerspecific.id = ${id};
+    `;
+
+    const goalstep = data.rows.map((goalstep) => ({
+      ...goalstep,
+     
+    }));
+
+    return goalstep[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goalstep.');
+  }
+}
+
 
   export async function fetchGoalStepInput() {
     noStore();
     try {
-      const data = await sql<GoalStepForm>`
-        SELECT goalstepinput.unique_id, goalstepinput.date, goalstepinput.goalstep, goalstepinput.stephours
+      const data = await sql<GoalInputForm>`
+        SELECT goalstepinput.id, goalstepinput.date, goalstepinput.goalstep, goalstepinput.stephours, goalstepinput.statuscomplete, goalstepinput.statusadd
         FROM goalstepinput
         LIMIT 5`;
   
@@ -686,3 +712,30 @@ export async function fetchCardDataFinance() {
   }
 }
 
+export async function fetchGoalInputById(id: string) {
+  noStore();
+  console.log('Fetching goal input by ID:', id); // Logging for debugging
+  try {
+    const data = await sql<GoalInputForm>`
+      SELECT
+        goalstepinput.id,
+        goalstepinput.date,
+        goalstepinput.goalstep,
+        goalstepinput.stephours,
+        goalstepinput.statuscomplete,
+        goalstepinput.statusadd
+      FROM goalstepinput
+      WHERE goalstepinput.id = ${id};
+    `;
+
+    const goalstepinput = data.rows.map((goalstep) => ({
+      ...goalstep,
+     
+    }));
+
+    return goalstepinput[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goalstep.');
+  }
+}

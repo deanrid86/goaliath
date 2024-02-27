@@ -1,4 +1,4 @@
-'use client';
+
 
 import Link from 'next/link';
 import { LightBulbIcon, ChatBubbleBottomCenterTextIcon, FingerPrintIcon, IdentificationIcon, FilmIcon, FaceSmileIcon } from '@heroicons/react/24/outline';

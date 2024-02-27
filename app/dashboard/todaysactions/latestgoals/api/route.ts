@@ -9,7 +9,7 @@ export default async function handler(
 ) {
   try {
     const data = await sql<GoalPlannerStep>`
-        SELECT goalplannerspecific.specificuniqueid, goalplannerspecific.specificgoalresult
+        SELECT goalplannerspecific.id, goalplannerspecific.specificgoalresult
         FROM goalplannerspecific
         LIMIT 1`;
   

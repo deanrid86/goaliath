@@ -5,6 +5,7 @@ import ExpenditureChart from '@/app/ui/dashboard/expenditure-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import LatestGoals from '@/app/ui/dashboard/latest-lessons2';
 import {  fetchLatestInvoices, fetchCardData, fetchLatestLessons,fetchCardDataFinance, fetchLatestGoals } from '@/app/lib/data';
+import LatestGoalCards from '@/app/ui/goalplanner/latest-goals';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton } from '@/app/ui/skeletons';
 
@@ -44,6 +45,7 @@ export default async function Page() {
           type="customers"
         />
   </div>*/}
+      <LatestGoalCards/>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Card title="Total Lessons" value={numberOfLessons} type="lesson" />
         <Card title="Monthly Expenditure" value={`£${totalMonthlyExpenditure.toFixed(2)}`}type="expenditure" />

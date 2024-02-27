@@ -103,3 +103,10 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function capitalizeFirstWord(str:string) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+  return str.replace(/^\w/, (c) => c.toUpperCase());
+}

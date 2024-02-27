@@ -78,7 +78,7 @@ export default async function GoalViewer() {
               <div className='text-white bg-black-500 p-2 m-2 rounded-xl w-1/2'>
                 <ul>
                 {goalStepInput.map((step) => (
-                <li key={step.uniqueid}>{step.goalstep}</li>
+                <li key={step.id}>{step.goalstep}</li>
                 ))}
               </ul>
               </div>
