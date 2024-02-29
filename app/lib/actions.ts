@@ -202,16 +202,17 @@ export async function deleteInvoice(id: string) {
 
  
   // Function to insert chat data into the database
-export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string) {
+export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string, stepCount: number) {
   try {
     
     //After several weeks of frustration with API, I found that the API will call the vercel database if you keep column names small caps (and when calling on pages also)!!!
     await sql`
-      INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours)
-      VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
+      INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours, stepcount)
+      VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours}, ${stepCount})
     `;
 
     console.log('Chat data inserted into the database.');
+
   } catch (error) {
     console.error('Error inserting chat data into the database:', error);
   }
@@ -227,7 +228,7 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
       `;
   
       console.log('Specific Chat data inserted into the database.');
-      console.log ("DEANNNNNNNN",id)
+      
     } catch (error) {
       console.error('Error inserting specific chat data into the database:', error);
     }
@@ -289,8 +290,8 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
       date: z.string(),
       goalstep: z.string(),
       stephours: z.string(),
-      statuscomplete: z.enum(['not complete', 'complete']),
-      statusadd: z.enum(['dont add to list', 'add to list']),
+      statuscomplete: z.enum(['No', 'Yes']),
+      statusadd: z.enum(['No', 'Yes']),
       
     });
 
@@ -301,8 +302,8 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
           date: formData.get('date'),
           goalstep: formData.get('goalstep'),
           stephours: formData.get('stephours'),
-          statuscomplete: formData.get('statuscomplete') || 'not complete', // Default value
-          statusadd: formData.get('statusadd') || 'dont add to list', // Default value
+          statuscomplete: formData.get('statuscomplete') || 'No', // Default value
+          statusadd: formData.get('statusadd') || 'No', // Default value
           
         });
         

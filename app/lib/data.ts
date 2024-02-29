@@ -14,7 +14,6 @@ import {
   GoalDetail,
   GoalPlannerDetail,
   GoalPlannerStep,
-  GoalStepForm,
   GoalInputForm,
   
 
@@ -398,8 +397,9 @@ export async function fetchLatestLessons() {
     noStore();
     try {
       const data = await sql<GoalPlannerDetail>`
-        SELECT goalplanner.uniqueid, goalplanner.usergoal, goalplanner.usertimeline, goalplanner.userhours, goalplanner.chatid
+        SELECT goalplanner.uniqueid, goalplanner.usergoal, goalplanner.usertimeline, goalplanner.userhours, goalplanner.chatid, goalplanner.stepcount
         FROM goalplanner
+        ORDER BY goalplanner.chatid DESC
         LIMIT 4`;
   
       // Log the raw data response from the query
@@ -423,8 +423,9 @@ export async function fetchLatestLessons() {
     noStore();
     try {
         const data = await sql<GoalPlannerStep>`
-            SELECT goalplannerspecific.id, goalplannerspecific.specificparsedresult, goalplannerspecific.statuscomplete, goalplannerspecific.statusadd
+            SELECT goalplannerspecific.id, goalplannerspecific.specificparsedresult, goalplannerspecific.specificparsedresult, goalplannerspecific.statuscomplete, goalplannerspecific.statusadd
             FROM goalplannerspecific
+            WHERE goalplannerspecific.statuscomplete = 'No'
             ORDER BY goalplannerspecific.specificchattime DESC
             LIMIT 1`;
 

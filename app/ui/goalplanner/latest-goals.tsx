@@ -1,5 +1,7 @@
+import { ProgressLineBar } from '@/app/lib/chartcomponents';
 import { fetchLatestGoals } from '@/app/lib/data';
 import {Card} from '@/app/ui/goalplanner/cards';
+
 
 export default async function LatestGoalCards() { 
   const latestGoals = await fetchLatestGoals();
@@ -10,7 +12,8 @@ export default async function LatestGoalCards() {
       { container: "bg-green-600", card: "bg-green-500" },
       { container: "bg-purple-600", card: "bg-purple-400" },
     ];
-
+    
+   
   return (
    
    
@@ -21,8 +24,14 @@ export default async function LatestGoalCards() {
       <Card title={`Goal ${index + 1}`} value={goal.usergoal} type="goals" color={colorSchemes[index].card}/>
       <Card title={`Months to Complete`} value={goal.usertimeline} type="month" color={colorSchemes[index].card}/>
       <Card title={`Daily Hours to Commit`} value={goal.userhours} type="days" color={colorSchemes[index].card}/>
-    </div>
+      <p>Number of Step = {goal.stepcount}</p>
+      <p>Percentage per Step = {Math.round(100 / goal.stepcount)}%</p>
+      
+      </div>
     ))}
+    <div className = 'bg-white'>
+     
+      </div>
     </div>
     );
   }

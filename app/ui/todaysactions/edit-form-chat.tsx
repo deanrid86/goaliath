@@ -36,6 +36,7 @@ export default async function EditGoalAIForm ({goalstep} : {goalstep: GoalPlanne
                   type="radio"
                   value="No"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required
                 />
                 <label
                   htmlFor="No"
@@ -50,8 +51,8 @@ export default async function EditGoalAIForm ({goalstep} : {goalstep: GoalPlanne
                   name="statuscomplete"
                   type="radio"
                   value="Yes"
-                  
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required
                 />
                 <label
                   htmlFor="Yes"
@@ -78,6 +79,7 @@ export default async function EditGoalAIForm ({goalstep} : {goalstep: GoalPlanne
                   type="radio"
                   value="No"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required
                 />
                 <label
                   htmlFor="No"
@@ -92,8 +94,8 @@ export default async function EditGoalAIForm ({goalstep} : {goalstep: GoalPlanne
                   name="statusadd"
                   type="radio"
                   value="Yes"
-                  
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required
                 />
                 <label
                   htmlFor="Yes"

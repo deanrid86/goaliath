@@ -24,6 +24,8 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCoachLoading, setIsCoachLoading] = useState(false);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [stepCount, setStepCount] = useState(0);
+  const [stepPercent, setStepPercent] = useState(0);
 
   //Interfaces: The contract or rules that the object they are implemented on have to use.
 
@@ -48,6 +50,10 @@ export default function Page() {
   interface APIResult {
     [key: string]: StepDetail;
   }
+
+  interface StepDetailCount {
+    [key: string]: unknown; // Use `any` or a more specific type instead of `unknown` if you know the structure of the value
+  }
   
   //API key variable that stores CHAT GPT API
   const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
@@ -58,6 +64,13 @@ export default function Page() {
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
     </div>
   );
+
+  function countSteps(jsonData: Record<string, unknown>): number {
+    // Filter keys that start with "Step" and count them
+    const stepKeys = Object.keys(jsonData).filter(key => key.startsWith("Step"));
+    return stepKeys.length;
+  }
+
 
   {/*This is the Async function that is responsible for interacting with chat GPT, sending it a message with inserted  dynamic variabels from the input boxes 
    and storing the result, the chat id and the time created in variables*/}
@@ -87,7 +100,7 @@ export default function Page() {
       const chatid = completion.id;
       const chattime = completion.created;
       setChatId(chatid);
-      setChatTime(new Date(chattime * 1000).toLocaleString());
+      setChatTime(new Date(chattime * 1000).toISOString().replace('T', ' ').substring(0, 19));
       
     } catch (error) {
       console.error("Error gettin ChatGPT data:", error);
@@ -97,37 +110,44 @@ export default function Page() {
   }
   };
 
-  /*This section is responsible taking the JSON created by Chat GPT and Parsing it*/
   useEffect(() => {
-    try {
-      if (goalResult) {
+    if (goalResult) {
+      try {
         const parsedData = JSON.parse(goalResult);
+        console.log("Parsed Data:", parsedData); // Debug log
         setParsedGoalResult(parsedData);
-        console.log("Parsing successful:", parsedData);
+  
+        const steps = countSteps(parsedData);
+        console.log("Step Count:", steps); // Debug log
+        setStepCount(steps);
+      } catch (error) {
+        console.error("Error parsing goalResult:", error);
+        setParsedGoalResult(null);
+        setStepCount(0); // Ensure step count is reset on error
       }
-    } catch (error) {
-      console.error("Error parsing goalResult:", error);
-      setParsedGoalResult(null);
     }
   }, [goalResult]);
 
   /*This section is resposnible taking Chat GPTs response and inserting it into a database*/
   useEffect(() => {
     const saveData = async () => {
-      if (chatId && goalResult) {
+      if (chatId && goalResult && stepCount > 0) {
         try {
           const uniqueID = uuidv4();
-          await insertChatData(uniqueID, chatId, chatTime, goalResult, userFirstGoal, userFirstGoalTimeline, userFirstGoalAvailableHours );
+         
+          console.log("Percentage per step",stepPercent);
+          await insertChatData(uniqueID, chatId, chatTime, goalResult, userFirstGoal, userFirstGoalTimeline, userFirstGoalAvailableHours, stepCount );
           
           console.log('Data saved to database successfully');
         } catch (error) {
           console.error('Error saving data to database:', error);
+          setStepCount(0); // Reset step count on error
         }
       }
     };
 
     saveData();
-  }, [chatId,goalResult]);
+  }, [chatId,goalResult, stepCount]);
 
   
 
@@ -159,7 +179,7 @@ export default function Page() {
     const stepchatid = stepcompletion.id;
     const stepchattime = stepcompletion.created;
     setStepChatId (stepchatid)
-    setStepChatTime (new Date(stepchattime * 1000).toLocaleString());
+    setStepChatTime (new Date(stepchattime * 1000).toISOString().replace('T', ' ').substring(0, 19));
   } catch (error) {
     console.error("Error calling API:", error);
     setApiResponse("Error occurred while fetching data.");

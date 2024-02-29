@@ -129,7 +129,7 @@ export type GoalPlannerDetail = {
   usergoal: string;
   usertimeline: string;
   userhours: string;
-  
+  stepcount: number;
 };
 
 export type GoalPlannerStep = {

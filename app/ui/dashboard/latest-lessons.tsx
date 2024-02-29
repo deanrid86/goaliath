@@ -8,10 +8,10 @@ export default async function LatestLessons() {
   const latestLessons = await fetchLatestLessons();
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
-      <h2 className = "mb-4 text-xl md:text-2xl text-white" > {/* className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
+      <h2 className = "mb-4 text-xl md:text-2xl text-black" > {/* className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
         Latest Lessons
       </h2>
-      <div className="flex grow flex-col justify-between rounded-xl bg-black-300 text-blue p-4">
+      <div className="flex grow flex-col justify-between rounded-xl bg-white text-blue p-4 border border-black">
         {/* NOTE: comment in this code when you get to this point in the course */}
 
         <div className="bg-gray-box px-6">
@@ -38,7 +38,7 @@ export default async function LatestLessons() {
                     <p className="truncate text-sm font-semibold md:text-base">
                       {lesson.lesson}
                     </p>
-                    <p className="hidden text-sm text-white sm:block">
+                    <p className="hidden text-sm  sm:block">
                       {lesson.lessonnotes}
                     </p>
                   </div>
