@@ -29,6 +29,19 @@ export function getDateDaysFromToday(days: number): string {
   return today.toISOString().split('T')[0];
 }
 
+export function addDaysToChatTime(chatTime: string, timeFrame: number): string {
+  // Directly parse the chatTime string to a Date object
+  const date = new Date(chatTime);
+
+  // Add the timeframe to the date
+  date.setDate(date.getDate() + timeFrame);
+
+  // Return the updated date as a string
+  // The toISOString method returns a date as a string in the format YYYY-MM-DDTHH:mm:ss.sssZ
+  // If you need to maintain the original format, you'll have to format it manually as shown previously
+  return date.toString();
+}
+
 export const generateYAxis = (revenue: Revenue[]) => {
   // Calculate what labels we need to display on the y-axis
   // based on highest record and in 1000s

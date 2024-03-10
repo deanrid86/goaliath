@@ -202,13 +202,13 @@ export async function deleteInvoice(id: string) {
 
  
   // Function to insert chat data into the database
-export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string, stepCount: number) {
+export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string ) {
   try {
     
     //After several weeks of frustration with API, I found that the API will call the vercel database if you keep column names small caps (and when calling on pages also)!!!
     await sql`
-      INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours, stepcount)
-      VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours}, ${stepCount})
+      INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours)
+      VALUES (${uniqueID}, ${chatID}, ${chatTime}, ${goalResult}, ${userGoal}, ${userTimeline}, ${userHours})
     `;
 
     console.log('Chat data inserted into the database.');
@@ -219,12 +219,12 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
 }
 
   // Function to insert chat data into the database
-  export async function insertCoachData(id:string, apiResponse: string, stepChatId: string , stepChatTime: string, parsedAPIResult: string, statuscomplete: string, statusadd: string ) {
+  export async function insertCoachData(id:string, highlevelid:string,  apiResponse: string, stepChatId: string , stepChatTime: string, parsedResult: string, statuscomplete: string, statusadd: string, timeframe: number, index: number ) {
     try {
       
       await sql`
-        INSERT INTO goalplannerspecific (id, specificgoalresult, specificchatid, specificchattime, specificparsedresult, statuscomplete, statusadd )
-        VALUES (${id}, ${apiResponse}, ${stepChatId}, TO_TIMESTAMP(${stepChatTime}, 'DD/MM/YYYY, HH24:MI:SS'), ${JSON.stringify(parsedAPIResult)}, ${statuscomplete}, ${statusadd})
+        INSERT INTO goalplannerspecific (id, highlevelid, specificgoalresult, specificchatid, specificchattime, specificparsedresult, statuscomplete, statusadd, timeframe, orderindex )
+        VALUES (${id}, ${highlevelid}, ${apiResponse}, ${stepChatId}, ${stepChatTime}, ${JSON.stringify(parsedResult)}, ${statuscomplete}, ${statusadd}, ${timeframe}, ${index})
       `;
   
       console.log('Specific Chat data inserted into the database.');
@@ -233,6 +233,39 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
       console.error('Error inserting specific chat data into the database:', error);
     }
   }
+
+    // Function to insert chat data into the database
+    export async function insertHighLevelStep(id: string, uniqueID: string, stepdescription: string, timeframe: number, statuscomplete:string, statusadd:string, index: number) {
+      try {
+        
+        await sql`
+          INSERT INTO highlevelsteps (id, goalid, stepdescription, timeframe, statuscomplete, statusadd, orderindex )
+          VALUES (${id}, ${uniqueID}, ${stepdescription}, ${timeframe}, ${statuscomplete}, ${statusadd}, ${index})
+        `;
+    
+        console.log('High Level data inserted into the database.');
+        
+      } catch (error) {
+        console.error('Error inserting High Level data into the database:', error);
+      }
+    }
+
+     // Function to insert chat data into the database
+     export async function updateHighLevelStep(id: string,statuscomplete:string, statusadd:string) {
+      try {
+        
+        await sql`
+          UPDATE highlevelsteps
+          SET statuscomplete = ${statuscomplete}, statusadd = ${statusadd}
+          WHERE id = ${id}
+        `;
+    
+        console.log('High Level data updated in the database.');
+        
+      } catch (error) {
+        console.error('Error inserting updated High Level data into the database:', error);
+      }
+    }
 
   export async function insertActionData(uniqueID: string, lessonauthor:string,  lesson: string, lessonnotes: string) {
     try {
@@ -367,6 +400,25 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
    
     revalidatePath('/dashboard/todaysactions');
     redirect('/dashboard/todaysactions');
+  }
+
+
+  
+  // Function to insert chat data into the database
+  export async function updateSpecificStep(id: string,statuscomplete:string, statusadd:string) {
+    try {
+      
+      await sql`
+      UPDATE goalplannerspecific
+      SET statuscomplete = ${statuscomplete}, statusadd = ${statusadd}
+      WHERE id = ${id}
+    `;
+  
+      console.log('Specific Level data updated in the database.');
+      
+    } catch (error) {
+      console.error('Error inserting updated Specific Level data into the database:', error);
+    }
   }
 
   {/*export async function updateInvoice(id: string, formData: FormData) {

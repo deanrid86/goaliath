@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import OpenAI from 'openai';
-import { insertChatData, insertCoachData } from '@/app/lib/actions';
+import { insertChatData, insertCoachData, insertHighLevelStep } from '@/app/lib/actions';
 import {fetchLatestGoals} from '@/app/lib/data';
 import { v4 as uuidv4 } from 'uuid';
 
 
 
-
+//This is the origional page
 export default function Page() {
   const [goalResult, setGoalResult] = useState('');
   const [userFirstGoal, setUserFirstGoal] = useState('');
@@ -24,6 +24,9 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCoachLoading, setIsCoachLoading] = useState(false);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [stepCount, setStepCount] = useState(0);
+  const [stepPercent, setStepPercent] = useState(0);
+  const [highLevelSteps, setHighLevelSteps] = useState([]);
 
   //Interfaces: The contract or rules that the object they are implemented on have to use.
 
@@ -46,7 +49,28 @@ export default function Page() {
   }
   
   interface APIResult {
-    [key: string]: StepDetail;
+    [key: string]: DetailedStep;
+  }
+
+  interface StepDetailCount {
+    [key: string]: unknown; // Use `any` or a more specific type instead of `unknown` if you know the structure of the value
+  }
+
+  interface HighStepDetail {
+    id: string;
+    description: string;
+    timeframe: number; // Assuming timeframe is just a number; adjust as needed
+    statuscomplete: 'Yes' | 'No';
+    statusadd: 'Yes' | 'No';
+  }
+
+  interface DetailedStep {
+    id: string;
+    highlevelid: string;
+    description: string;
+    timeframe: number; // Assuming timeframe is a number of days, adjust as needed
+    statuscomplete: 'Yes' | 'No'; // Assuming these are the only two possible values
+    statusadd: 'Yes' | 'No';
   }
   
   //API key variable that stores CHAT GPT API
@@ -58,6 +82,13 @@ export default function Page() {
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
     </div>
   );
+
+  function countSteps(jsonData: Record<string, unknown>): number {
+    // Filter keys that start with "Step" and count them
+    const stepKeys = Object.keys(jsonData).filter(key => key.startsWith("Step"));
+    return stepKeys.length;
+  }
+
 
   {/*This is the Async function that is responsible for interacting with chat GPT, sending it a message with inserted  dynamic variabels from the input boxes 
    and storing the result, the chat id and the time created in variables*/}
@@ -75,19 +106,20 @@ export default function Page() {
           { role: "system", content: `You are now my personal life coach and business assistant. This is the goal I would like to achieve:${userFirstGoal}.
           I would like to achieve this goal within ${userFirstGoalTimeline} months. Provide me with a detailed strategy to maximise my chances of achieving the goal, from a beginning to goal completion. 
            The response has be strictly shown in JSON format only with steps such as Step 1 and then Step 2 being keys and there content being the value etc. Within this value, I also want you
-          to state how many days you think it will take me to complete this step (bearing in mind that the whole goal should take ${userFirstGoalTimeline} months.) Within the value of the step should strictly include the detailed
-          description of the step plus another key that says "timeframe" and a "value" that is the timeframe in days i.e. 2. 
+          to state how many days you think it will take me to complete this step (bearing in mind that the whole goal should take ${userFirstGoalTimeline} months.) Within the value of the step should strictly include 5 keys at all times. One being the detailed
+          description of the step, 2 being a key that says "timeframe" and a "value" that is the timeframe in days i.e. 2, 3 being statuscomplete with the default value of "No", 4 being statusadd with the default value also being "No" and 5 called id being a UUIDv4 number that is uniquely set to each step . 
           The answer given to me will start from step 1 immediately without any other introductory sentence. ` },
 
         ],
       });
 
       const result = completion.choices[0]?.message?.content || "Content Unavailable at this time";
+      console.log ("NEW CHAT GPT RESPONSE", result);
       setGoalResult(result);
       const chatid = completion.id;
       const chattime = completion.created;
       setChatId(chatid);
-      setChatTime(new Date(chattime * 1000).toLocaleString());
+      setChatTime(new Date(chattime * 1000).toISOString().replace('T', ' ').substring(0, 19));
       
     } catch (error) {
       console.error("Error gettin ChatGPT data:", error);
@@ -97,43 +129,61 @@ export default function Page() {
   }
   };
 
-  /*This section is responsible taking the JSON created by Chat GPT and Parsing it*/
   useEffect(() => {
-    try {
-      if (goalResult) {
+    if (goalResult) {
+      try {
         const parsedData = JSON.parse(goalResult);
+        console.log("Parsed Data:", parsedData); // Debug log
         setParsedGoalResult(parsedData);
-        console.log("Parsing successful:", parsedData);
+      } catch (error) {
+        console.error("Error parsing goalResult:", error);
+        setParsedGoalResult(null);
+        
       }
-    } catch (error) {
-      console.error("Error parsing goalResult:", error);
-      setParsedGoalResult(null);
     }
   }, [goalResult]);
 
-  /*This section is resposnible taking Chat GPTs response and inserting it into a database*/
-  useEffect(() => {
-    const saveData = async () => {
-      if (chatId && goalResult) {
-        try {
-          const uniqueID = uuidv4();
-          await insertChatData(uniqueID, chatId, chatTime, goalResult, userFirstGoal, userFirstGoalTimeline, userFirstGoalAvailableHours );
-          
-          console.log('Data saved to database successfully');
-        } catch (error) {
-          console.error('Error saving data to database:', error);
-        }
-      }
-    };
+  const saveData = async () => {
+    if (chatId && goalResult) {
+      try {
+        const uniqueID = uuidv4();
 
+        const parsedData = JSON.parse(goalResult);
+        // Save the original JSON blob and other goal details to the goalplanner table
+        await insertChatData(uniqueID, chatId, chatTime, goalResult, userFirstGoal, userFirstGoalTimeline, userFirstGoalAvailableHours);
+        
+        
+        // Assuming you have a function to insert a single high-level step
+        Object.entries(parsedData).forEach(async ([stepKey, stepValue], index) => {
+          // Assuming stepValue is an object that fits the StepDetail interface
+          const stepDetails: HighStepDetail = stepValue as HighStepDetail;
+          
+          const id = stepDetails.id;
+          const stepdescription = stepDetails.description;
+          const timeframe = stepDetails.timeframe;
+          const statuscomplete = stepDetails.statuscomplete;
+          const statusadd = stepDetails.statusadd;
+
+          await insertHighLevelStep(id, uniqueID, stepdescription, timeframe, statuscomplete, statusadd, index);
+        });
+  
+        console.log('Data saved to database successfully');
+      } catch (error) {
+        console.error('Error saving data to database:', error);
+        // Handle error
+      }
+    }
+  };
+  
+  useEffect(() => {
     saveData();
-  }, [chatId,goalResult]);
+  }, [chatId, goalResult]);
 
   
 
 
   /**/
-  const handleGoalDetail = async (stepContent:string, totalTime:number) => {
+  const handleGoalDetail = async (stepContent:string, totalTime:number, higherid: string ) => {
     setIsCoachLoading(true); // Start loading
     const openai = new OpenAI({
       apiKey: apiKey,
@@ -147,19 +197,21 @@ export default function Page() {
           { role: "system", content: `You are my personal life coach and business assistant. This is the goal I would like to achieve: ${stepContent}. 
           This goal also gives you the expected time frame in which to complete the whole step. Provide me with a detailed strategy with incremental steps 
           on how to complete this goal within the time frame described in the goal knowing I have ${userFirstGoalAvailableHours} hours available ech day. 
-           The answer returned has to strictly be in JSON format only. The steps should have the key Step 1, Step 2 and so on. Within the value of the step should include the detailed
-          description of the step plus another key that says "timeframe" and a "value" that is the timeframe in days i.e. 2 (This has to strictly be included on every answer). The total amount of time for the whole step cannot exceed ${totalTime}.I want the response to describe to start with Step 1 without any introductory 
+           The answer returned has to strictly be in JSON format only. The steps should have the key Step 1, Step 2 and so on.  Within the value of the step should strictly include 5 keys at all times. One being the detailed
+           description of the step, 2 being a key that says "timeframe" and a "value" that is the timeframe in days i.e. 2, 3 being statuscomplete with the default value of "No", 4 being statusadd with the default value also being "No" and 5 being called highlevelid with the value of ${higherid}. The total amount of time for the whole step cannot exceed ${totalTime}.I want the response to start with Step 1 without any introductory 
           sentence.` },
         ],
       });
   
       // Update the state with the API response
     const stepResult = (stepcompletion.choices[0]?.message?.content || "No response received.");
+    console.log (stepResult);
     setApiResponse (stepResult)
     const stepchatid = stepcompletion.id;
     const stepchattime = stepcompletion.created;
     setStepChatId (stepchatid)
-    setStepChatTime (new Date(stepchattime * 1000).toLocaleString());
+    setStepChatTime (new Date(stepchattime * 1000).toISOString().replace('T', ' ').substring(0, 19));
+    
   } catch (error) {
     console.error("Error calling API:", error);
     setApiResponse("Error occurred while fetching data.");
@@ -184,13 +236,27 @@ useEffect(() => {
 }, [apiResponse]);
 
 /*This section is resposnible taking the 2nd Chat GPTs response and inserting it into a database*/
-useEffect(() => {
+
   const saveCoachData = async () => {
-    if (parsedAPIResult) {
+    if (parsedAPIResult ) { // Ensure currentHighLevelStepID is defined
       try {
-        const specificuniqueID = uuidv4();
-        await insertCoachData (specificuniqueID, apiResponse, stepChatId , stepChatTime, parsedAPIResult );
-        
+        // Assume parsedAPIResult conforms to DetailedSteps interface.
+        const secondstepresult: APIResult = parsedAPIResult;
+       
+        // Loop through each detailed step and save it to the database.
+        Object.entries(secondstepresult).forEach(async ([stepKey, stepValue], index) => {
+          // Directly use the parsed data without additional parsing.
+          const id = uuidv4();
+          const parsedResult = stepValue.description;
+          const highlevelid = stepValue.highlevelid;
+          console.log("Inserting coach data with highlevelid:", highlevelid);
+          const timeframe = stepValue.timeframe;
+          const statuscomplete = stepValue.statuscomplete || 'No'; // Use default value if not provided.
+          const statusadd = stepValue.statusadd || 'No'; // Use default value if not provided.
+         
+
+        await insertCoachData (id, highlevelid, apiResponse, stepChatId , stepChatTime, parsedResult, statuscomplete, statusadd, timeframe, index );
+      });
         console.log('Specific Data saved to database successfully');
       } catch (error) {
         console.error('Error saving specific data to database:', error);
@@ -198,8 +264,9 @@ useEffect(() => {
     }
   };
 
-  saveCoachData();
-}, [parsedAPIResult]);
+  useEffect(() => {
+    saveCoachData();
+  }, [parsedAPIResult]);
 
 useEffect(() => {
   const fetchData = async () => {
@@ -307,8 +374,8 @@ function capitalizeFirstLetter(string:string) {
         <div key={index} className='bg-gray-100 p-4 rounded-lg border border-black-600 border-solid'>
           <p><strong>{stepKey}</strong>: {stepDetails.description}</p>
       <br/>
-      <p><strong>Timeline:</strong> {stepDetails.timeframe.value} {stepDetails.timeframe.unit}</p>
-          <button onClick={() => handleGoalDetail(stepDetails.description, stepDetails.timeframe.value)} className='flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>{isCoachLoading ? <LoadingSpinner /> : "Ask Coach"}</button>
+      <p><strong>Timeline:</strong> {stepDetails.timeframe}</p>
+          <button onClick={() => handleGoalDetail(stepDetails.description, stepDetails.timeframe, stepDetails.id)} className='flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>{isCoachLoading ? <LoadingSpinner /> : "Ask Coach"}</button>
         </div>
 ))}
           </div>
@@ -319,7 +386,7 @@ function capitalizeFirstLetter(string:string) {
   <div key={index} className='bg-gray-100 p-4 rounded-lg border border-black-600 border-solid'>
     <p><strong>{stepKey}</strong>: {stepDetails.description}</p>
     <br/>
-    <p><strong>Timeline:</strong> {stepDetails.timeframe.value} {stepDetails.timeframe.unit}</p>
+    <p><strong>Timeline:</strong> {stepDetails.timeframe}</p>
   </div>
 ))}
       </div>

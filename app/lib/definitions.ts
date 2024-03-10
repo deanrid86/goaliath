@@ -132,6 +132,16 @@ export type GoalPlannerDetail = {
   stepcount: number;
 };
 
+export type HighLevelDetail = {
+  id: string;
+  goalid: string;
+  stepdescription: string;
+  timeframe: number;
+  statuscomplete: 'No' | 'Yes';
+  statusadd: 'No' | 'Yes';
+  orderindex: number;
+};
+
 export type GoalPlannerStep = {
   id: string;
   specificgoalresult: string;

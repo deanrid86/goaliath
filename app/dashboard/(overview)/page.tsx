@@ -46,7 +46,7 @@ export default async function Page() {
           type="customers"
         />
   </div>*/}
-      <LatestGoalCards/>
+      
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Card title="Total Lessons" value={numberOfLessons} type="lesson" />
         <Card title="Monthly Expenditure" value={`£${totalMonthlyExpenditure.toFixed(2)}`}type="expenditure" />

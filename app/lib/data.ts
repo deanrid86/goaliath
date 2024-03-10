@@ -15,6 +15,7 @@ import {
   GoalPlannerDetail,
   GoalPlannerStep,
   GoalInputForm,
+  HighLevelDetail,
   
 
 } from './definitions';
@@ -418,6 +419,73 @@ export async function fetchLatestLessons() {
       throw new Error('Failed to fetch the latest goals.');
     }
   }
+  
+
+  export async function fetchHighLevelSteps() {
+    noStore();
+    try {
+      const data = await sql<HighLevelDetail>`
+        SELECT highlevelsteps.id, highlevelsteps.goalid, highlevelsteps.stepdescription, highlevelsteps.timeframe, highlevelsteps.statuscomplete, highlevelsteps.statusadd, highlevelsteps.orderindex
+        FROM highlevelsteps
+        WHERE highlevelsteps.statusadd = 'Yes'`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestHighLevel = data.rows.map((high) => ({
+        ...high,
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestGoals:", latestHighLevel);
+  
+      return latestHighLevel;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest high level goals.');
+    }
+  }
+
+  export async function fetchSpecificLevelSteps() {
+    noStore();
+    try {
+      const data = await sql`
+        SELECT 
+          goalplannerspecific.id AS specific_id,
+          goalplannerspecific.highlevelid,
+          goalplannerspecific.specificchattime,
+          goalplannerspecific.specificparsedresult,
+          goalplannerspecific.statuscomplete,
+          goalplannerspecific.statusadd,
+          highlevelsteps.id AS parent_id,
+          highlevelsteps.stepdescription,
+          highlevelsteps.timeframe,
+          highlevelsteps.statuscomplete AS parent_statuscomplete,
+          highlevelsteps.statusadd AS parent_statusadd
+        FROM 
+          goalplannerspecific
+        JOIN 
+          highlevelsteps ON goalplannerspecific.highlevelid = highlevelsteps.id
+        WHERE 
+          goalplannerspecific.statusadd = 'Yes'`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestSpecific = data.rows.map(spec => ({
+        ...spec,
+        // Any additional processing or renaming of fields can be done here
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestSpecific:", latestSpecific);
+  
+      return latestSpecific;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest specific goals.');
+    }
+  }
 
   export async function fetchLatestGoalStep() {
     noStore();
@@ -425,7 +493,6 @@ export async function fetchLatestLessons() {
         const data = await sql<GoalPlannerStep>`
             SELECT goalplannerspecific.id, goalplannerspecific.specificparsedresult, goalplannerspecific.specificparsedresult, goalplannerspecific.statuscomplete, goalplannerspecific.statusadd
             FROM goalplannerspecific
-            WHERE goalplannerspecific.statuscomplete = 'No'
             ORDER BY goalplannerspecific.specificchattime DESC
             LIMIT 1`;
 
