@@ -40,6 +40,54 @@ export function addDaysToChatTime(chatTime: string, timeFrame: number): string {
   // The toISOString method returns a date as a string in the format YYYY-MM-DDTHH:mm:ss.sssZ
   // If you need to maintain the original format, you'll have to format it manually as shown previously
   return date.toString();
+
+}
+
+export function addMonthsToChatTime(chatTime: string, months: number): string {
+  // Directly parse the chatTime string to a Date object
+  const date = new Date(chatTime);
+
+  // Add the months to the date
+  date.setMonth(date.getMonth() + months);
+
+  // Return the updated date as a string
+  // Formatting the date to match your desired format: Sat Mar 09 2024 14:30:46 GMT+0000 (Greenwich Mean Time)
+  // This is a more complex format to generate in JavaScript without external libraries like 'date-fns' or 'moment.js'
+  // Here is a simple version using toLocaleString, adjust as needed
+  return date.toLocaleString('en-US', { 
+    weekday: 'short', // "Sat"
+    year: 'numeric', // "2024"
+    month: 'short', // "Mar"
+    day: 'numeric', // "9"
+    hour: '2-digit', // "14"
+    minute: '2-digit', // "30"
+    second: '2-digit', // "46"
+    timeZoneName: 'short', // "GMT+0"
+    hour12: false // 24hr format
+  });
+}
+
+export function calculateDaysLeft(deadlineString: string): number {
+  const deadline = new Date(deadlineString);
+  const now = new Date();
+
+  // Calculate the difference in milliseconds
+  const diffTime = Math.abs(deadline.getTime() - now.getTime());
+
+  // Convert the difference to days
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays;
+}
+
+function calculateDaysBetweenDates(dateString1: string, dateString2: string): number {
+  const date1 = new Date(dateString1);
+  const date2 = new Date(dateString2);
+
+  const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+  const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  return diffDays;
 }
 
 export const generateYAxis = (revenue: Revenue[]) => {

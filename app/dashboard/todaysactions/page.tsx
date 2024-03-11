@@ -1,7 +1,7 @@
 
-import { fetchHighLevelSteps, fetchLatestGoalStep, fetchSpecificLevelSteps} from "@/app/lib/data";
-import { getDateDaysFromToday, formatDateToLocal, addDaysToChatTime } from "@/app/lib/utils";
-import { UpdateStepAI } from "@/app/ui/todaysactions/buttons";
+import {  fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
+import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
+import { ProgressBar } from "@/app/ui/progressbar";
 
 import DayStepChat from "@/app/ui/todaysactions/daystepchat";
 
@@ -23,7 +23,8 @@ interface Steps {
 
 export default async function GoalViewer() {
  
-const specificgoal = await fetchSpecificLevelSteps ();
+const specificgoal = await fetchSpecificLevelStepsAdd ();
+const specificgoalcomplete = await fetchSpecificLevelStepsComplete ();
 console.log (specificgoal);
 
 
@@ -56,7 +57,14 @@ console.log (specificgoal);
               <br/>
               <p><strong>Timeframe:</strong>To be completed within {step.timeframe} days to keep your goal on track.</p>
               <br />
-              <strong>Deadline:</strong> {addDaysToChatTime(step.specificchattime, step.timeframe)}
+              <p><strong>Deadline:</strong> {addDaysToChatTime(step.specificchattime, step.timeframe)}</p>
+              <br />
+              <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.timeframe))}</p>
+              {/* ProgressBar component usage */}
+              <ProgressBar 
+                timeframe={step.timeframe} 
+                daysLeft={calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.timeframe))} 
+              />
             </div>
           </div>
         ))}
@@ -65,8 +73,25 @@ console.log (specificgoal);
         
           </div>
           <div>
-  
-            {/*<DayStepChat todaysStep={step1Detail.description} todaysTime={stepCompletion}/>*/}
+        <div >
+          <h3 className='text-white text-xl bg-black-600 rounded-xl p-2 '>Your Completed Steps</h3>
+        </div>
+              <div className="border border-black m-2 p-2">
+                {/* Directly access and display Step 1 */}
+            {specificgoalcomplete.map((step, index) => (
+            <div key={index}>
+            <div className="bg-gray-300 m-2" >
+              <strong>Main Goal Step:</strong> {step.stepdescription} 
+            </div>
+            <div className="bg-gray-200 m-2">
+              <p><strong>Completed Steps:</strong> {step.specificparsedresult} </p>
+              <br/>
+              <p><strong>How Long you Took to Complete:</strong></p>
+             
+            </div>
+          </div>
+        ))}
+              </div>
           </div>
         
         </div>

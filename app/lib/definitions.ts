@@ -127,8 +127,8 @@ export type GoalPlannerDetail = {
   chatid: string;
   chattime: string;
   usergoal: string;
-  usertimeline: string;
-  userhours: string;
+  usertimeline: number;
+  userhours: number;
   stepcount: number;
 };
 

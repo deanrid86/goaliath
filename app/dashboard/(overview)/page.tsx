@@ -30,7 +30,7 @@ export default async function Page() {
     minimumDailyEarnings
     } = await fetchCardDataFinance();
   const latestLessons = await fetchLatestLessons();
-  const latestGoals = await fetchLatestGoals();
+
   return (
     <main>
       <h1 className ="2mb-4 text-xl md:text-2xl text-black"> {/*className={`${lusitana.className} mb-4 text-xl md:text-2xl`}*/}
@@ -52,6 +52,9 @@ export default async function Page() {
         <Card title="Monthly Expenditure" value={`£${totalMonthlyExpenditure.toFixed(2)}`}type="expenditure" />
         <Card title="Expenditure with Buffer" value={`£${bufferExpenditure.toFixed(2)}`} type="buffer" />
         <Card title="Minimum Daily Earnings" value={`£${minimumDailyEarnings.toFixed(2)}`} type="minimum" />
+      </div>
+      <div>
+        <LatestGoalCards/>
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
       { /* <Suspense fallback={<RevenueChartSkeleton />}>

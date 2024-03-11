@@ -1,6 +1,9 @@
 import { ProgressLineBar } from '@/app/lib/chartcomponents';
 import { fetchLatestGoals } from '@/app/lib/data';
 import {Card} from '@/app/ui/goalplanner/cards';
+import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
+import {addMonthsToChatTime, } from '@/app/lib/utils';
+import { ProgressBar } from "@/app/ui/dashboard/progressbar";
 
 
 export default async function LatestGoalCards() { 
@@ -13,7 +16,8 @@ export default async function LatestGoalCards() {
       { container: "bg-purple-600", card: "bg-purple-400" },
     ];
     
-   
+
+  
   return (
    
    
@@ -24,8 +28,10 @@ export default async function LatestGoalCards() {
       <Card title={`Goal ${index + 1}`} value={goal.usergoal} type="goals" color={colorSchemes[index].card}/>
       <Card title={`Months to Complete`} value={goal.usertimeline} type="month" color={colorSchemes[index].card}/>
       <Card title={`Daily Hours to Commit`} value={goal.userhours} type="days" color={colorSchemes[index].card}/>
-      <p>Number of Step = {goal.stepcount}</p>
-      <p>Percentage per Step = {Math.round(100 / goal.stepcount)}%</p>
+      <Card title={` Estimated Completion Date`} value={addMonthsToChatTime(goal.chattime, goal.usertimeline)} type="month" color={colorSchemes[index].card}/>
+      <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addMonthsToChatTime(goal.chattime, goal.usertimeline))}</p>
+      
+    
       
       </div>
     ))}
