@@ -471,6 +471,31 @@ export async function fetchLatestLessons() {
     }
   }
 
+  export async function fetchHighLevelStepsComplete() {
+    noStore();
+    try {
+      const data = await sql<HighLevelDetail>`
+        SELECT highlevelsteps.id, highlevelsteps.goalid, highlevelsteps.stepdescription, highlevelsteps.timeframe, highlevelsteps.statuscomplete, highlevelsteps.statusadd, highlevelsteps.orderindex
+        FROM highlevelsteps
+        WHERE highlevelsteps.statuscomplete = 'Yes'`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestHighLevel = data.rows.map((high) => ({
+        ...high,
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestGoals:", latestHighLevel);
+  
+      return latestHighLevel;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest high level goals.');
+    }
+  }
+
   export async function fetchSpecificLevelStepsAdd() {
     noStore();
     try {

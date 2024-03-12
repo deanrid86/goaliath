@@ -10,10 +10,10 @@ export default async function LatestGoalCards() {
   const latestGoals = await fetchLatestGoals();
     // Placeholder for background and border colors
     const colorSchemes = [
-      { container: "bg-red-500", card: "bg-red-600" },
       { container: "bg-cyan-500", card: "bg-cyan-600" },
-      { container: "bg-green-600", card: "bg-green-500" },
-      { container: "bg-purple-600", card: "bg-purple-400" },
+      { container: "bg-cyan-500", card: "bg-cyan-600" },
+      { container: "bg-cyan-500", card: "bg-cyan-600" },
+      { container: "bg-cyan-500", card: "bg-cyan-600" },
     ];
     
 

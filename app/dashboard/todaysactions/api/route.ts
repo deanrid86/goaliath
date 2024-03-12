@@ -1,43 +1,34 @@
-// Import the necessary types from 'next'
+// Import the necessary modules and functions
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { fetchLatestGoalStep } from "@/app/lib/data";
-
-
-  
-
+import { fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete } from "@/app/lib/data";
+import { addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  interface Step {
-    description: string;
-    timeframe: {
-      value: number;
-      unit: string; // Assuming there is a 'unit' based on your earlier code
-    };
-  }
-  
-  // Assuming the structure for the parsed goal result looks something like this
-  interface Steps {
-    [key: string]: Step;
-  }
   try {
-    const goals = await fetchLatestGoalStep();
-    
-    const { subject = 'Today\'s Goals to Complete', message = 'Here are your goals for today:' } = req.body;
+    const specificgoal = await fetchSpecificLevelStepsAdd();
+    const specificgoalcomplete = await fetchSpecificLevelStepsComplete();
 
+    const specificGoalsHtml = specificgoal.map((goal, index) => {
+      return `
+        <div>
+          <strong>Main Goal Step:</strong> ${goal.stepdescription}<br/>
+          Timeframe: ${goal.timeframe} days<br/>
+          <strong>Step to Work on Today:</strong> ${goal.specificparsedresult}<br/>
+          Timeframe: To be completed within ${goal.timeframe} days to keep your goal on track.<br/>
+          <strong>Deadline:</strong> ${addDaysToChatTime(goal.specificchattime, goal.timeframe)}<br/>
+          <strong>Days Left Until Completion:</strong> ${calculateDaysLeft(addDaysToChatTime(goal.specificchattime, goal.timeframe))}
+        </div><br/>
+      `;
+    }).join('');
 
-    const goalsHtml = goals.map(goal => {
-      // Parse the 'specificgoalresult' JSON string into an object
-      // and assert its type
-      const steps: Steps = JSON.parse(goal.specificgoalresult);
-
-      // Now iterate over the steps object to format it into HTML
-      const stepsHtml = Object.entries(steps).map(([stepKey, { description, timeframe }]) => {
-        return `<li><strong>${stepKey}:</strong> ${description}<br/>Timeframe: ${timeframe.value} days</li>`;
-      }).join('');
-
-      return `<div><strong>Goal ID:</strong> ${goal.id}<ul>${stepsHtml}</ul></div>`;
+    const completedGoalsHtml = specificgoalcomplete.map((goal, index) => {
+      return `
+        <div>
+          <strong>Main Goal Step:</strong> ${goal.stepdescription}<br/>
+          <strong>Completed Steps:</strong> ${goal.specificparsedresult}
+        </div><br/>
+      `;
     }).join('');
 
     // Configure the mail transporter
@@ -53,17 +44,16 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const mailOptions = {
       from: process.env.GMAIL_EMAIL,
       to: process.env.GMAIL_EMAIL, // Use the actual recipient's email here
-      subject,
-      html: `<h3>${subject}</h3><p>${message}</p>${goalsHtml}`,
+      subject: 'Today\'s Goals to Complete',
+      html: `<h1>Today's Actions</h1><h3>What Steps do you want to Complete Today?</h3>${specificGoalsHtml}<h3>Your Completed Steps</h3>${completedGoalsHtml}`,
     };
 
     // Send the email
     await transporter.sendMail(mailOptions);
-    return NextResponse.json ({Message: 'Email Sent Successfully'}, {status: 200})
+
+    res.status(200).json({ message: 'Email Sent Successfully' });
   } catch (error) {
-    return NextResponse.json ({Message: 'Failed to send Email'}, {status: 500})
+    console.error('Failed to send Email:', error);
+    res.status(500).json({ message: 'Failed to send email' });
   }
-
-  
-
 }

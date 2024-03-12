@@ -53,6 +53,11 @@ const config: Config = {
 
         },
 
+        grey: {
+          50: 'rgb(249, 249, 249)',
+
+        },
+
       },
       keyframes: {
         shimmer: {

@@ -455,8 +455,8 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    subject: 'Today\'s Goals to Complete',
-                    message: 'Here are the goals for today:',
+                    subject: 'Today\'s Steps to Complete',
+                    message: 'Here are the steps for today:',
                 }),
             });
             if (response.ok) {

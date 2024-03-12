@@ -2,17 +2,13 @@
 import {  fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
 import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
 import { ProgressBar } from "@/app/ui/progressbar";
-
-import DayStepChat from "@/app/ui/todaysactions/daystepchat";
-
-
-
+import FormEmail from "@/app/ui/todaysactions/formemail";
 
 interface StepDetail {
   description: string;
   timeframe: {
     value: number;
-    // Include any other properties that might exist within 'timeframe'
+    
   };
 }
 
@@ -20,21 +16,13 @@ interface Steps {
   [key: string]: StepDetail;
 }
 
-
 export default async function GoalViewer() {
  
 const specificgoal = await fetchSpecificLevelStepsAdd ();
 const specificgoalcomplete = await fetchSpecificLevelStepsComplete ();
 console.log (specificgoal);
 
-
-
-
-   
-   
-   
-
- return (
+return (
 
         <div>
              <div >
@@ -70,7 +58,7 @@ console.log (specificgoal);
         ))}
            
           </div>
-        
+        <FormEmail/>
           </div>
           <div>
         <div >

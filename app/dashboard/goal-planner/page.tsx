@@ -39,8 +39,8 @@ export default function Page() {
     chatid: string;
     chattime: string;
     usergoal: string;
-    usertimeline: string;
-    userhours: string;
+    usertimeline: number;
+    userhours: number;
     // Add any other properties as needed
   }
 
