@@ -36,6 +36,7 @@ const config: Config = {
         },
         green: {
           600: 'rgb(81, 218, 76)',
+          300: 'rgb(16, 163, 127)',
 
         },
         cyan: {
@@ -58,6 +59,17 @@ const config: Config = {
 
         },
 
+        bluegray: {
+          50: 'rgb(62, 85, 105)',
+          sub: 'rgb(144, 151, 167)',
+
+        },
+
+      },
+      spacing: {
+        'message-box-width': '752px', // Custom width
+        'message-box-height': '109px', // Custom height
+        'assistant-box-height': '600px', // Custom height
       },
       keyframes: {
         shimmer: {

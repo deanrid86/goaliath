@@ -9,6 +9,7 @@ import LatestGoalCards from '@/app/ui/goalplanner/latest-goals';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton } from '@/app/ui/skeletons';
 import LatestLessons from '@/app/ui/dashboard/latest-lessons';
+import DashGoalCard from '@/app/ui/dashboard/goalcard';
 
 
 
@@ -44,9 +45,10 @@ export default async function Page() {
 
   return (
     <main>
-      <h1 className ="2mb-4 text-xl md:text-2xl text-black"> 
+      <h1 className =" 2mb-4 text-xl md:text-2xl text-black"> 
         Dashboard
       </h1>
+      <DashGoalCard/>
      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Card title="Total Active Goals" value={allGoalTotal} type="goals" />
         <Card title="Current Goal Steps added to Actions" value={allHighStepsAdd} type="days" />

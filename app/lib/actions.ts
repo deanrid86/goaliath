@@ -1,10 +1,18 @@
 'use server';
 
-import { z } from 'zod';
+
+
+import { object, z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import OpenAI from "openai";
+import { CreateThread } from './assistant_functions';
+import fs from 'fs'
+
+
+const openai = new OpenAI();
 
 const FormSchema = z.object({
     id: z.string(),
@@ -70,7 +78,75 @@ export async function createInvoice(formData: FormData) {
     redirect('/dashboard/lessons');
     }
 
-    const FormSchemaGoal = z.object({
+    const FormSchemaAssistant = z.object({
+      id: z.string(),
+      name: z.string(),
+      instructions: z.string(),
+      model: z.string(),
+      tools: z.string(),
+      
+    });
+  
+    
+  
+    const CreateAssistant = FormSchemaAssistant.omit({ id: true });
+  
+    export async function createAssistant(formData: FormData) {
+        const { name, instructions, model } = CreateAssistant.parse({
+          name: formData.get('name'),
+          instructions: formData.get('instructions'),
+          model: formData.get('model'),
+          tools: formData.get('tools'),
+          
+        });
+        
+       
+    
+        
+          const myAssistant = await openai.beta.assistants.create({
+            instructions: instructions,
+            name: name ,
+            tools: [{ type: "code_interpreter" }, { type: "retrieval" } ],
+            model: model,
+          });
+        
+          console.log(myAssistant);
+
+          // After successfully creating the assistant, create a new thread
+        const threadId = await CreateThread();
+        console.log("New thread created with ID:", threadId);
+        
+        // Create an object to store the assistant and thread information
+        const assistantData = {
+          assistantId: myAssistant.id,
+          assistantName: myAssistant.name,
+          threadId: threadId
+      };
+
+      // Convert the object to a JSON string
+      const jsonContent = JSON.stringify(assistantData, null, 2);
+
+      // Write the JSON string to a file
+// Correct
+fs.writeFile('app/ui/Assistants/assistant_data.json', jsonContent, 'utf8', (err) => {
+  if (err) {
+    console.error('Failed to write file', err);
+  } else {
+    console.log('File written successfully');
+  }
+});
+
+      console.log("Assistant and thread data saved:", assistantData);
+
+      // Return the assistant data object if needed
+      return assistantData;
+
+      revalidatePath('/dashboard/assistants');
+      redirect('/dashboard/assistants');
+      };
+
+   
+     const FormSchemaGoal = z.object({
       id: z.string(),
       goaltype: z.string(),
       goal: z.string(),

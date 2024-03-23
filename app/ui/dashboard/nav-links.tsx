@@ -6,6 +6,7 @@ import {
   DocumentDuplicateIcon,
   AcademicCapIcon,
   RocketLaunchIcon,
+  AdjustmentsVerticalIcon,
 
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -28,6 +29,7 @@ const links = [
   { name: 'Todays Actions', href: '/dashboard/todaysactions', icon: RocketLaunchIcon},
   { name: 'Extreme Practice', href: '/dashboard/practice', icon: UserGroupIcon },
   { name: 'Finances', href: '/dashboard/finances', icon: UserGroupIcon },
+  { name: 'Assistants', href: '/dashboard/assistants', icon: AdjustmentsVerticalIcon },
 ];
 
 

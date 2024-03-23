@@ -445,6 +445,43 @@ export async function fetchLatestLessons() {
     }
   }
   
+  export async function fetchAllLatestGoalsAndHighSteps() {
+    noStore();
+    try {
+      const data = await sql`
+        SELECT
+         goalplanner.uniqueid AS parent_id, 
+         goalplanner.usergoal,
+          goalplanner.usertimeline, 
+          goalplanner.userhours, 
+          goalplanner.chatid, 
+          goalplanner.chattime,
+        highlevelsteps.id AS child_id,
+          highlevelsteps.stepdescription,
+          highlevelsteps.timeframe,
+          highlevelsteps.statuscomplete AS parent_statuscomplete,
+          highlevelsteps.statusadd AS parent_statusadd
+        FROM goalplanner
+        JOIN 
+        highlevelsteps ON highlevelsteps.goalid = goalplanner.uniqueid
+        ORDER BY goalplanner.chattime DESC`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestGoals = data.rows.map((goal) => ({
+        ...goal,
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed all latestGoals:", latestGoals);
+  
+      return latestGoals;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch all the latest goals.');
+    }
+  }
 
   export async function fetchHighLevelSteps() {
     noStore();
