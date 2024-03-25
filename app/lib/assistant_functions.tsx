@@ -1,9 +1,13 @@
 
 import OpenAI from "openai";
+
+
 const openai = new OpenAI();
 
-//API key variable that stores CHAT GPT API
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+//API key variable that stores CHAT GPT API
+
   {/*
 
   OpenAI Creation Functions
@@ -20,6 +24,8 @@ const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
   
     console.log(myAssistant);
   }
+
+  
 
   export async function CreateThread() {
     const emptyThread = await openai.beta.threads.create();
@@ -43,8 +49,10 @@ const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
         thread_id,
       { assistant_id: assistant_id }
     );
+    
   
     console.log(run);
+    return run.id
   }
 
  
@@ -100,3 +108,29 @@ export async function ListFiles() {
         return list.data
       }
     //modal.dump.json is put at the end of functions to return json
+
+    export async function waitForRunCompletion(thread_id:string, run_id:string) {
+      return new Promise((resolve, reject) => {
+        const checkInterval = 500; // milliseconds
+    
+        const checkRunStatus = async () => {
+          try {
+            const runStatus = await openai.beta.threads.runs.retrieve(
+              thread_id,
+              run_id,
+            );
+    
+            if (runStatus.status === 'completed') {
+              resolve(runStatus);
+            } else {
+              setTimeout(checkRunStatus, checkInterval);
+            }
+          } catch (error) {
+            console.error('Error checking run status:', error);
+            reject(error);
+          }
+        };
+    
+        checkRunStatus();
+      });
+    }

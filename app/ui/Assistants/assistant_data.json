@@ -1,5 +1,13 @@
-{
+[
+  
+  {
   "assistantId": "asst_cywPHDDm90MN1KLDJcHbTJWI",
   "assistantName": "Marketing Assistant",
   "threadId": "thread_1qegTogz8FKzFC8kUUvnCv6h"
+},
+{
+  "assistantId": "asst_Ige5jUJ6IghGq8mmtMq0LhMg",
+  "assistantName": "Finance Assistant",
+  "threadId": "thread_yHD0dsYReACJ7wt0vIc2Ecs3"
 }
+]

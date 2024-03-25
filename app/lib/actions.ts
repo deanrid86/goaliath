@@ -8,11 +8,12 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import OpenAI from "openai";
-import { CreateThread } from './assistant_functions';
+import { CreateRun, CreateThread, waitForRunCompletion } from './assistant_functions';
 import fs from 'fs'
 
 
 const openai = new OpenAI();
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 const FormSchema = z.object({
     id: z.string(),
@@ -144,6 +145,76 @@ fs.writeFile('app/ui/Assistants/assistant_data.json', jsonContent, 'utf8', (err)
       revalidatePath('/dashboard/assistants');
       redirect('/dashboard/assistants');
       };
+
+      const FormSchemaMessage = z.object({
+        id: z.string(),
+        message: z.string(),
+        thread_id: z.string(),
+        assistant_id: z.string(),
+       
+        
+        
+      });
+    
+      
+    
+      const CreateMessage = FormSchemaMessage.omit({ id: true });
+    
+      export async function createMessage(formData: FormData) {
+          const { message, thread_id, assistant_id } = CreateMessage.parse({
+            message: formData.get('message'),
+            thread_id: formData.get('thread_id'),
+            assistant_id: formData.get('assistant_id'),
+          
+          });
+          
+         const threadMessages = await openai.beta.threads.messages.create(
+                thread_id,
+              { role: "user", content: message }
+            );
+          
+            console.log(threadMessages);
+
+            const run = await CreateRun(thread_id,assistant_id)
+
+            // Wait for the run to complete
+    await waitForRunCompletion(thread_id, run);
+
+    // Retrieve the messages after the run completes
+    const completedMessages = await openai.beta.threads.messages.list(thread_id);
+    console.log ("This is the returned message: ", completedMessages)
+    
+
+              
+    };
+
+    const FormSchemaAssistantDropDown = z.object({
+      id: z.string(),
+      thread_id: z.string(),
+      assistant_id: z.string(),
+      assistant_name: z.string(),
+     
+      
+    });
+
+    const CreateMessageList = FormSchemaAssistantDropDown.omit({ id: true });
+
+    export async function createMessageList(formData: FormData) {
+      const {thread_id, assistant_id, assistant_name } = CreateMessageList.parse({
+        assistant_id: formData.get('assistant_id'),
+        thread_id: formData.get('thread_id'),
+        assistant_name: formData.get('assistant_name'),
+      
+      });
+      const threadMessages = await openai.beta.threads.messages.list(
+          thread_id
+      );
+          console.log(threadMessages.data);
+          return threadMessages.data;
+    }
+        
+
+            
 
    
      const FormSchemaGoal = z.object({

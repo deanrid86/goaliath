@@ -5,21 +5,30 @@ import ThreadBox from "@/app/ui/Assistants/thread_box";
 import AssistantCreator_Top from "@/app/ui/Assistants/assistant_creator";
 import AssistantCreator_Bottom from "@/app/ui/Assistants/assistant_creator_bottom";
 import AddFileComponent from "@/app/ui/Assistants/add_file";
+import AssistantDropDown from "@/app/ui/Assistants/assistant_dropdown";
+import AssistantInteraction from "@/app/ui/Assistants/assistant_dropdown";
 
-const openai = new OpenAI();
 
-export default async function Page() {
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+const openai = new OpenAI({
+    apiKey: apiKey,
+    dangerouslyAllowBrowser: true
+  });
+
+export default function Page() {
+
+
+    
     return (
         <div className="flex h-full"> {/* This ensures the container takes the full height of the screen */}
             {/* This div takes up 2/3 of the width */}
             <div className="w-2/3 flex flex-col">
-                <div>Assistants</div>
-                <div className="border border-black rounded-lg p-5 m-5 flex-grow overflow-auto">
-                    <ThreadBox />
+                <div>Choose Assistant</div>
+                <div >
+                <AssistantInteraction/>
                 </div>
-                <div className="w-full flex flex-col">
-                    <MessageBox />
-                </div>
+                
             </div>
             {/* This new div takes up 1/3 of the width */}
             <div className="w-1/3 border border-black rounded-lg p-2 m-2 ">
