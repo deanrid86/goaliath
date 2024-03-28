@@ -82,7 +82,7 @@ export async function createInvoice(formData: FormData) {
     const FormSchemaAssistant = z.object({
       id: z.string(),
       name: z.string(),
-      instructions: z.string(),
+      instructions: z.string().default(" You are an intelligent assistant whos main aim is to provide information, strategy, ideas and planning as my head of whatever your job description is from the attached documents. Your responses and actions should always align with the job profile assigned to you, reflecting the responsibilities and objectives outlined in that profile. As part of your role, you have been given access to several key documents: the 'bot_dna.json', 'company_service_overview.json', 'core_values.json', and a profile document specific to your role (e.g., 'HeadOfFinance.json' for a finance bot). These documents contain critical information about our company's core values, our services, the DNA that makes up the foundation of our bots, and the detailed responsibilities of your role.)Your job is to leverage this information to guide your interactions, ensure that your actions and responses are in line with our company's values and service standards, and fulfil the duties outlined in your job profile. When addressing queries or performing tasks, always consider the contents of these documents to make informed decisions and provide answers that are not only accurate but also reflect our company's ethos and objectives. It is imperative that if you ever need specific information that I can gather, that you ask for it. I want are relationship to be collaborative. You should aim to fulfil the following statement at  all times: How can I provide constant world-class information, planning, ideas and strategy in order to make the business I work for, a global leader"),
       model: z.string(),
       tools: z.string(),
       
@@ -117,30 +117,20 @@ export async function createInvoice(formData: FormData) {
         const threadId = await CreateThread();
         console.log("New thread created with ID:", threadId);
         
-        // Create an object to store the assistant and thread information
-        const assistantData = {
-          assistantId: myAssistant.id,
-          assistantName: myAssistant.name,
-          threadId: threadId
-      };
 
-      // Convert the object to a JSON string
-      const jsonContent = JSON.stringify(assistantData, null, 2);
+       
 
-      // Write the JSON string to a file
-// Correct
-fs.writeFile('app/ui/Assistants/assistant_data.json', jsonContent, 'utf8', (err) => {
-  if (err) {
-    console.error('Failed to write file', err);
-  } else {
-    console.log('File written successfully');
-  }
-});
 
-      console.log("Assistant and thread data saved:", assistantData);
-
-      // Return the assistant data object if needed
-      return assistantData;
+       await sql`
+       INSERT INTO assistants (threadid, name, type, createdat, lastactiveat)
+       VALUES (
+           ${threadId}, 
+           ${myAssistant.id},
+           ${myAssistant.name},
+           ${myAssistant.created_at},
+           ${myAssistant.created_at}
+       )
+   `;
 
       revalidatePath('/dashboard/assistants');
       redirect('/dashboard/assistants');
@@ -212,6 +202,30 @@ fs.writeFile('app/ui/Assistants/assistant_data.json', jsonContent, 'utf8', (err)
           console.log(threadMessages.data);
           return threadMessages.data;
     }
+
+
+
+
+    //UPLAD FILE SECTION
+
+    const FormSchemaFileUpload = z.object({
+      filePath: z.string(),
+       });
+
+    export async function uploadFile(formData: FormData) {
+      const {filePath} = FormSchemaFileUpload.parse({
+        filePath: formData.get('filePath'),
+       
+      
+      });
+
+        const fileUpload = await openai.files.create({
+          file: fs.createReadStream(filePath),
+          purpose: "fine-tune",
+        });
+        console.log (fileUpload)
+      }
+    
         
 
             
@@ -364,6 +378,23 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
     console.error('Error inserting chat data into the database:', error);
   }
 }
+
+  // Function to insert contribution data into the database
+  export async function insertContributionData(contributionID: string, threadID: string, title: string, description:string, category:string, status:string,  createdat: number, updatedat: number) {
+    try {
+      
+      
+      await sql`
+        INSERT INTO contributions (contributionid, threadid, title, description, category, status, createdat, updatedat)
+        VALUES (${contributionID}, ${threadID}, ${title}, ${description}, ${category}, ${status}, ${createdat}, ${updatedat})
+      `;
+  
+      console.log('Contribution data inserted into the database.');
+  
+    } catch (error) {
+      console.error('Error inserting contribution data into the database:', error);
+    }
+  }
 
   // Function to insert chat data into the database
   export async function insertCoachData(id:string, highlevelid:string,  apiResponse: string, stepChatId: string , stepChatTime: string, parsedResult: string, statuscomplete: string, statusadd: string, timeframe: number, index: number ) {

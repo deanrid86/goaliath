@@ -935,3 +935,25 @@ export async function fetchGoalInputById(id: string) {
     throw new Error('Failed to fetch goalstep.');
   }
 }
+
+export async function fetchAssistantInfo() {
+  noStore();
+  try {
+    const data = await sql<GoalInputForm>`
+      SELECT
+      assistants.threadid,
+      assistants.name
+      FROM assistants
+    `;
+
+    const assistantinfo = data.rows.map((assistant) => ({
+      ...assistant,
+     
+    }));
+``
+    return assistantinfo;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch assistant info.');
+  }
+}

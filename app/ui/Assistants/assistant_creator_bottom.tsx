@@ -104,7 +104,7 @@ return (
             </div>
         </div>
         <div>
-        <Button type="submit">Create Assistant</Button>
+        <Button type="submit" className="bg-green-300">Create Assistant</Button>
         </div>
     </div>
     </form>

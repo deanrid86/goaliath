@@ -2,9 +2,12 @@
 import OpenAI from "openai";
 
 
-const openai = new OpenAI();
-
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+const openai = new OpenAI({
+  apiKey: apiKey,
+  dangerouslyAllowBrowser: true
+});
 
 //API key variable that stores CHAT GPT API
 
@@ -55,7 +58,19 @@ const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
     return run.id
   }
 
- 
+  export async function CreateAssistantFile(assistant_id: string, formData: FormData): Promise<void> {
+    // Assuming formData.get('file_id') will return a string value
+    const file_id = formData.get('file_id') as string;
+  
+    try {
+      const myAssistantFile = await openai.beta.assistants.files.create(assistant_id, {
+        file_id: file_id,
+      });
+      console.log(myAssistantFile);
+    } catch (error) {
+      console.error("Failed to create assistant file:", error);
+    }
+  }
   
 
   {/*
@@ -133,4 +148,14 @@ export async function ListFiles() {
     
         checkRunStatus();
       });
+    }
+    
+    
+
+    export async function ListAssistantFiles(assistant_id:string) {
+      const assistantFiles = await openai.beta.assistants.files.list(
+        assistant_id
+      );
+      console.log("THIS IS THE LATEST MESSAGE",assistantFiles);
+      return assistantFiles.data;
     }
