@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+{/*import { NextResponse } from "next/server";
 import { createMessage, getMessages } from "app\lib\OpenAi.js";
 
 //create new messag
@@ -38,4 +38,4 @@ export async function GET(req) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-}
+} */}

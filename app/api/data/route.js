@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+{/*import { NextResponse } from "next/server";
 import { UploadFile } from "app\lib\OpenAi.js";
 
 //create new thread
@@ -13,4 +13,4 @@ export async function POST(req) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-}
+}*/}

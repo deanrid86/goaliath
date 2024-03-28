@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+{/*import { NextResponse } from "next/server";
 import { createThread, gethread, deleteThread } from "app\lib\OpenAi.js";
 
 //create new thread
@@ -58,4 +58,4 @@ export async function DELETE(req) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-}
+}*/}

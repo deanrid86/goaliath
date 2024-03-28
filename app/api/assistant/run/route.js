@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+{/*import { NextResponse } from "next/server";
 import { runCheck, runAssistant } from "app\lib\OpenAi.js";
 
 //run the assistant
@@ -27,4 +27,4 @@ export async function POST(req) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-}
+}*/}
