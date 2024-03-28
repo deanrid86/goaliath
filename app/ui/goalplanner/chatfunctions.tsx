@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+{/*import OpenAI from 'openai';
 
 //API key variable that stores CHAT GPT API
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
@@ -37,4 +37,4 @@ export async function GoaltoChat (userFirstGoal:string, userFirstGoalTimeline:st
     return (
       
     );
-  }
+  }*/}
