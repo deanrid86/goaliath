@@ -208,3 +208,10 @@ export type GoalStepForm = {
 
 
 };
+
+
+export type AssistantType = {
+  threadid: string;
+  name: string;
+  type: string;
+};

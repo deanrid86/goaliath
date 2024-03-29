@@ -8,6 +8,7 @@ export default function AssistantInteraction() {
     // Update the state to hold both threadId and assistantId
     const [selectedThreadId, setSelectedThreadId] = useState('');
     const [selectedAssistantId, setSelectedAssistantId] = useState('');
+    
 
     const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const [threadId, assistantId] = event.target.value.split(",");
@@ -23,6 +24,10 @@ export default function AssistantInteraction() {
                     {/* Keep combining threadId and assistantId */}
                     <option value="thread_1qegTogz8FKzFC8kUUvnCv6h,asst_cywPHDDm90MN1KLDJcHbTJWI">Marketing Assistant</option>
                     <option value="thread_yHD0dsYReACJ7wt0vIc2Ecs3,asst_Ige5jUJ6IghGq8mmtMq0LhMg">Finance Assistant</option>
+                    <option value="thread_3Qzl2PErPLEh9sjkPVEDkvzE,asst_UErWsyOWjnjrAqmYVWbYd2D0">Sales Assistant</option>
+                    <option value="thread_CGBhPrZL0JFy4QvqN4Mmwoou,asst_oKcTAPfvWbu79AT8ufUy1B4N">Customer Support Assistant</option>
+                    <option value="thread_1y9166vr1QKBc5PsM4tkIY5D,asst_aRZPEooh2rcM0KBv2JMn8IYY">Information Technology Assistant</option>
+                    <option value="thread_HSi89Gs0PM4hIsQlupJKDgZX,asst_oliWfnoPgsLFZ59vsArLtpi7">Research and Development Assistant</option>
                 </select>
             </div>
             <div className="flex-grow">

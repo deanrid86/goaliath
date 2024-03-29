@@ -16,6 +16,7 @@ import {
   GoalPlannerStep,
   GoalInputForm,
   HighLevelDetail,
+  AssistantType,
   
 
 } from './definitions';
@@ -939,10 +940,11 @@ export async function fetchGoalInputById(id: string) {
 export async function fetchAssistantInfo() {
   noStore();
   try {
-    const data = await sql<GoalInputForm>`
+    const data = await sql<AssistantType>`
       SELECT
       assistants.threadid,
       assistants.name
+      assistants.type
       FROM assistants
     `;
 
