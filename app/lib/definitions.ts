@@ -215,3 +215,23 @@ export type AssistantType = {
   name: string;
   type: string;
 };
+
+export type MentalModelsTable = {
+  modelid: string;
+  modelname: string;
+  description: string;
+  category: string;
+  subcategory: string;
+  situationsused: string;
+  skilllevel: 'beginner' | 'intermediate' | 'advanced';
+  addstatus: 'no' | 'yes';
+  imageurl: string;
+  tips: string;
+  relatedmodels: string;
+  bigdescription: string;
+  sourcesreferences: string;
+  realexamples: string;
+
+
+
+};

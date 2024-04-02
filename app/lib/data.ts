@@ -17,6 +17,7 @@ import {
   GoalInputForm,
   HighLevelDetail,
   AssistantType,
+  MentalModelsTable,
   
 
 } from './definitions';
@@ -143,6 +144,46 @@ export async function fetchFilteredInvoices(
   }
 }
 
+const MODELS_PER_PAGE = 6;
+export async function fetchFilteredMentalModels(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * MODELS_PER_PAGE;
+
+  try {
+    const mentalmodels = await sql<MentalModelsTable>`
+      SELECT
+      mentalmodels.modelid,
+      mentalmodels.modelname,
+      mentalmodels.description,
+      mentalmodels.category,
+      mentalmodels.subcategory,
+      mentalmodels.skilllevel ,
+      mentalmodels.situationsused,
+      mentalmodels.imageurl  
+
+      
+      FROM mentalmodels
+      WHERE
+      mentalmodels.modelname ILIKE ${`%${query}%`} OR
+      mentalmodels.description ILIKE ${`%${query}%`} OR
+      mentalmodels.category ILIKE ${`%${query}%`} OR
+      mentalmodels.subcategory ILIKE ${`%${query}%`} OR
+      mentalmodels.situationsused ILIKE ${`%${query}%`} OR
+      mentalmodels.skilllevel ILIKE ${`%${query}%`}
+      ORDER BY mentalmodels.category DESC
+      LIMIT ${MODELS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return mentalmodels.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch mental models.');
+  }
+}
+
 export async function fetchInvoicesPages(query: string) {
   noStore();
   try {
@@ -162,6 +203,27 @@ export async function fetchInvoicesPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+export async function fetchMentalModelPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM mentalmodels
+    WHERE
+      mentalmodels.modelname ILIKE ${`%${query}%`} OR
+      mentalmodels.description ILIKE ${`%${query}%`} OR
+      mentalmodels.category ILIKE ${`%${query}%`} OR
+      mentalmodels.subcategory ILIKE ${`%${query}%`} OR
+      mentalmodels.skilllevel ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of mental models.');
   }
 }
 
@@ -188,6 +250,75 @@ export async function fetchInvoiceById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoice.');
+  }
+}
+
+export async function fetchMentalModelById(id: string) {
+  noStore();
+  try {
+    const data = await sql<MentalModelsTable>`
+      SELECT
+        mentalmodels.modelid,
+        mentalmodels.modelname,
+        mentalmodels.description,
+        mentalmodels.category,
+        mentalmodels.subcategory,
+        mentalmodels.skilllevel,
+        mentalmodels.bigdescription,
+        mentalmodels.realexamples,
+        mentalmodels.situationsused,
+        mentalmodels.tips,
+        mentalmodels.relatedmodels,
+        mentalmodels.sourcesreferences
+      FROM mentalmodels
+      WHERE mentalmodels.modelid = ${id};
+    `;
+
+    const mentalmodel = data.rows.map((model) => ({
+      ...model,
+      
+    }));
+
+    return mentalmodel[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch mental model.');
+  }
+}
+
+export async function fetchMentalModelsByAddStatus() {
+  noStore(); 
+  try {
+    const data = await sql<MentalModelsTable>`
+      SELECT
+      mentalmodels.modelid,
+      mentalmodels.modelname,
+      mentalmodels.description,
+      mentalmodels.category,
+      mentalmodels.subcategory,
+      mentalmodels.skilllevel,
+      mentalmodels.bigdescription,
+      mentalmodels.realexamples,
+      mentalmodels.situationsused,
+      mentalmodels.tips,
+      mentalmodels.relatedmodels,
+      mentalmodels.sourcesreferences,
+      mentalmodels.imageurl,
+      mentalmodels.addstatus
+      FROM mentalmodels
+      WHERE addstatus = 'yes';
+    `;
+
+    // Convert the data into a more friendly structure if needed
+    const mentalmodels = data.rows.map((model) => ({
+      ...model,
+      // You can add any additional transformations here if necessary
+    }));
+
+    return mentalmodels; // Returns an array of all mental models with addstatus 'yes'
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch mental models.');
   }
 }
 

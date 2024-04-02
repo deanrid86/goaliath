@@ -17,3 +17,10 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+/* Custom styles for <pre> tag */
+pre {
+  font-family: inherit;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

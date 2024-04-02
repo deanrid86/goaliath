@@ -28,6 +28,8 @@ export default function AssistantInteraction() {
                     <option value="thread_CGBhPrZL0JFy4QvqN4Mmwoou,asst_oKcTAPfvWbu79AT8ufUy1B4N">Customer Support Assistant</option>
                     <option value="thread_1y9166vr1QKBc5PsM4tkIY5D,asst_aRZPEooh2rcM0KBv2JMn8IYY">Information Technology Assistant</option>
                     <option value="thread_HSi89Gs0PM4hIsQlupJKDgZX,asst_oliWfnoPgsLFZ59vsArLtpi7">Research and Development Assistant</option>
+                    <option value="thread_Ukf4GgrF0jcZkY0fw0wNxs1P,asst_dEsjx5uwshTj1jaVo53qHVOf">Psychologist and Scientific Research Assistant</option>
+                    <option value="thread_345qNSZAyQcJ0YlyxNSlpi8R,asst_A2AEKTcPXPWxhH0bVtKAPZD0">Mobile App and Web Development Assistant</option>
                 </select>
             </div>
             <div className="flex-grow">

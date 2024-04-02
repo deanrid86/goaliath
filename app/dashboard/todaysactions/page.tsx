@@ -1,5 +1,5 @@
 
-import {  fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
+import {  fetchMentalModelsByAddStatus, fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
 import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
 import { ProgressBar } from "@/app/ui/progressbar";
 import FormEmail from "@/app/ui/todaysactions/formemail";
@@ -20,6 +20,7 @@ export default async function GoalViewer() {
  
 const specificgoal = await fetchSpecificLevelStepsAdd ();
 const specificgoalcomplete = await fetchSpecificLevelStepsComplete ();
+const specificMentalModels = await fetchMentalModelsByAddStatus ();
 console.log (specificgoal);
 
 return (
@@ -80,8 +81,30 @@ return (
           </div>
         ))}
               </div>
+              
           </div>
-        
+          <h1 className='text-white text-xl bg-black-600 rounded-xl p-2 '>
+            Added Mental Models
+          </h1>
+          <div>
+            <div className="border border-black m-2 p-2">
+            {/* Directly access and display Step 1 */}
+            {specificMentalModels.map((step, index) => (
+            <div key={index}>
+            <div className="bg-gray-300 m-2" >
+              <strong>Mental Model :</strong> {step.modelname} 
+            </div>
+            <div className="bg-gray-200 m-2">
+              <p><strong>Description:</strong> {step.description} </p>
+              <br/>
+              <p><strong>Real Life Examples</strong>{step.realexamples}</p>
+              <br />
+              <p><strong>Resources:</strong> {step.sourcesreferences}</p>
+            </div>
+          </div>
+        ))}
+        </div>
+        </div>
         </div>
     );
 }

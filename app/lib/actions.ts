@@ -319,6 +319,34 @@ export async function updateInvoice(id: string, formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
+const FormSchemaMentalModel = z.object({
+  modelid: z.string(),
+  addstatus: z.enum(['no', 'yes']),
+ 
+});
+  // Use Zod to update the expected types
+  const UpdateMentalModelStatus = FormSchemaMentalModel.omit({ modelid: true});
+ 
+  // ...
+   
+  export async function updateMentalModelStatus(id: string, formData: FormData) {
+    const parsedData  = UpdateMentalModelStatus.parse({
+      addstatus: formData.get('addstatus'),
+    });
+   
+    // Extract the addstatus value from the parsedData object
+    const { addstatus } = parsedData;
+   
+    await sql`
+      UPDATE mentalmodels
+      SET addstatus = ${addstatus}
+      WHERE modelid = ${id}
+    `;
+   
+    revalidatePath('/dashboard/mentalmodels');
+    redirect('/dashboard/mentalmodels');
+  }
+
 export async function deleteInvoice(id: string) {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
