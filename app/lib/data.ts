@@ -269,7 +269,8 @@ export async function fetchMentalModelById(id: string) {
         mentalmodels.situationsused,
         mentalmodels.tips,
         mentalmodels.relatedmodels,
-        mentalmodels.sourcesreferences
+        mentalmodels.sourcesreferences,
+        mentalmodels.imageurl
       FROM mentalmodels
       WHERE mentalmodels.modelid = ${id};
     `;
