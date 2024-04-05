@@ -371,7 +371,7 @@ const handleSpecificSubmit = async (goalId: string) => {
     <div>
       <div className="space-y-4">
         <div >
-          <h1 className='text-white text-xl'>Goal Planner</h1>
+          <h1 className='text-xl'>Goal Planner</h1>
         </div>
         <div >
           <h3 className='text-white text-xl bg-black-300 rounded-xl p-2'>Your Latest Goals</h3>

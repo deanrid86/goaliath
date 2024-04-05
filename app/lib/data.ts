@@ -227,6 +227,27 @@ export async function fetchMentalModelPages(query: string) {
   }
 }
 
+
+export async function fetchGoalPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM mentalmodels
+    WHERE
+      mentalmodels.modelname ILIKE ${`%${query}%`} OR
+      mentalmodels.description ILIKE ${`%${query}%`} OR
+      mentalmodels.category ILIKE ${`%${query}%`} OR
+      mentalmodels.subcategory ILIKE ${`%${query}%`} OR
+      mentalmodels.skilllevel ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of mental models.');
+  }
+}
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
