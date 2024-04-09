@@ -18,6 +18,7 @@ import {
   HighLevelDetail,
   AssistantType,
   MentalModelsTable,
+  CombinedPlannerStep,
   
 
 } from './definitions';
@@ -184,6 +185,36 @@ export async function fetchFilteredMentalModels(
   }
 }
 
+const GOALS_PER_PAGE = 6;
+
+export async function fetchFilteredGoals(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * GOALS_PER_PAGE;
+
+  try {
+    const goalplan = await sql<GoalPlannerDetail>`
+      SELECT
+        goalplanner.usergoal,
+        goalplanner.usertimeline::text,  
+        goalplanner.userhours::text,     
+        goalplanner.chattime,
+        goalplanner.uniqueid
+      FROM goalplanner
+      WHERE
+        goalplanner.usergoal ILIKE ${`%${query}%`} OR
+        goalplanner.usertimeline::text ILIKE ${`%${query}%`} OR
+        goalplanner.userhours::text ILIKE ${`%${query}%`}
+      ORDER BY goalplanner.chattime DESC
+      LIMIT ${GOALS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return goalplan.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goals.');
+  }
+}
+
 export async function fetchInvoicesPages(query: string) {
   noStore();
   try {
@@ -231,23 +262,25 @@ export async function fetchMentalModelPages(query: string) {
 export async function fetchGoalPages(query: string) {
   noStore();
   try {
+    // Adjust your query to correctly handle different data types
     const count = await sql`SELECT COUNT(*)
-    FROM mentalmodels
+    FROM goalplanner
     WHERE
-      mentalmodels.modelname ILIKE ${`%${query}%`} OR
-      mentalmodels.description ILIKE ${`%${query}%`} OR
-      mentalmodels.category ILIKE ${`%${query}%`} OR
-      mentalmodels.subcategory ILIKE ${`%${query}%`} OR
-      mentalmodels.skilllevel ILIKE ${`%${query}%`}
-  `;
+      goalplanner.usergoal ILIKE ${`%${query}%`} OR
+      goalplanner.usertimeline::text ILIKE ${`%${query}%`} OR
+      goalplanner.userhours::text ILIKE ${`%${query}%`} OR
+      goalplanner.goalresult::text ILIKE ${`%${query}%`}  
+    `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(count.rows[0].count) / GOALS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of mental models.');
+    throw new Error('Failed to fetch total number of goals.');
   }
 }
+
+
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
@@ -307,6 +340,125 @@ export async function fetchMentalModelById(id: string) {
     throw new Error('Failed to fetch mental model.');
   }
 }
+
+export async function fetchGoalsById(id: string) {
+  noStore();
+  try {
+    const data = await sql<HighLevelDetail>`
+      SELECT
+
+        highlevelsteps.id,
+        highlevelsteps.stepdescription,
+        highlevelsteps.timeframe,
+        highlevelsteps.statuscomplete,
+        highlevelsteps.statusadd
+      FROM highlevelsteps
+      WHERE highlevelsteps.goalid = ${id};
+    `;
+
+    // Here, we're returning the entire array of steps rather than just the first one.
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch specific goal.');
+  }
+}
+
+export async function fetchSpecificGoalStepsById(stepid: string) {
+  noStore();
+  try {
+    const data = await sql<GoalPlannerStep>`
+      SELECT
+      goalplannerspecific.id
+      goalplannerspecific.specificgoalresult
+      goalplannerspecific.specificchatid
+      goalplannerspecific.specificchattime
+      goalplannerspecific.specificparsedresult
+      goalplannerspecific.statuscomplete
+      goalplannerspecific.statusadd
+      goalplannerspecific.highlevelid
+      goalplannerspecific.timeframe
+      FROM goalplannerspecific
+      WHERE goalplannerspecific.highlevelid = ${stepid};
+    `;
+
+    // Here, we're returning the entire array of steps rather than just the first one.
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch specific goal step.');
+  }
+}
+
+export async function fetchAllGoalStepsById(id: string) {
+  noStore();
+  try {
+    const data = await sql<CombinedPlannerStep>`
+      SELECT
+        highlevelsteps.id,
+        highlevelsteps.goalid,
+        highlevelsteps.stepdescription,
+        highlevelsteps.timeframe as highlevel_timeframe,
+        highlevelsteps.statuscomplete as highlevel_statuscomplete,
+        highlevelsteps.statusadd as highlevel_statusadd,
+        goalplannerspecific.id as specific_id,
+        goalplannerspecific.specificgoalresult,
+        goalplannerspecific.specificchatid,
+        goalplannerspecific.specificchattime,
+        goalplannerspecific.specificparsedresult,
+        goalplannerspecific.statuscomplete as specific_statuscomplete,
+        goalplannerspecific.statusadd as specific_statusadd,
+        goalplannerspecific.highlevelid,
+        goalplannerspecific.timeframe as specific_timeframe
+      FROM highlevelsteps
+      LEFT JOIN goalplannerspecific ON highlevelsteps.id = goalplannerspecific.highlevelid
+      WHERE highlevelsteps.goalid = ${id};
+    `;
+
+    // Returning the combined array of steps
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goal steps.');
+  }
+}
+
+
+export async function fetchGoalStepCompletion(id: string) {
+  noStore();
+  try {
+    // Assuming `sql` is a function from a library that supports parameterized queries,
+    // and it automatically handles promise rejection.
+    const data = await sql`
+      SELECT
+        goalid,
+        COUNT(*) FILTER (WHERE statuscomplete = 'Yes') * 100.0 / COUNT(*) AS completion_percentage
+      FROM
+        highlevelsteps
+      WHERE
+        goalid = ${id}  // Use parameterized query for safety
+      GROUP BY
+        goalid;
+    `;
+
+    // Assuming `data.rows` contains the result set.
+    // This logic assumes there's only one or zero rows returned.
+    if (data.rows.length > 0) {
+      const completionData = data.rows[0];
+      return {
+        goalId: completionData.goalid,
+        completionPercentage: completionData.completion_percentage
+      };
+    } else {
+      // Handle the case where no data is found
+      return null;
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch goal step completion percentage.');
+  }
+}
+
 
 export async function fetchMentalModelsByAddStatus() {
   noStore(); 
@@ -880,30 +1032,7 @@ export async function fetchGoalStepById(id: string) {
     }
   }
 
-  export async function fetchGoalsPages(query: string) {
-    noStore();
-    try {
-      const count = await sql`SELECT COUNT(*)
-      FROM goals
-      WHERE
-      goals.goaltype ILIKE ${`%${query}%`} OR
-      goals.goal ILIKE ${`%${query}%`} OR
-      goals.goalnotes ILIKE ${`%${query}%`} OR
-      goals.goaltimeline ILIKE ${`%${query}%`} OR
-      goals.goalurgency ILIKE ${`%${query}%`} OR
-      goals.goalrealisation ILIKE ${`%${query}%`} OR
-      goals.goalreminder ILIKE ${`%${query}%`} OR
-      goals.goalachieved ILIKE ${`%${query}%`} OR
-      goals.goaldate::text ILIKE ${`%${query}%`}
-      `;
-  
-      const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE_GOA);
-      return totalPages;
-    } catch (error) {
-      console.error('Database Error:', error);
-      throw new Error('Failed to fetch total number of goals.');
-    }
-  }
+ 
 
   const ITEMS_PER_PAGE_LES = 6;
 export async function fetchFilteredLessons(
@@ -939,42 +1068,7 @@ export async function fetchFilteredLessons(
   }
 }
 
-const ITEMS_PER_PAGE_GOA = 6;
-export async function fetchFilteredGoals(
-  query: string,
-  currentPage: number,
-) {
-  noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE_GOA;
 
-  try {
-    const goals = await sql<GoalDetail>`
-      SELECT
-        goals.id,
-        goals.goaltype,
-        goals.goal,
-        goals.goalnotes,
-        goals.goaltimeline,
-        goals.goalurgency,
-        goals.goalrealisation,
-        goals.goalreminder,
-        goals.goalachieved
-      FROM goals
-      WHERE
-      goals.goaltype ILIKE ${`%${query}%`} OR
-      goals.goal ILIKE ${`%${query}%`} OR
-      goals.goalnotes ILIKE ${`%${query}%`} OR
-      goals.goaltimeline ILIKE ${`%${query}%`} OR
-      goals.goalurgency ILIKE ${`%${query}%`} 
-      LIMIT ${ITEMS_PER_PAGE_GOA} OFFSET ${offset}
-    `;
-
-    return goals.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch goals.');
-  }
-}
 export async function fetchIncome() {
   noStore();
   // Add noStore() here prevent the response from being cached.

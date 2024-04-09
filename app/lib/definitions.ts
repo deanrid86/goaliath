@@ -150,8 +150,28 @@ export type GoalPlannerStep = {
   specificparsedresult: string;
   statuscomplete: 'No' | 'Yes';
   statusadd: 'No' | 'Yes';
+  highlevelid: string;
+  timeframe: number;
+  
+
+};
+
+export type CombinedPlannerStep = {
+  id: string;
+  specificgoalresult: string;
+  specificchatid: string;
+  specificchattime: Date;
+  specificparsedresult: string;
+  statuscomplete: 'No' | 'Yes';
+  statusadd: 'No' | 'Yes';
+  highlevelid: string;
+  timeframe: number;
+  goalid: string;
+  stepdescription: string;
+  orderindex: number;
   
   
+
 };
 export type LessonForm = {
 

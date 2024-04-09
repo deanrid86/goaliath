@@ -357,6 +357,7 @@ export async function deleteInvoice(id: string) {
 
 
 
+
   const UpdateLesson = FormSchemaLesson.omit({ id: true, lessondate: true });
 
   export async function updateLesson(id: string,formData: FormData) {
@@ -387,7 +388,19 @@ export async function deleteInvoice(id: string) {
   }
 
   export async function deleteGoal(id: string) {
-    await sql`DELETE FROM goals WHERE id = ${id}`;
+    await sql`DELETE FROM goalplanner WHERE uniqueid = ${id}`;
+    revalidatePath('/dashboard/goals');
+  }
+
+  export async function completeGoal(id: string) {
+    await sql`
+      UPDATE goalplanner 
+      SET completestatus = CASE 
+                              WHEN completestatus = 'yes' THEN 'no' 
+                              ELSE 'yes' 
+                            END
+      WHERE uniqueid = ${id};
+    `;
     revalidatePath('/dashboard/goals');
   }
 
