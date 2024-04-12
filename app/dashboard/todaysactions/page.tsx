@@ -26,9 +26,12 @@ console.log (specificgoal);
 return (
 
         <div>
-             <div >
-          <h1 className='text-black text-xl p-2 m-2'>Todays Actions</h1>
-        </div>
+         <div className="mx-auto max-w-4xl p-4">
+                <h1 className="text-3xl font-bold text-center">Your Action Plan for Today</h1>
+                <p className="mt-4 text-lg text-gray-600">
+                On this page, you will encounter a detailed schedule of your daily action plan, meticulously organized to support your personal and professional aspirations. Each item listed represents not only a task to be accomplished but also an opportunity for growth and learning. By engaging with the contents of this page, you will be able to access the specific goals and steps you have set for yourself, integrate wisdom from external lessons, and apply mental models to enhance your decision-making processes. This setup is crafted to ensure that each day you are equipped with the tools and knowledge necessary to progress effectively towards your objectives, making every action meaningful and every lesson impactful.
+                </p>
+          </div>
         <div >
           <h3 className='text-white text-xl bg-black-600 rounded-xl p-2 '>What Steps do you want to Complete Today?</h3>
         </div>

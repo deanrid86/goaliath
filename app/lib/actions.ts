@@ -402,9 +402,88 @@ export async function deleteInvoice(id: string) {
       WHERE uniqueid = ${id};
     `;
     revalidatePath('/dashboard/goals');
+    redirect('/dashboard/goals');
   }
 
+  export async function completeStep(id: string) {
+    await sql`
+      UPDATE highlevelsteps 
+      SET statuscomplete = 'Yes'
+      WHERE id = ${id};
+    `;
+    revalidatePath('/dashboard/goals');
+    redirect('/dashboard/goals');
+}
+
+export async function completeStepNo(id: string) {
+  await sql`
+    UPDATE highlevelsteps 
+    SET statuscomplete = 'No'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function addStep(id: string) {
+  await sql`
+    UPDATE highlevelsteps 
+    SET statusadd = 'yes'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function addStepNo(id: string) {
+  await sql`
+    UPDATE highlevelsteps 
+    SET statusadd = 'no'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
  
+export async function completeSpecificStep(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statuscomplete = 'Yes'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function completeSpecificStepNo(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statuscomplete = 'No'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function addSpecificStep(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statusadd = 'Yes'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function addSpecificStepNo(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statusadd = 'No'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
   // Function to insert chat data into the database
 export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string ) {
   try {

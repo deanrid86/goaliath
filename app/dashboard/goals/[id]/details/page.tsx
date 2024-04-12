@@ -6,14 +6,14 @@ import Image from 'next/image';
 import {
  ArrowDownCircleIcon
 } from '@heroicons/react/24/outline';
-import { SpecificStepDetail } from '@/app/ui/goals/buttons';
+import { AddStep, AddStepNo, CompleteStep, CompleteStepNo, SpecificStepDetail } from '@/app/ui/goals/buttons';
+import { Status } from '@/app/ui/goals/statuscompleteinfo';
  
 export default async function Page({ params }: { params: { id: string }  }) {
     const id = params.id;
 
     const goals = await fetchAllGoalStepsById(id);
-    console.log (goals[0].goalid)
-    console.log (goals[0].highlevelid)
+    const metrics = await fetchAllGoalStepsById(id);
        
       
 
@@ -41,7 +41,24 @@ export default async function Page({ params }: { params: { id: string }  }) {
   <React.Fragment key={index}>
     <div className="rounded-xl border border-green-500 p-2 my-2">
       <p><strong>Step {index + 1}:</strong> {goal.stepdescription}</p>
-      <SpecificStepDetail id={goal.goalid} stepid={goal.highlevelid}/>
+      <p><strong>Days to Complete</strong> {goal.highlevel_timeframe}</p>
+      <p><strong>Goal Complete?</strong> Status: {goal.highlevel_statuscomplete}</p>
+      <p><strong>Added to Daily Actions?</strong> Status: {goal.highlevel_statusadd}</p>
+      <div className="flex flex-row justify-between p-2 m-2 items-center">
+        <div className="flex flex-row p-2 border border-black-500 rounded-xl">
+          <SpecificStepDetail id={goal.goalid} stepid={goal.highlevelid}/>
+        </div>
+        
+        <div className="flex flex-row p-2 border border-black-500 rounded-xl">
+          <CompleteStep id={goal.id}/>
+        <CompleteStepNo id={goal.id}/>
+        </div>
+        <div className="flex flex-row  p-2 border border-black-500 rounded-xl">
+          <AddStep id={goal.id} />
+        <AddStepNo id={goal.id} />
+        </div>
+        
+      </div>
     </div>
     <div className="flex justify-center my-2"> {/* Adjust the styling as needed */}
       <ArrowDownCircleIcon className="  h-10 w-10" />
@@ -50,8 +67,12 @@ export default async function Page({ params }: { params: { id: string }  }) {
 ))}
       </div>
       <div className="flex-1 border border-black p-2">
+        <h3><strong>Goal Metrics</strong></h3>
+        <div className="rounded-xl border border-green-500 p-2 my-2">
+          <h4>Goal Creation Date</h4>
 
-        <p>Dean</p>
+        </div>
+        
       </div>
       </div>
       </div>

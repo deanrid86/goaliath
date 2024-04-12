@@ -142,6 +142,23 @@ export type HighLevelDetail = {
   orderindex: number;
 };
 
+export type CombinedGoalandHighLevelDetail = {
+  uniqueid: string;
+  chatid: string;
+  chattime: string;
+  usergoal: string;
+  usertimeline: number;
+  userhours: number;
+  stepcount: number;
+  id: string;
+  goalid: string;
+  stepdescription: string;
+  timeframe: number;
+  parent_statuscomplete: 'No' | 'Yes';
+  parent_statusadd: 'No' | 'Yes';
+  orderindex: number;
+};
+
 export type GoalPlannerStep = {
   id: string;
   specificgoalresult: string;
@@ -162,13 +179,17 @@ export type CombinedPlannerStep = {
   specificchatid: string;
   specificchattime: Date;
   specificparsedresult: string;
-  statuscomplete: 'No' | 'Yes';
-  statusadd: 'No' | 'Yes';
+  highlevel_statuscomplete: 'No' | 'Yes';
+  highlevel_statusadd: 'No' | 'Yes';
   highlevelid: string;
-  timeframe: number;
+  highlevel_timeframe: number;
+  specific_timeframe: number;
+  specific_statuscomplete: string;
+  specific_statusadd: string;
   goalid: string;
   stepdescription: string;
   orderindex: number;
+  specific_id: string;
   
   
 

@@ -1,6 +1,6 @@
-import { CheckCircleIcon, TrashIcon, Bars4Icon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, TrashIcon, Bars4Icon, PlusIcon, BackspaceIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { completeGoal, deleteGoal} from '@/app/lib/actions';
+import { addSpecificStep, addSpecificStepNo, addStep, addStepNo, completeGoal, completeSpecificStep, completeSpecificStepNo, completeStep, completeStepNo, deleteGoal} from '@/app/lib/actions';
 
 export function GoalDetail ({ id }: { id: string }){
 return (
@@ -58,6 +58,102 @@ export function CompleteGoal({ id }: { id: string }) {
       <button title="Goal Complete?" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Completed?</span>
         <CheckCircleIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function CompleteStep({ id }: { id: string }) {
+  const completeStepWithID = completeStep.bind(null, id);
+  return (
+    <form action={completeStepWithID}>
+      <button title="Step Complete" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Completed?</span>
+        <CheckCircleIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function CompleteStepNo({ id }: { id: string }) {
+  const completeStepNoWithID = completeStepNo.bind(null, id);
+  return (
+    <form action={completeStepNoWithID}>
+      <button title="Step Not Complete" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Completed?</span>
+        <BackspaceIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function AddStep({ id }: { id: string }) {
+  const addStepWithID = addStep.bind(null, id);
+  return (
+    <form action={addStepWithID}>
+      <button title="Add to Daily Activity" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Add to Daily Activity</span>
+        <PlusIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function AddStepNo({ id }: { id: string }) {
+  const addStepNoWithID = addStepNo.bind(null, id);
+  return (
+    <form action={addStepNoWithID}>
+      <button title="Dont Add to Daily Activity" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Dont Add to Daily Activity</span>
+        <ArrowUturnLeftIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function CompleteSpecificStep({ id }: { id: string }) {
+  const completeSpecificStepWithID = completeSpecificStep.bind(null, id);
+  return (
+    <form action={completeSpecificStepWithID}>
+      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Completed?</span>
+        <CheckCircleIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function CompleteSpecificStepNo({ id }: { id: string }) {
+  const completeSpecificStepNoWithID = completeSpecificStepNo.bind(null, id);
+  return (
+    <form action={completeSpecificStepNoWithID}>
+      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Completed?</span>
+        <BackspaceIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function AddSpecificStep({ id }: { id: string }) {
+  const addSpecificStepWithID = addSpecificStep.bind(null, id);
+  return (
+    <form action={addSpecificStepWithID}>
+      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Add to Daily Activity?</span>
+        <PlusIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function AddSpecificStepNo({ id }: { id: string }) {
+  const addSpecificStepNoWithID = addSpecificStepNo.bind(null, id);
+  return (
+    <form action={addSpecificStepNoWithID}>
+      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Add to Daily Activity?</span>
+        <ArrowUturnLeftIcon className="w-5" />
       </button>
     </form>
   );
