@@ -194,6 +194,27 @@ export type CombinedPlannerStep = {
   
 
 };
+export type CombinedPlannerStep2 = {
+  id: string;
+  specificgoalresult: string;
+  specificchatid: string;
+  specificchattime: string;
+  specificparsedresult: string;
+  highlevel_statuscomplete: 'No' | 'Yes';
+  highlevel_statusadd: 'No' | 'Yes';
+  highlevelid: string;
+  highlevel_timeframe: number;
+  specific_timeframe: number;
+  specific_statuscomplete: string;
+  specific_statusadd: string;
+  goalid: string;
+  stepdescription: string;
+  orderindex: number;
+  specific_id: string;
+  
+  
+
+};
 export type LessonForm = {
 
   id: string;
@@ -204,6 +225,7 @@ export type LessonForm = {
   lessonsource: string;
   lessonauthor: string;
   lessondate: string;
+  addstatus: 'no' | 'yes';
 
 };
 

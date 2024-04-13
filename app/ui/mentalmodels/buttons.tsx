@@ -1,19 +1,53 @@
-import { PencilIcon, PlusIcon, TrashIcon, Bars4Icon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, Bars4Icon, BackspaceIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteInvoice } from '@/app/lib/actions';
+import { addMentalModel, deleteInvoice, removeMentalModel, removeMentalModelDA } from '@/app/lib/actions';
 
 export function MentalModelDetail ({ id }: { id: string }){
 return (
     <Link
     href={`/dashboard/mentalmodels/${id}/specifics`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 bg-purple-700 text-green-400 hover:bg-green-400 hover:text-black-500"
     >
       <Bars4Icon className="w-5" />
     </Link>
   );
 }
 
+export function AddMentalModel({ id }: { id: string }) {
+  const addMentalModelWithID = addMentalModel.bind(null, id);
+  return (
+    <form action={addMentalModelWithID}>
+      <button title="Add to Daily Activity" className="rounded-md border p-2 bg-purple-700 text-green-400 hover:bg-green-400 hover:text-black-500">
+        <span className="sr-only">Add to Daily Activity</span>
+        <PlusIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
 
+export function RemoveMentalModel({ id }: { id: string }) {
+  const removeMentalModelWithID = removeMentalModel.bind(null, id);
+  return (
+    <form action={removeMentalModelWithID}>
+      <button title="Remove from Daily Activity" className="rounded-md border p-2 bg-purple-700 text-green-400 hover:bg-green-400 hover:text-black-500">
+        <span className="sr-only">Remove from Daily Activity</span>
+        <BackspaceIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function RemoveMentalModelDA({ id }: { id: string }) {
+  const removeMentalModelDAWithID = removeMentalModelDA.bind(null, id);
+  return (
+    <form action={removeMentalModelDAWithID}>
+      <button title="Remove from Daily Activity" className="rounded-md border p-2 bg-purple-700 text-green-400 hover:bg-green-400 hover:text-black-500">
+        <span className="sr-only">Remove from Daily Activity</span>
+        <BackspaceIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
 
 {/*export function CreateInvoice() {
   return (

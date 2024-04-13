@@ -1,7 +1,7 @@
 import { fetchMentalModelPages } from "@/app/lib/data";
 import Pagination from "@/app/ui/mentalmodels/pagination";
 import MentalModelsTable from "@/app/ui/mentalmodels/table";
-import Search from "@/app/ui/search";
+import Search from "@/app/ui/mentalmodels/search";
 
 export default async function Page ({
     searchParams,

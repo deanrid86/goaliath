@@ -1,12 +1,12 @@
 import { CheckCircleIcon, TrashIcon, Bars4Icon, PlusIcon, BackspaceIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { addSpecificStep, addSpecificStepNo, addStep, addStepNo, completeGoal, completeSpecificStep, completeSpecificStepNo, completeStep, completeStepNo, deleteGoal} from '@/app/lib/actions';
+import { addSpecificStep, addSpecificStepNo, addSpecificStepNoDA, addStep, addStepNo, completeGoal, completeSpecificStep, completeSpecificStepDA, completeSpecificStepNo, completeStep, completeStepNo, deleteGoal} from '@/app/lib/actions';
 
 export function GoalDetail ({ id }: { id: string }){
 return (
     <Link
     href={`/dashboard/goals/${id}/details`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-green-500"
       title="Goal Details"
     >
       <Bars4Icon className="w-5" />
@@ -18,7 +18,7 @@ export function SpecificStepDetail ({ id, stepid }: { id: string; stepid: string
   return (
       <Link
       href={`/dashboard/goals/${id}/details/${stepid}/dailysteps`}
-        className="rounded-md border p-2 hover:bg-gray-100"
+        className="rounded-md border p-2 hover:bg-green-500"
         title="Specific Step Details"
       >
         <Bars4Icon className="w-5" />
@@ -55,7 +55,7 @@ export function CompleteGoal({ id }: { id: string }) {
   const completeGoalWithID = completeGoal.bind(null, id);
   return (
     <form action={completeGoalWithID}>
-      <button title="Goal Complete?" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Goal Complete?" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Completed?</span>
         <CheckCircleIcon className="w-5" />
       </button>
@@ -67,7 +67,7 @@ export function CompleteStep({ id }: { id: string }) {
   const completeStepWithID = completeStep.bind(null, id);
   return (
     <form action={completeStepWithID}>
-      <button title="Step Complete" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Step Complete" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Completed?</span>
         <CheckCircleIcon className="w-5" />
       </button>
@@ -79,7 +79,7 @@ export function CompleteStepNo({ id }: { id: string }) {
   const completeStepNoWithID = completeStepNo.bind(null, id);
   return (
     <form action={completeStepNoWithID}>
-      <button title="Step Not Complete" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Step Not Complete" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Completed?</span>
         <BackspaceIcon className="w-5" />
       </button>
@@ -91,7 +91,7 @@ export function AddStep({ id }: { id: string }) {
   const addStepWithID = addStep.bind(null, id);
   return (
     <form action={addStepWithID}>
-      <button title="Add to Daily Activity" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Add to Daily Activity" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Add to Daily Activity</span>
         <PlusIcon className="w-5" />
       </button>
@@ -103,7 +103,7 @@ export function AddStepNo({ id }: { id: string }) {
   const addStepNoWithID = addStepNo.bind(null, id);
   return (
     <form action={addStepNoWithID}>
-      <button title="Dont Add to Daily Activity" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Dont Add to Daily Activity" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Dont Add to Daily Activity</span>
         <ArrowUturnLeftIcon className="w-5" />
       </button>
@@ -115,7 +115,19 @@ export function CompleteSpecificStep({ id }: { id: string }) {
   const completeSpecificStepWithID = completeSpecificStep.bind(null, id);
   return (
     <form action={completeSpecificStepWithID}>
-      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-green-500">
+        <span className="sr-only">Completed?</span>
+        <CheckCircleIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function CompleteSpecificStepDA({ id }: { id: string }) {
+  const completeSpecificStepDAWithID = completeSpecificStepDA.bind(null, id);
+  return (
+    <form action={completeSpecificStepDAWithID}>
+      <button title="Mark Step as Complete" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Completed?</span>
         <CheckCircleIcon className="w-5" />
       </button>
@@ -127,7 +139,7 @@ export function CompleteSpecificStepNo({ id }: { id: string }) {
   const completeSpecificStepNoWithID = completeSpecificStepNo.bind(null, id);
   return (
     <form action={completeSpecificStepNoWithID}>
-      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Step Complete?" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Completed?</span>
         <BackspaceIcon className="w-5" />
       </button>
@@ -139,7 +151,7 @@ export function AddSpecificStep({ id }: { id: string }) {
   const addSpecificStepWithID = addSpecificStep.bind(null, id);
   return (
     <form action={addSpecificStepWithID}>
-      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Add to Daily Activity?</span>
         <PlusIcon className="w-5" />
       </button>
@@ -151,7 +163,19 @@ export function AddSpecificStepNo({ id }: { id: string }) {
   const addSpecificStepNoWithID = addSpecificStepNo.bind(null, id);
   return (
     <form action={addSpecificStepNoWithID}>
-      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Add to Daily Activity?" className="rounded-md border p-2 hover:bg-green-500">
+        <span className="sr-only">Add to Daily Activity?</span>
+        <ArrowUturnLeftIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function AddSpecificStepNoDA({ id }: { id: string }) {
+  const addSpecificStepNoDAWithID = addSpecificStepNoDA.bind(null, id);
+  return (
+    <form action={addSpecificStepNoDAWithID}>
+      <button title="Remove from Daily Activity?" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Add to Daily Activity?</span>
         <ArrowUturnLeftIcon className="w-5" />
       </button>
@@ -163,7 +187,7 @@ export function DeleteGoal({ id }: { id: string }) {
   const deleteGoalWithId = deleteGoal.bind(null, id);
   return (
     <form action={deleteGoalWithId}>
-      <button title="Delete Goal" className="rounded-md border p-2 hover:bg-gray-100">
+      <button title="Delete Goal" className="rounded-md border p-2 hover:bg-green-500">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>

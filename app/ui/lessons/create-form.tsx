@@ -134,7 +134,7 @@ export default function Form () {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Lesson</Button>
+        <Button className="bg-teal-300 text-orange-300 hover:bg-black-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black-500" type="submit">Create Lesson</Button>
       </div>
     </form>
   );

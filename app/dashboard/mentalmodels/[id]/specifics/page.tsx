@@ -3,6 +3,7 @@ import Breadcrumbs from '@/app/ui/mentalmodels/breadcrumbs';
 import { fetchMentalModelById} from '@/app/lib/data';
 import ViewMentalModelForm from '@/app/ui/mentalmodels/specifics-form';
 import Image from 'next/image';
+import { AddMentalModel, RemoveMentalModel } from '@/app/ui/mentalmodels/buttons';
  
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
@@ -10,6 +11,8 @@ export default async function Page({ params }: { params: { id: string } }) {
         fetchMentalModelById(id),
        
       ]);
+
+      
 
   return (
     <main>
@@ -130,7 +133,11 @@ export default async function Page({ params }: { params: { id: string } }) {
         
         
       </div>
-      <ViewMentalModelForm mentalmodel={mentalmodel} />
+      <div className="flex flex-row p-2">
+      <AddMentalModel id={mentalmodel.modelid}/>
+      <RemoveMentalModel id={mentalmodel.modelid}/>
+      <p className="ml-2">Has this mental model been added to you daily actions: {mentalmodel.addstatus}</p>
+      </div>
     </main>
   );
 }

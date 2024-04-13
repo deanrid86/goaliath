@@ -1,7 +1,7 @@
 import { fetchGoalPages } from "@/app/lib/data";
 import Pagination from "@/app/ui/goals/pagination";
 import GoalsTable from "@/app/ui/goals/table";
-import Search from "@/app/ui/search";
+import Search from "@/app/ui/goals/search";
 
 export default async function Page ({
     searchParams,

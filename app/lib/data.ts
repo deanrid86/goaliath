@@ -19,6 +19,7 @@ import {
   AssistantType,
   MentalModelsTable,
   CombinedPlannerStep,
+  CombinedPlannerStep2,
   CombinedGoalandHighLevelDetail,
   
 
@@ -325,7 +326,8 @@ export async function fetchMentalModelById(id: string) {
         mentalmodels.tips,
         mentalmodels.relatedmodels,
         mentalmodels.sourcesreferences,
-        mentalmodels.imageurl
+        mentalmodels.imageurl,
+        mentalmodels.addstatus
       FROM mentalmodels
       WHERE mentalmodels.modelid = ${id};
     `;
@@ -481,7 +483,7 @@ export async function fetchMentalModelsByAddStatus() {
       mentalmodels.imageurl,
       mentalmodels.addstatus
       FROM mentalmodels
-      WHERE addstatus = 'yes';
+      WHERE addstatus = 'Yes';
     `;
 
     // Convert the data into a more friendly structure if needed
@@ -494,6 +496,37 @@ export async function fetchMentalModelsByAddStatus() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch mental models.');
+  }
+}
+
+export async function fetchLessonsByAddStatus() {
+  noStore(); 
+  try {
+    const data = await sql<LessonForm>`
+      SELECT
+      lessonfields.id,
+        lessonfields.lessonauthor,
+        lessonfields.lesson,
+        lessonfields.lessontype,
+        lessonfields.lessonuse,
+        lessonfields.lessonnotes,
+        lessonfields.addstatus,
+        lessonfields.lessonsource,
+        lessonfields.lessondate
+      FROM lessonfields
+      WHERE addstatus = 'Yes';
+    `;
+
+    // Convert the data into a more friendly structure if needed
+    const lessons = data.rows.map((lesson) => ({
+      ...lesson,
+      // You can add any additional transformations here if necessary
+    }));
+
+    return lessons; // Returns an array of all mental models with addstatus 'yes'
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch lessons.');
   }
 }
 
@@ -820,7 +853,7 @@ export async function fetchLatestLessons() {
   export async function fetchSpecificLevelStepsAdd() {
     noStore();
     try {
-      const data = await sql`
+      const data = await sql<CombinedPlannerStep2>`
         SELECT 
           goalplannerspecific.id AS specific_id,
           goalplannerspecific.highlevelid,

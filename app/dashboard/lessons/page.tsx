@@ -1,7 +1,7 @@
-"use client";
+
 
 import Pagination from '@/app/ui/lessons/pagination';
-import Search from '@/app/ui/search';
+import Search from '@/app/ui/lessons/search';
 import Table from '@/app/ui/lessons/table';
 import { CreateLesson } from '@/app/ui/lessons/buttons';
 import { Suspense } from 'react';
@@ -25,19 +25,23 @@ export default async function Page({
 
   return (
     <div className="w-full"> {/*Div with a full width container*/}
-      <div className="flex w-full items-center justify-between p-2"> {/* div element with a combination of flex and width settings, aligning its children in the center and justifying the space between them.*/}
-        <h1 className="text-2xl text-white ">Lessons</h1>
-      </div>
-      <div>
-        <h2 className='text-white text-xl bg-black-300 rounded-xl p-2'>Search for a lesson you have learned from a book or other resource</h2>
-      </div>
+      <div className="mx-auto max-w-4xl p-4">
+                <h1 className="text-3xl font-bold text-center">Your Life Lessons</h1>
+                <p className="mt-4 text-lg text-gray-600">
+                Lessons learned from our experiences, readings, and the wisdom of others form an invaluable part of
+                 our personal and professional growth. On this page, you can catalog and revisit the key lessons youve 
+                 gathered from a variety of sources like books, podcasts, seminars, and life experiences. Each entry serves 
+                 as a building block for your understanding and decision-making processes. By integrating these lessons 
+                 into your daily actions, you reinforce and apply your knowledge consistently, turning insight into habitual wisdom. 
+                 Whether youre reflecting on past lessons or planning future endeavors, this repository is designed to keep your 
+                 valuable learnings accessible and top of mind.
+                </p>
+            </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8 p-2">
         <Search placeholder="Search lessons..." />
         <CreateLesson />
       </div>
-      <div>
-        <h2 className='text-white text-xl bg-black-300 rounded-xl p-2'>My Lesson List</h2>
-      </div>
+      
         <Suspense key={query + currentPage}>
         <Table query={query} currentPage={currentPage} />
         </Suspense>

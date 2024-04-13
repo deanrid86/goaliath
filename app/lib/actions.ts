@@ -455,6 +455,16 @@ export async function completeSpecificStep(id: string) {
   redirect('/dashboard/goals');
 }
 
+export async function completeSpecificStepDA(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statuscomplete = 'Yes'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/todaysactions');
+  redirect('/dashboard/todaysactions');
+}
+
 export async function completeSpecificStepNo(id: string) {
   await sql`
     UPDATE goalplannerspecific 
@@ -483,6 +493,76 @@ export async function addSpecificStepNo(id: string) {
   `;
   revalidatePath('/dashboard/goals');
   redirect('/dashboard/goals');
+}
+
+export async function addSpecificStepNoDA(id: string) {
+  await sql`
+    UPDATE goalplannerspecific 
+    SET statusadd = 'No'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/todaysactions');
+  redirect('/dashboard/todaysactions');
+}
+
+export async function addMentalModel(id: string) {
+  await sql`
+    UPDATE mentalmodels 
+    SET addstatus = 'Yes'
+    WHERE modelid = ${id};
+  `;
+  revalidatePath('/dashboard/mentalmodels');
+  redirect('/dashboard/mentalmodels');
+}
+
+export async function removeMentalModel(id: string) {
+  await sql`
+    UPDATE mentalmodels 
+    SET addstatus = 'no'
+    WHERE modelid = ${id};
+  `;
+  revalidatePath('/dashboard/mentalmodels');
+  redirect('/dashboard/mentalmodels');
+}
+
+export async function removeMentalModelDA(id: string) {
+  await sql`
+    UPDATE mentalmodels 
+    SET addstatus = 'no'
+    WHERE modelid = ${id};
+  `;
+  revalidatePath('/dashboard/todaysactions');
+  redirect('/dashboard/todaysactions');
+}
+
+export async function addLesson(id: string) {
+  await sql`
+    UPDATE lessonfields 
+    SET addstatus = 'Yes'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/lessons');
+  redirect('/dashboard/lessons');
+}
+
+export async function removeLesson(id: string) {
+  await sql`
+    UPDATE lessonfields 
+    SET addstatus = 'no'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/lessons');
+  redirect('/dashboard/lessons');
+}
+
+export async function removeLessonDA(id: string) {
+  await sql`
+    UPDATE lessonfields 
+    SET addstatus = 'no'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/todaysactions');
+  redirect('/dashboard/todaysactions');
 }
   // Function to insert chat data into the database
 export async function insertChatData(uniqueID: string, chatID: string, chatTime:string,  goalResult: string, userGoal: string, userTimeline: string, userHours: string ) {

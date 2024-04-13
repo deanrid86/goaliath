@@ -1,6 +1,9 @@
 
-import {  fetchMentalModelsByAddStatus, fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
+import {  fetchLessonsByAddStatus, fetchMentalModelsByAddStatus, fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
 import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
+import { AddSpecificStepNoDA, CompleteSpecificStepDA } from "@/app/ui/goals/buttons";
+import { RemoveLessonDA } from "@/app/ui/lessons/buttons";
+import { RemoveMentalModelDA } from "@/app/ui/mentalmodels/buttons";
 import { ProgressBar } from "@/app/ui/progressbar";
 import FormEmail from "@/app/ui/todaysactions/formemail";
 
@@ -21,6 +24,7 @@ export default async function GoalViewer() {
 const specificgoal = await fetchSpecificLevelStepsAdd ();
 const specificgoalcomplete = await fetchSpecificLevelStepsComplete ();
 const specificMentalModels = await fetchMentalModelsByAddStatus ();
+const specificLessons = await fetchLessonsByAddStatus ();
 console.log (specificgoal);
 
 return (
@@ -42,50 +46,33 @@ return (
             <div key={index}>
             <div className="bg-gray-300 m-2" >
               <strong>Main Goal Step:</strong> {step.stepdescription} 
-              <br/>Timeframe: {step.timeframe} days
+              <br/>Timeframe: {step.specific_timeframe} days
             </div>
             <div className="bg-gray-200 m-2">
               <p><strong>Step to Work on Today:</strong> {step.specificparsedresult} </p>
               <br/>
-              <p><strong>Timeframe:</strong>To be completed within {step.timeframe} days to keep your goal on track.</p>
+              <p><strong>Timeframe:</strong>To be completed within {step.specific_timeframe} days to keep your goal on track.</p>
               <br />
-              <p><strong>Deadline:</strong> {addDaysToChatTime(step.specificchattime, step.timeframe)}</p>
+              <p><strong>Deadline:</strong> {addDaysToChatTime(step.specificchattime, step.specific_timeframe)}</p>
               <br />
-              <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.timeframe))}</p>
+              <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))}</p>
               {/* ProgressBar component usage */}
               <ProgressBar 
-                timeframe={step.timeframe} 
-                daysLeft={calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.timeframe))} 
+                timeframe={step.specific_timeframe} 
+                daysLeft={calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))} 
               />
+              <div className="flex flex-row justify-right">
+                <CompleteSpecificStepDA id={step.specific_id}/>
+                <AddSpecificStepNoDA id={step.specific_id}/>
+              </div>
             </div>
           </div>
         ))}
            
           </div>
-        <FormEmail/>
+       
           </div>
-          <div>
-        <div >
-          <h3 className='text-white text-xl bg-black-600 rounded-xl p-2 '>Your Completed Steps</h3>
-        </div>
-              <div className="border border-black m-2 p-2">
-                {/* Directly access and display Step 1 */}
-            {specificgoalcomplete.map((step, index) => (
-            <div key={index}>
-            <div className="bg-gray-300 m-2" >
-              <strong>Main Goal Step:</strong> {step.stepdescription} 
-            </div>
-            <div className="bg-gray-200 m-2">
-              <p><strong>Completed Steps:</strong> {step.specificparsedresult} </p>
-              <br/>
-              <p><strong>How Long you Took to Complete:</strong></p>
-             
-            </div>
-          </div>
-        ))}
-              </div>
-              
-          </div>
+         
           <h1 className='text-white text-xl bg-black-600 rounded-xl p-2 '>
             Added Mental Models
           </h1>
@@ -104,9 +91,39 @@ return (
               <br />
               <p><strong>Resources:</strong> {step.sourcesreferences}</p>
             </div>
+            <div>
+              <RemoveMentalModelDA id={step.modelid}/>
+            </div>
           </div>
         ))}
         </div>
+        
+          <h1 className='text-white text-xl bg-black-600 rounded-xl p-2 '>
+            Added Lessons
+          </h1>
+          <div>
+            <div className="border border-black m-2 p-2">
+            {/* Directly access and display Step 1 */}
+            {specificLessons.map((step, index) => (
+            <div key={index}>
+            <div className="bg-gray-300 m-2" >
+              <strong>Lesson :</strong> {step.lesson} 
+            </div>
+            <div className="bg-gray-200 m-2">
+              <p><strong>Description:</strong> {step.lessonnotes} </p>
+              <br/>
+              <p><strong>How to use the lesson:</strong>{step.lessonuse}</p>
+              <br />
+              <p><strong>Resources:</strong> {step.lessonsource}</p>
+            </div>
+            <div>
+              <RemoveLessonDA id={step.id}/>
+            </div>
+          </div>
+        ))}
+        </div>
+        </div>
+        
         </div>
         </div>
     );

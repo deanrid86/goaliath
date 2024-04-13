@@ -7,7 +7,10 @@ import {
   AcademicCapIcon,
   RocketLaunchIcon,
   AdjustmentsVerticalIcon,
-  ShareIcon
+  ShareIcon,
+  PencilSquareIcon,
+  BoltIcon,
+  CalendarDaysIcon
 
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -18,20 +21,13 @@ import clsx from 'clsx';
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
-  },
-  { name: 'Lessons', href: '/dashboard/lessons', icon: AcademicCapIcon },
-  { name: 'Daily Lessons Script', href: '/dashboard/lessons', icon: AcademicCapIcon },
-  { name: 'Goals', href: '/dashboard/goals', icon: RocketLaunchIcon },
-  { name: 'Goal Planner', href: '/dashboard/goal-planner', icon: UserGroupIcon },
-  { name: 'Todays Actions', href: '/dashboard/todaysactions', icon: RocketLaunchIcon},
-  { name: 'Extreme Practice', href: '/dashboard/practice', icon: UserGroupIcon },
-  { name: 'Finances', href: '/dashboard/finances', icon: UserGroupIcon },
-  { name: 'Assistants', href: '/dashboard/assistants', icon: AdjustmentsVerticalIcon },
+  { name: 'Goal Planner', href: '/dashboard/goal-planner', icon: PencilSquareIcon },
+  { name: 'Goals', href: '/dashboard/goals', icon: BoltIcon },
   { name: 'Mental Models', href: '/dashboard/mentalmodels', icon: ShareIcon },
+  { name: 'Lessons', href: '/dashboard/lessons', icon: AcademicCapIcon },
+  { name: 'Todays Actions', href: '/dashboard/todaysactions', icon: CalendarDaysIcon},
+  { name: 'Assistants', href: '/dashboard/assistants', icon: AdjustmentsVerticalIcon },
+  
 ];
 
 
