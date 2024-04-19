@@ -7,6 +7,12 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const formattedDate = date.toISOString().slice(0, 10);
+  return formattedDate;
+}
+
 export const formatDateToLocal = (
   dateStr: string,
   locale: string = 'en-US',
@@ -29,19 +35,28 @@ export function getDateDaysFromToday(days: number): string {
   return today.toISOString().split('T')[0];
 }
 
-export function addDaysToChatTime(chatTime: string, timeFrame: number): string {
-  // Directly parse the chatTime string to a Date object
-  const date = new Date(chatTime);
-
+export function addDaysToChatTime(chatTime: Date, timeFrame: number): string {
   // Add the timeframe to the date
-  date.setDate(date.getDate() + timeFrame);
+  chatTime.setDate(chatTime.getDate() + timeFrame);
 
-  // Return the updated date as a string
-  // The toISOString method returns a date as a string in the format YYYY-MM-DDTHH:mm:ss.sssZ
-  // If you need to maintain the original format, you'll have to format it manually as shown previously
-  return date.toString();
+  // Convert the Date object to an ISO string and slice to get the date part
+  const formattedDate = chatTime.toISOString().slice(0, 10);
 
+  // Return the formatted date
+  return formattedDate; // Outputs date in 'YYYY-MM-DD' format
 }
+
+export function totalHourforStep(userhours: number, timeFrame: number) {
+ 
+ const totalhours =  userhours * timeFrame;
+
+ return totalhours;
+
+};
+
+
+
+
 
 export function addMonthsToChatTime(chatTime: string, months: number): string {
   // Directly parse the chatTime string to a Date object
@@ -72,7 +87,7 @@ export function calculateDaysLeft(deadlineString: string): number {
   const now = new Date();
 
   // Calculate the difference in milliseconds
-  const diffTime = Math.abs(deadline.getTime() - now.getTime());
+  const diffTime = deadline.getTime() - now.getTime(); // Removed Math.abs()
 
   // Convert the difference to days
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

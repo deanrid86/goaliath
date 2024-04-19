@@ -734,6 +734,7 @@ export async function fetchLatestLessons() {
     }
 
   }
+  
   export async function fetchLatestGoals() {
     noStore();
     try {
@@ -757,6 +758,16 @@ export async function fetchLatestLessons() {
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest goals.');
+    }
+  }
+
+  export async function fetchRandomMentalModel() {
+    try {
+      const result = await sql`SELECT * FROM mentalmodels ORDER BY RANDOM() LIMIT 1`;
+      return result.rows[0]; // Assuming `sql` returns an object with a `rows` array
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch a random mental model.');
     }
   }
 
@@ -784,6 +795,98 @@ export async function fetchLatestLessons() {
       throw new Error('Failed to fetch all the latest goals.');
     }
   }
+
+  export async function fetchCompletionPercentage() {
+    noStore();
+    try {
+      const data = await sql <{ total_count: number, completed_count: number, percentage_complete: number }>`
+        SELECT
+          COUNT(*) AS total_count,
+          COUNT(*) FILTER (WHERE completestatus = 'yes') AS completed_count,
+          ROUND(
+            (COUNT(*) FILTER (WHERE completestatus = 'yes') * 100.0) / GREATEST(COUNT(*), 1)  -- Avoid division by zero
+          , 2) AS percentage_complete
+        FROM
+          goalplanner
+        `;
+  
+      // Log the raw data response from the query
+      console.log("Completion Percentage Data:", data.rows[0]);
+  
+      // Assuming the SQL query always returns at least one row
+      const completionStats = data.rows[0];
+  
+      // Log the processed data that will be returned
+      console.log("Processed Completion Percentage:", completionStats);
+  
+      return completionStats;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch completion percentage.');
+    }
+  }
+
+  export async function fetchHighCompletionPercentage(highLevelId:string) {
+    noStore();
+    try {
+      const data = await sql <{ total_count: number, completed_count: number, percentage_complete: number }>`
+        SELECT
+          COUNT(*) AS total_count,
+          COUNT(*) FILTER (WHERE statuscomplete = 'yes') AS completed_count,
+          ROUND(
+            (COUNT(*) FILTER (WHERE statuscomplete = 'yes') * 100.0) / GREATEST(COUNT(*), 1)  -- Avoid division by zero
+          , 2) AS percentage_complete
+        FROM
+          highlevelsteps
+        WHERE
+          goalid = ${highLevelId}`;
+  
+      // Log the raw data response from the query
+      console.log("High Completion Percentage Data:", data.rows[0]);
+  
+      // Assuming the SQL query always returns at least one row
+      const completionStats = data.rows[0];
+  
+      // Log the processed data that will be returned
+      console.log("Processed High Completion Percentage:", completionStats);
+  
+      return completionStats;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch high completion percentage.');
+    }
+  }
+
+  export async function fetchSpecificCompletionPercentage(highLevelId:string) {
+    noStore();
+    try {
+      const data = await sql <{ total_count: number, completed_count: number, percentage_complete: number }>`
+        SELECT
+          COUNT(*) AS total_count,
+          COUNT(*) FILTER (WHERE statuscomplete = 'yes') AS completed_count,
+          ROUND(
+            (COUNT(*) FILTER (WHERE statuscomplete = 'yes') * 100.0) / GREATEST(COUNT(*), 1)  -- Avoid division by zero
+          , 2) AS percentage_complete
+        FROM
+          goalplannerspecific
+        WHERE
+          highlevelid = ${highLevelId}`;
+  
+      // Log the raw data response from the query
+      console.log("Specific Completion Percentage Data:", data.rows[0]);
+  
+      // Assuming the SQL query always returns at least one row
+      const completionStats = data.rows[0];
+  
+      // Log the processed data that will be returned
+      console.log("Processed Specific Completion Percentage:", completionStats);
+  
+      return completionStats;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch specific completion percentage.');
+    }
+  }
   
   export async function fetchAllLatestGoalsAndHighSteps() {
     noStore();
@@ -804,7 +907,45 @@ export async function fetchLatestLessons() {
         FROM goalplanner
         JOIN 
         highlevelsteps ON highlevelsteps.goalid = goalplanner.uniqueid
-        ORDER BY goalplanner.chattime DESC`;
+        WHERE goalplanner.chattime DESC`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestGoals = data.rows.map((goal) => ({
+        ...goal,
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed all latestGoals:", latestGoals);
+  
+      return latestGoals;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch all the latest goals.');
+    }
+  }
+
+  export async function fetchAllLatestGoalsAndHighStepsStatus() {
+    noStore();
+    try {
+      const data = await sql <CombinedGoalandHighLevelDetail>`
+        SELECT
+         goalplanner.uniqueid AS parent_id, 
+         goalplanner.usergoal,
+          goalplanner.usertimeline, 
+          goalplanner.userhours, 
+          goalplanner.chatid, 
+          goalplanner.chattime,
+        highlevelsteps.id AS child_id,
+          highlevelsteps.stepdescription,
+          highlevelsteps.timeframe,
+          highlevelsteps.statuscomplete AS parent_statuscomplete,
+          highlevelsteps.statusadd AS parent_statusadd
+        FROM goalplanner
+        JOIN 
+        highlevelsteps ON highlevelsteps.goalid = goalplanner.uniqueid
+        WHERE highlevelsteps.statusadd = 'yes'`;
   
       // Log the raw data response from the query
       console.log("Raw data response:", data);
@@ -848,12 +989,40 @@ export async function fetchLatestLessons() {
     }
   }
 
+  export async function fetchCountOfYesInStatusAdd() {
+    noStore();
+    try {
+      const data = await sql<{ yes_count: number }>`
+        SELECT 
+          COUNT(*) AS yes_count
+        FROM 
+          goalplannerspecific
+        WHERE 
+          statusadd = 'Yes'`;
+
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+
+      // Assuming the query always returns one row with the count
+      const yesCount = data.rows[0].yes_count;
+  
+      // Log the processed data that will be returned
+      console.log("Processed count of 'Yes' in statusadd:", yesCount);
+  
+      return yesCount;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the count of Yes in statusadd.');
+    }
+}
+
+
  
 
   export async function fetchSpecificLevelStepsAdd() {
     noStore();
     try {
-      const data = await sql<CombinedPlannerStep2>`
+      const data = await sql<CombinedPlannerStep>`
         SELECT 
           goalplannerspecific.id AS specific_id,
           goalplannerspecific.highlevelid,
@@ -861,18 +1030,20 @@ export async function fetchLatestLessons() {
           goalplannerspecific.specificparsedresult,
           goalplannerspecific.statuscomplete,
           goalplannerspecific.statusadd,
+          goalplannerspecific.timeframe AS specific_timeframe,
           highlevelsteps.id AS parent_id,
           highlevelsteps.stepdescription,
           highlevelsteps.timeframe,
           highlevelsteps.statuscomplete AS parent_statuscomplete,
-          highlevelsteps.statusadd AS parent_statusadd
+          highlevelsteps.statusadd AS parent_statusadd,
+          COUNT(case when highlevelsteps.statusadd = 'Yes' then 1 else null end) OVER () AS addstatus_yes_count
         FROM 
           goalplannerspecific
         JOIN 
           highlevelsteps ON goalplannerspecific.highlevelid = highlevelsteps.id
         WHERE 
           goalplannerspecific.statusadd = 'Yes'`;
-  
+
       // Log the raw data response from the query
       console.log("Raw data response:", data);
   
@@ -889,7 +1060,60 @@ export async function fetchLatestLessons() {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest specific goals.');
     }
-  }
+}
+
+
+  export async function fetchFullLevelStepsAdd() {
+    noStore();
+    try {
+      const data = await sql<CombinedPlannerStep>`
+        SELECT 
+          goalplannerspecific.id AS specific_id,
+          goalplannerspecific.highlevelid,
+          goalplannerspecific.specificchattime,
+          goalplannerspecific.specificparsedresult,
+          goalplannerspecific.statuscomplete,
+          goalplannerspecific.statusadd,
+          goalplannerspecific.timeframe AS specific_timeframe,
+          
+          highlevelsteps.id AS parent_id,
+          highlevelsteps.stepdescription,
+          highlevelsteps.timeframe,
+          highlevelsteps.statuscomplete AS parent_statuscomplete,
+          highlevelsteps.statusadd AS parent_statusadd,
+
+          goalplanner.uniqueid AS grandparent_id,
+          goalplanner.usergoal,
+          goalplanner.usertimeline,
+          goalplanner.userhours,
+          goalplanner.chatid,
+          goalplanner.chattime AS goalplanner_chattime
+        FROM 
+          goalplannerspecific
+        JOIN 
+          highlevelsteps ON goalplannerspecific.highlevelid = highlevelsteps.id
+        JOIN 
+          goalplanner ON highlevelsteps.goalid = goalplanner.uniqueid
+        WHERE 
+          goalplannerspecific.statusadd = 'Yes'`;
+
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestSpecific = data.rows.map(spec => ({
+        ...spec,
+        // Any additional processing or renaming of fields can be done here
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestSpecific:", latestSpecific);
+  
+      return latestSpecific;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest specific goals.');
+    }
+}
 
   export async function fetchSpecificLevelStepsComplete() {
     noStore();

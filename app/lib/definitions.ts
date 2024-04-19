@@ -145,7 +145,7 @@ export type HighLevelDetail = {
 export type CombinedGoalandHighLevelDetail = {
   uniqueid: string;
   chatid: string;
-  chattime: string;
+  chattime: Date;
   usergoal: string;
   usertimeline: number;
   userhours: number;
@@ -190,6 +190,13 @@ export type CombinedPlannerStep = {
   stepdescription: string;
   orderindex: number;
   specific_id: string;
+  grandparent_id:string;
+  usergoal:string;
+  usertimeline:number;
+  userhours:number;
+  chatid:string;
+  goalplanner_chattime:Date;
+  addstatus_yes_count: number;
   
   
 

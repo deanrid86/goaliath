@@ -1,92 +1,187 @@
 import { Card } from '@/app/ui/dashboard/cards';
+import Image from 'next/image';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import IncomeChart from '@/app/ui/dashboard/income-chart';
 import ExpenditureChart from '@/app/ui/dashboard/expenditure-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import LatestGoals from '@/app/ui/dashboard/latest-lessons2';
-import {  fetchLatestInvoices, fetchCardData, fetchHighLevelStepsComplete,fetchCardDataFinance, fetchHighLevelSteps, fetchAllLatestGoals, fetchSpecificLevelStepsComplete } from '@/app/lib/data';
+import {  fetchLatestInvoices, fetchCardData, fetchCardDataFinance, fetchHighLevelSteps, fetchAllLatestGoals, fetchSpecificLevelStepsComplete, fetchCompletionPercentage, fetchSpecificLevelStepsAdd, fetchCountOfYesInStatusAdd, fetchLatestGoals, fetchRandomMentalModel } from '@/app/lib/data';
 import LatestGoalCards from '@/app/ui/goalplanner/latest-goals';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton } from '@/app/ui/skeletons';
 import LatestLessons from '@/app/ui/dashboard/latest-lessons';
 import DashGoalCard from '@/app/ui/dashboard/goalcard';
+import {
+  BanknotesIcon,
+  ClockIcon,
+  UserGroupIcon,
+  InboxIcon,
+  AcademicCapIcon,
+  CurrencyPoundIcon,
+  ViewfinderCircleIcon,
+  CalculatorIcon,
+  ArrowUpIcon,
+  CalendarDaysIcon,
+  BoltIcon,
+  HandThumbUpIcon,
+  ClipboardDocumentCheckIcon,
+} from '@heroicons/react/24/outline';
+
 
 
 
 
  
 export default async function Page() {
+
+  const complete = await fetchCompletionPercentage ();
+  const statusadd = await fetchCountOfYesInStatusAdd ();
+  const latestGoals= await fetchLatestGoals ();
+  const mentalmodel = await fetchRandomMentalModel ();
   
-  const latestInvoices = await fetchLatestInvoices();
-  const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = await fetchCardData();
-  const {
-    numberOfLessons,
-    totalMonthlyExpenditure,
-    bufferExpenditure,
-    minimumDailyEarnings
-    } = await fetchCardDataFinance();
-  const highStepsAdded = await fetchHighLevelSteps();
-  const allgoals =await fetchAllLatestGoals();
-  const completedSteps = await fetchHighLevelStepsComplete();
-  const completedSpecificSteps = await fetchSpecificLevelStepsComplete ();
+    return (
+        <div className="flex flex-col h-screen"> {/* Ensures that the container takes the full height of the viewport */}
+            {/* First div, taking 1/5 of the space */}
+            <div className="flex flex-row items-center justify-between border border-black bg-gray-200 p-4"> {/* You can replace 'bg-gray-200' with your own class or style */}
 
-
-  const allGoalTotal = allgoals.length;
-  const allHighStepsAdd =highStepsAdded.length;
-  const allCompletedSteps = completedSteps.length;
-  const allCompletedSpecifiSteps = completedSpecificSteps.length;
-
-  
-
-  return (
-    <main>
-      <h1 className =" 2mb-4 text-xl md:text-2xl text-black"> 
-        Dashboard
-      </h1>
-      <DashGoalCard/>
-     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card title="Total Active Goals" value={allGoalTotal} type="goals" />
-        <Card title="Current Goal Steps added to Actions" value={allHighStepsAdd} type="days" />
-        <Card title="Amount of Completed Goal Steps" value={allCompletedSteps} type="buffer" />
-        <Card title="Amount of Completed Daily Steps" value={allCompletedSpecifiSteps} type="minimum" />
-      </div>
-      <div className='bg-white rounded-xl mt-2 mb-2 p-2'>
-        <h2>Lastest Goals Created</h2>
-        <LatestGoalCards/>
-      </div>
-      <div>
-      <h1>All My Goals</h1>
-      {allgoals.length > 0 ? (
-        <div>
-          {allgoals.map((goal, index) => (
-            <div key={index} className="goal">
-              <h2>Goal {index + 1}: {goal.usergoal}</h2>
-              {/* You can add more details about each goal here */}
+              <Card title="Total No. of Goals" value= {complete.total_count} type="goals"/>
+              <Card title="Goals Completed / %" value= {complete.completed_count} type="goals_complete"/>
+              <Card title="No. of Specific Steps Working on" value= {statusadd} type="added_step"/>
+              <Card title="Last Completed Step" value= "sean" type="steps_complete"/>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p>Loading goals...</p>
-      )}
-    </div>
-    
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-      { /* <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-          </Suspense>*/}
-        {/*<Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>*/}
-        <IncomeChart />
-        <LatestLessons />
 
+
+            {/* Second section, taking 2/5 of the space, split into two rows */}
+            <div className="flex-grow border border-black" style={{ flexBasis: '40%' }}>
+                <div className="flex flex-row h-1/2">
+                   
+                      
+                        {/* Goals div split into 2x2 grid */}
+          
+                        <div className="flex-1 border border-black grid grid-cols-2 grid-rows-2 gap-2 p-2">
+            {latestGoals.map((content, index) => (
+              <div key={index} className="border border-black flex flex-col items-center justify-center p-2 ">
+                <BoltIcon className="h-5 w-5 "/>
+                <h4><strong>Goal: </strong>{content.usergoal}</h4>
+                <p><strong>Completion Time (Months):</strong> {content.usertimeline || ''}</p>
+                <p><strong>Dedicated Daily Hours:</strong> {content.userhours || ''}</p>
+              </div>
+            ))}
+          </div>
+                    <div className="flex-1 border border-black overflow-y-auto"> {/* Right half of the upper 2/5 div */}
+                        {/* Additional components or content */}
+                        <div className = "p-2">
+                        <LatestLessons />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-row h-1/2">
+                    <div className="flex-1 border border-black"> {/* Left half of the lower 2/5 div */}
+                        {/* Additional components or content */}
+                        <h3>Mental Models</h3>
+                        <div className='mb-2 border border-black rounded-lg bg-gray-50'> {/*Parent Div*/}
         
+      <div className="flex "> {/* Top Horizontal Div */}
+  <div> {/* Div for Image */}
+    <Image
+      src={mentalmodel.imageurl}
+      className=""
+      width={150}
+      height={150}
+      alt="A abstract interpretation of the mental model"
+    />
+  </div>
+
+  <div className="flex flex-1"> {/* Remaining DIV to the right of the Image */}
+    <div className="flex flex-col flex-1"> {/* Container for Model Name and Skill Level */}
+      <div className="flex-1 border border-black p-2"> {/* Div for Model Name */}
+        <h3><strong>Model Name</strong></h3>
+        <p>{mentalmodel.modelname}</p>
       </div>
-    </main>
-  );
+      <div className="flex-1 border border-black p-2"> {/* Div for Skill Level */}
+        <h3><strong>Skill Level Required</strong></h3>
+        <p>{mentalmodel.skilllevel}</p>
+      </div>
+    </div>
+
+    <div className="flex flex-col flex-1"> {/* Container for Category and Subcategory */}
+      <div className="flex-1 border border-black p-2"> {/* Div for Category */}
+        <h3><strong>Category</strong></h3>
+        <p>{mentalmodel.category}</p>
+      </div>
+      <div className="flex-1 border border-black p-2"> {/* Div for Subcategory */}
+        <h3><strong>Subcategory</strong></h3>
+        <p>{mentalmodel.subcategory}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{/* Div for middle main part */}
+<div className="flex">
+<div className='border border-black flex-1 p-2'>
+          <h3><strong>Description</strong></h3>
+        <div>
+          <pre>{mentalmodel.bigdescription}</pre>
+        </div>
+        </div>
+        <div className='border border-black flex-1 p-2'>
+          <h3><strong>Real World Examples</strong></h3>
+        <div>
+          <pre>{mentalmodel.realexamples}</pre>
+        </div>
+        </div>
+</div>   
+
+{/* Div for bottom part */}   
+
+<div className="flex">
+<div className='border border-black flex-1'>
+<div className='border border-black p-2 '>
+          <h3><strong>Situations Used</strong></h3>
+        <div>
+          <p>{mentalmodel.situationsused}</p>
+        </div>
+        </div>
+</div>
+<div className='border border-black flex-1'>
+<div className='border border-black p-2 '>
+          <h3><strong>Tips</strong></h3>
+        <div>
+          <p>{mentalmodel.tips}</p>
+        </div>
+        </div>
+</div>
+
+</div>
+
+<div className="flex">
+<div className='border border-black flex-1'>
+<div className='border border-black p-2 '>
+          <h3><strong>Related Models</strong></h3>
+        <div>
+          <p>{mentalmodel.relatedmodels}</p>
+        </div>
+        </div>
+  </div>
+  <div className='border border-black flex-1'>
+  <div className='border border-black p-2 '>
+          <h3><strong>Further References</strong></h3>
+        <div>
+          <p>{mentalmodel.sourcesreferences}</p>
+        </div>
+        </div>
+  </div>
+</div>
+</div>
+                    </div>
+                    <div className="flex-1 border border-black"> {/* Right half of the lower 2/5 div */}
+                        {/* Additional components or content */}
+                        <h3>Diary</h3>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    );
 }

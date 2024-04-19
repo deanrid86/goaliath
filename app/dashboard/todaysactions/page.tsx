@@ -1,5 +1,5 @@
 
-import {  fetchLessonsByAddStatus, fetchMentalModelsByAddStatus, fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
+import {  fetchCompletionPercentage, fetchLessonsByAddStatus, fetchMentalModelsByAddStatus, fetchSpecificCompletionPercentage, fetchSpecificLevelStepsAdd, fetchSpecificLevelStepsComplete} from "@/app/lib/data";
 import {addDaysToChatTime, calculateDaysLeft } from "@/app/lib/utils";
 import { AddSpecificStepNoDA, CompleteSpecificStepDA } from "@/app/ui/goals/buttons";
 import { RemoveLessonDA } from "@/app/ui/lessons/buttons";
@@ -25,7 +25,14 @@ const specificgoal = await fetchSpecificLevelStepsAdd ();
 const specificgoalcomplete = await fetchSpecificLevelStepsComplete ();
 const specificMentalModels = await fetchMentalModelsByAddStatus ();
 const specificLessons = await fetchLessonsByAddStatus ();
-console.log (specificgoal);
+const dean = await fetchCompletionPercentage ();
+const dean2 = dean.percentage_complete;
+
+
+
+const currenttime = new Date ();
+const currentimestring = currenttime.toISOString();
+
 
 return (
 
@@ -37,7 +44,7 @@ return (
                 </p>
           </div>
         <div >
-          <h3 className='text-white text-xl bg-black-600 rounded-xl p-2 '>What Steps do you want to Complete Today?</h3>
+          <h3 className='text-green-500 text-xl bg-black-600 rounded-xl p-2 '>What Steps do you want to Complete Today?</h3>
         </div>
           <div>
             <div className="border border-black m-2 p-2">
@@ -57,10 +64,12 @@ return (
               <br />
               <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))}</p>
               {/* ProgressBar component usage */}
+              
               <ProgressBar 
                 timeframe={step.specific_timeframe} 
                 daysLeft={calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))} 
               />
+            
               <div className="flex flex-row justify-right">
                 <CompleteSpecificStepDA id={step.specific_id}/>
                 <AddSpecificStepNoDA id={step.specific_id}/>
@@ -73,9 +82,9 @@ return (
        
           </div>
          
-          <h1 className='text-white text-xl bg-black-600 rounded-xl p-2 '>
+          <h3 className='text-green-500 text-xl bg-black-600 rounded-xl p-2 '>
             Added Mental Models
-          </h1>
+          </h3>
           <div>
             <div className="border border-black m-2 p-2">
             {/* Directly access and display Step 1 */}
@@ -98,9 +107,9 @@ return (
         ))}
         </div>
         
-          <h1 className='text-white text-xl bg-black-600 rounded-xl p-2 '>
+          <h3 className='text-green-500 text-xl bg-black-600 rounded-xl p-2 '>
             Added Lessons
-          </h1>
+          </h3>
           <div>
             <div className="border border-black m-2 p-2">
             {/* Directly access and display Step 1 */}
@@ -123,7 +132,7 @@ return (
         ))}
         </div>
         </div>
-        
+        {dean2}
         </div>
         </div>
     );

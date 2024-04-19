@@ -1,16 +1,28 @@
 import React from 'react';
 
-import { fetchAllGoalStepsById, fetchSpecificGoalStepsById} from '@/app/lib/data';
+import { fetchAllGoalStepsById, fetchCompletionPercentage, fetchFullLevelStepsAdd, fetchSpecificCompletionPercentage, fetchSpecificGoalStepsById, fetchSpecificLevelStepsAdd} from '@/app/lib/data';
 import ViewMentalModelForm from '@/app/ui/mentalmodels/specifics-form';
 import Image from 'next/image';
 import {
  ArrowDownCircleIcon
 } from '@heroicons/react/24/outline';
 import { AddSpecificStep, AddSpecificStepNo, CompleteSpecificStep, CompleteSpecificStepNo } from '@/app/ui/goals/buttons';
+import {addDaysToChatTime, calculateDaysLeft, totalHourforStep } from "@/app/lib/utils";
+import { ProgressBar } from "@/app/ui/progressbar";
  
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
     const specificsteps = await fetchAllGoalStepsById(id);
+
+    const totalgoals = await fetchCompletionPercentage ();
+    const totalgoalspercentage = totalgoals.percentage_complete;
+    const goalstotal = totalgoals.total_count;
+    const goalscompleted = totalgoals.completed_count;
+    const specifictotalgoals = await fetchSpecificCompletionPercentage (id);
+    const specifictotalgoalspercentage = specifictotalgoals.percentage_complete;
+    const specifictotalgoalscompleted = specifictotalgoals.completed_count;
+    const specifictotalgoalstotal = specifictotalgoals.total_count;
+    const specificgoal = await fetchFullLevelStepsAdd ();
        
       
 
@@ -60,8 +72,68 @@ export default async function Page({ params }: { params: { id: string } }) {
 ))}
       </div>
       <div className="flex-1 border border-black p-2">
+        <h3><strong>Goal Metrics</strong></h3>
+        <div className="rounded-xl border border-green-500 p-2 my-2">
+          <h4>Goals Completed</h4>
 
-        <p>Dean</p>
+        </div>
+        <div className = "border border-black rounded-xl p-2">
+          <p>
+            Total Amount of Goals Created: {goalstotal}
+          </p>
+          <p>
+            Number of Goals Completed: {goalscompleted}
+          </p>
+          <p>
+           Total percentage of Goals Complete:  {totalgoalspercentage} %
+          </p>
+        </div>
+        <div className="rounded-xl border border-green-500 p-2 my-2">
+          <h4>Step Engagement</h4>
+        </div>
+        <div className = "border border-black rounded-xl p-2">
+          <p>
+            Total Amount of Steps within Goal: {specifictotalgoalstotal}
+          </p>
+          <p>
+            Total Amount of Steps Completed within Goal: {specifictotalgoalscompleted}
+          </p>
+          <p>
+           Total Percentage of Steps Completed within Goal:  {specifictotalgoalspercentage} %
+          </p>
+        </div>
+        <div>
+            <div className="border border-black m-2 p-2">
+            {/* Directly access and display Step 1 */}
+            {specificgoal.map((step, index) => (
+            <div key={index}>
+            <div className="bg-gray-300 m-2" >
+              <strong>Main Goal Step:</strong> {step.stepdescription} 
+             
+            </div>
+            <div className="bg-gray-200 m-2">
+              
+              <p><strong>Timeframe:</strong>To be completed within {step.specific_timeframe} days to keep your goal on track.</p>
+              <br />
+              <p><strong>Total Hours to Dedicate to Step:</strong>{totalHourforStep (step.userhours, step.specific_timeframe)} hours.</p>
+              <br />
+              <p><strong>Deadline (When step should be completed):</strong> {addDaysToChatTime(step.specificchattime, step.specific_timeframe)}</p>
+              <br />
+              <p><strong>Days Left Until Completion:</strong> {calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))}</p>
+              {/* ProgressBar component usage */}
+              <div className='p-2'>
+              <ProgressBar 
+                timeframe={step.specific_timeframe} 
+                daysLeft={calculateDaysLeft(addDaysToChatTime(step.specificchattime, step.specific_timeframe))} 
+              />
+            </div>
+            </div>
+          </div>
+        ))}
+           
+          </div>
+       
+          </div>
       </div>
       </div>
       </div>

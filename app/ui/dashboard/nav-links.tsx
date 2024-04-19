@@ -10,7 +10,10 @@ import {
   ShareIcon,
   PencilSquareIcon,
   BoltIcon,
-  CalendarDaysIcon
+  CalendarDaysIcon,
+  FingerPrintIcon,
+  InboxArrowDownIcon,
+  BookOpenIcon
 
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -27,6 +30,10 @@ const links = [
   { name: 'Lessons', href: '/dashboard/lessons', icon: AcademicCapIcon },
   { name: 'Todays Actions', href: '/dashboard/todaysactions', icon: CalendarDaysIcon},
   { name: 'Assistants', href: '/dashboard/assistants', icon: AdjustmentsVerticalIcon },
+  { name: 'Growth Literature', href: '/dashboard/growth_literature', icon: BookOpenIcon },
+  { name: 'About', href: '/dashboard/about', icon: FingerPrintIcon },
+  { name: 'Contact Us', href: '/dashboard/contactus', icon: InboxArrowDownIcon },
+
   
 ];
 

@@ -9,6 +9,9 @@ import {
   CalculatorIcon,
   ArrowUpIcon,
   CalendarDaysIcon,
+  BoltIcon,
+  HandThumbUpIcon,
+  ClipboardDocumentCheckIcon,
 } from '@heroicons/react/24/outline';
 {/*import { lusitana } from '@/app/ui/fonts';*/}
 
@@ -21,9 +24,15 @@ const iconMap = {
   expenditure: CurrencyPoundIcon,
   buffer: ViewfinderCircleIcon,
   minimum: CalculatorIcon,
-  goals: ArrowUpIcon,
+  goals: BoltIcon,
   month: CalendarDaysIcon,
   days: ClockIcon,
+  goals_complete : HandThumbUpIcon,
+  added_step : CalendarDaysIcon,
+  steps_complete : ClipboardDocumentCheckIcon,
+
+
+
 };
 
 export default async function CardWrapper() {
@@ -50,7 +59,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected'| 'lesson'| 'expenditure'| 'buffer'| 'minimum' | 'goals' | 'month' | 'days';
+  type: 'invoices' | 'customers' | 'pending' | 'collected'| 'lesson'| 'expenditure'| 'buffer'| 'minimum' | 'goals' | 'month' | 'days' | 'goals_complete' | 'added_step' | 'steps_complete';
 }) {
   const Icon = iconMap[type];
 
@@ -60,8 +69,7 @@ export function Card({
         {Icon ? <Icon className="h-5 w-5 text-black" /> : null}
         <h3 className="ml-2 text-sm font-medium text-blue text-center">{title}</h3>
       </div>
-      <p className="text-black text-center justify-end"> {/*className={`${lusitana.className}
-          truncate rounded-xl bg-white px-4 py-8 text-center text-2xl`}*/}
+      <p className="text-black text-center justify-end"> 
         {value}
       </p>
     </div>
