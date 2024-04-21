@@ -1,6 +1,6 @@
-import { CheckCircleIcon, TrashIcon, Bars4Icon, PlusIcon, BackspaceIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, TrashIcon, Bars4Icon, PlusIcon, BackspaceIcon, ArrowUturnLeftIcon, ArrowsPointingInIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { addSpecificStep, addSpecificStepNo, addSpecificStepNoDA, addStep, addStepNo, completeGoal, completeSpecificStep, completeSpecificStepDA, completeSpecificStepNo, completeStep, completeStepNo, deleteGoal} from '@/app/lib/actions';
+import { addSpecificStep, addSpecificStepNo, addSpecificStepNoDA, addStep, addStepNo, completeGoal, completeSpecificStep, completeSpecificStepDA, completeSpecificStepNo, completeStep, completeStepNo, createSpecificStepGPT, deleteGoal} from '@/app/lib/actions';
 
 export function GoalDetail ({ id }: { id: string }){
 return (
@@ -14,8 +14,11 @@ return (
   );
 }
 
-export function SpecificStepDetail ({ id, stepid }: { id: string; stepid: string }){
+export async function  SpecificStepDetail ({ id, stepid }: { id: string; stepid: string }){
   return (
+
+ 
+
       <Link
       href={`/dashboard/goals/${id}/details/${stepid}/dailysteps`}
         className="rounded-md border p-2 hover:bg-green-500"
@@ -23,6 +26,9 @@ export function SpecificStepDetail ({ id, stepid }: { id: string; stepid: string
       >
         <Bars4Icon className="w-5" />
       </Link>
+
+
+
     );
   }
 
@@ -50,6 +56,18 @@ export function UpdateInvoice({ id }: { id: string }) {
     </Link>
   );
 } */}
+
+export function CreateSpecificGoalStep({ id }: { id: string }) {
+  const createSpecificStepGPTWithID = createSpecificStepGPT.bind(null, id);
+  return (
+    <form action={createSpecificStepGPTWithID}>
+      <button title="Create Specific Steps" className="rounded-md border p-2 hover:bg-green-500">
+        <span className="sr-only">Completed?</span>
+        <ArrowsPointingInIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
 
 export function CompleteGoal({ id }: { id: string }) {
   const completeGoalWithID = completeGoal.bind(null, id);

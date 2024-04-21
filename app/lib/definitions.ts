@@ -169,6 +169,7 @@ export type GoalPlannerStep = {
   statusadd: 'No' | 'Yes';
   highlevelid: string;
   timeframe: number;
+  orderindex: number;
   
 
 };
@@ -203,21 +204,14 @@ export type CombinedPlannerStep = {
 };
 export type CombinedPlannerStep2 = {
   id: string;
-  specificgoalresult: string;
-  specificchatid: string;
-  specificchattime: string;
-  specificparsedresult: string;
   highlevel_statuscomplete: 'No' | 'Yes';
   highlevel_statusadd: 'No' | 'Yes';
   highlevelid: string;
-  highlevel_timeframe: number;
-  specific_timeframe: number;
-  specific_statuscomplete: string;
-  specific_statusadd: string;
+  timeframe: number;
   goalid: string;
   stepdescription: string;
   orderindex: number;
-  specific_id: string;
+  goalplanner_chattime:Date;
   
   
 

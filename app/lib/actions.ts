@@ -12,6 +12,7 @@ import { CreateRun, CreateThread, waitForRunCompletion } from './assistant_funct
 import fs from 'fs'
 import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
+import { CombinedPlannerStep, GoalPlannerDetail, GoalPlannerStep, HighLevelDetail } from './definitions';
 
 
 const openai = new OpenAI();
@@ -435,10 +436,25 @@ export async function addStep(id: string) {
   redirect('/dashboard/goals');
 }
 
+
+
 export async function addStepNo(id: string) {
   await sql`
     UPDATE highlevelsteps 
     SET statusadd = 'no'
+    WHERE id = ${id};
+  `;
+  revalidatePath('/dashboard/goals');
+  redirect('/dashboard/goals');
+}
+
+export async function createSpecificSteps(id: string) {
+  await sql`
+
+    SELECT 
+    highlevelsteps.stepdescription
+    FROM highlevelsteps 
+    
     WHERE id = ${id};
   `;
   revalidatePath('/dashboard/goals');
@@ -869,3 +885,174 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
         throw error;
       }
     }
+
+    //Chat GPT API Calls
+
+    const FormSchemaGoalInput = z.object({
+      fakeid: z.string(),
+      usergoal: z.string(),
+      usertimeline: z.string(),
+      userFirstGoalAvailableHours:z.string(),
+      
+    });
+
+    interface HighStepDetail {
+      id: string;
+      description: string;
+      timeframe: number;
+      statuscomplete: 'Yes' | 'No';
+      statusadd: 'Yes' | 'No';
+  }
+     
+    const CreateGoalInput = FormSchemaGoalInput.omit({ fakeid: true });
+  
+    export async function createGoalGPT(formData: FormData) {
+      const { usergoal, usertimeline, userFirstGoalAvailableHours } = CreateGoalInput.parse({
+          usergoal: formData.get('usergoal'),
+          usertimeline: formData.get('usertimeline'),
+          userFirstGoalAvailableHours: formData.get('userFirstGoalAvailableHours'),
+      });
+  
+      const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is securely managed
+      });
+  
+      try {
+          const completion = await openai.chat.completions.create({
+              model: "gpt-3.5-turbo",
+              messages: [
+                  {
+                      role: "system",
+                      content: `You are now my personal life coach and business assistant. This is the goal I would like to achieve: ${usergoal}. 
+                      I would like to achieve this goal within ${usertimeline} months. Provide me with a detailed strategy to maximize my chances of achieving the goal, 
+                      from beginning to goal completion. The response must be strictly shown in JSON format only with steps such as Step 1 and then Step 2 etc being keys
+                       and their content being the value etc. In addition, the response must always start in a format like this ({ "Step 1":) and not with the word literal
+                        word  "json". Within this value, I also want you to state how many days you think it will take me to complete this step (bearing in mind that the whole goal should take ${usertimeline} months.) Each value of the step should strictly include 5 keys at all times. One being the detailed description of the step, 2 being a key that says 'timeframe' and a 'value' that is the timeframe in days, 3 being 'statuscomplete' with the default value of 'No', 4 being 'statusadd' with the default value also being 'No' and 5 called 'id' being a UUIDv4 number that is uniquely set to each step. The answer given to me will start from step 1 immediately without any other introductory sentence.`
+                  }
+              ]
+          });
+  
+          const result = completion.choices[0].message.content || "Content Unavailable at this time";
+          const chatid = completion.id;
+          const chattime = new Date(completion.created * 1000).toISOString();
+          const uniqueID = uuidv4();
+          console.log("NEW CHAT GPT RESPONSE", result);
+  
+          await sql <GoalPlannerDetail>`
+            INSERT INTO goalplanner (uniqueid, chatid, chattime, goalresult, usergoal, usertimeline, userhours)
+            VALUES (${uniqueID}, ${chatid}, ${chattime}, ${result}, ${usergoal}, ${usertimeline}, ${userFirstGoalAvailableHours})
+          `;
+  
+          const parsedData = JSON.parse(result);
+          
+          Object.entries(parsedData).forEach(async ([stepKey, stepValue], index) => {
+            // Assuming stepValue is an object that fits the StepDetail interface
+            const stepDetails: HighStepDetail = stepValue as HighStepDetail;
+
+           
+            
+              await sql <HighLevelDetail>`
+                INSERT INTO highlevelsteps (id, goalid, stepdescription, timeframe, statuscomplete, statusadd, orderindex)
+                VALUES (${stepDetails.id}, ${uniqueID}, ${stepDetails.description}, ${stepDetails.timeframe}, ${stepDetails.statuscomplete}, ${stepDetails.statusadd}, ${index})
+              `;
+          });
+  
+      } catch (error) {
+          console.error("Error getting ChatGPT data:", error);
+          throw error;  // Rethrow the error after logging
+      }
+
+      revalidatePath('/dashboard/test');
+    redirect('/dashboard/test');
+  
+  }
+
+  interface APIResult {
+    [key: string]: DetailedStep;
+  }
+
+  interface DetailedStep {
+    id: string;
+    highlevelid: string;
+    description: string;
+    timeframe: number; // Assuming timeframe is a number of days, adjust as needed
+    statuscomplete: 'Yes' | 'No'; // Assuming these are the only two possible values
+    statusadd: 'Yes' | 'No';
+  }
+
+  export async function createSpecificStepGPT(id: string) {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is securely managed
+    });
+
+    // Correct the SQL query and use parameters properly
+    try {
+        const data = await sql`
+            SELECT 
+              highlevelsteps.id AS parent_id,
+              highlevelsteps.stepdescription,
+              goalplanner.userhours
+            FROM 
+              highlevelsteps 
+            JOIN 
+              goalplanner ON highlevelsteps.goalid = goalplanner.uniqueid
+            WHERE 
+              highlevelsteps.id = ${id};`;
+
+        // Check if data was found
+        if (!data.rows.length) {
+            console.error('No data found for given ID:', id);
+            return;
+        }
+
+        const { parent_id, stepdescription, userhours } = data.rows[0];
+
+        // Proceed to make a request to OpenAI with the retrieved data
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "system",
+                    content: `You are my personal life coach and business assistant. This is the goal I would like to achieve: ${stepdescription}. 
+                    Provide me with a detailed strategy with incremental steps on how to complete this goal, knowing I have ${userhours} hours available each day. 
+                    The response must be in JSON format only with steps labeled Step 1, Step 2, etc. In addition, the response must always start in a 
+                    format like this ({ "Step 1":) and not with the word literal
+                    word  "json". Each step should include: detailed description, timeframe in days (just say the number dont add days), and
+                     highlevelid equals ${parent_id}.`
+                }
+            ]
+        });
+
+        console.log("Completion:", completion);
+        const result = completion.choices[0]?.message?.content || "Content Unavailable at this time";
+        const chatid = completion.id;
+        const chattime = new Date(completion.created * 1000).toISOString();
+        const parsedData = JSON.parse(result);
+        console.log ("This is the parsed Data for Second Step", parsedData)
+
+        // Assume parsedAPIResult conforms to DetailedSteps interface.
+        const secondstepresult: APIResult = parsedData;
+
+        // Loop through each detailed step and save it to the database.
+        Object.entries(secondstepresult).forEach(async ([stepKey, stepValue], index) => {
+          // Directly use the parsed data without additional parsing.
+          
+          const parsedResult = stepValue.description;
+          const highlevelid = stepValue.highlevelid;
+          console.log("Inserting coach data with highlevelid:", highlevelid);
+          const timeframe = stepValue.timeframe;
+          const statuscomplete = "No";
+          const statusadd = "No";
+          const id = uuidv4();
+
+          await sql <GoalPlannerStep>`
+                INSERT INTO goalplannerspecific (id, highlevelid, specificgoalresult, specificchatid, specificchattime, specificparsedresult, statuscomplete, statusadd, timeframe, orderindex)
+                VALUES (${id}, ${highlevelid}, ${result}, ${chatid}, ${chattime}, ${JSON.stringify(parsedResult)}, ${statuscomplete}, ${statusadd}, ${timeframe}, ${index})
+              `;
+          });
+
+    } catch (error) {
+        console.error('Database or OpenAI API Error:', error);
+        throw error; // Rethrow the error after logging
+    }
+}

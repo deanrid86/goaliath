@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {
  ArrowDownCircleIcon
 } from '@heroicons/react/24/outline';
-import { AddStep, AddStepNo, CompleteStep, CompleteStepNo, SpecificStepDetail } from '@/app/ui/goals/buttons';
+import { AddStep, AddStepNo, CompleteStep, CompleteStepNo, CreateSpecificGoalStep, SpecificStepDetail } from '@/app/ui/goals/buttons';
 import { Status } from '@/app/ui/goals/statuscompleteinfo';
 import {addDaysToChatTime, calculateDaysLeft, totalHourforStep } from "@/app/lib/utils";
 import { ProgressBar } from "@/app/ui/progressbar";
@@ -58,6 +58,7 @@ export default async function Page({ params }: { params: { id: string }  }) {
       <div className="flex flex-row justify-between p-2 m-2 items-center">
         <div className="flex flex-row p-2 border border-black-500 rounded-xl">
           <SpecificStepDetail id={goal.goalid} stepid={goal.highlevelid}/>
+          <CreateSpecificGoalStep id={goal.id}/>
         </div>
         
         <div className="flex flex-row p-2 border border-black-500 rounded-xl">

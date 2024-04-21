@@ -761,6 +761,32 @@ export async function fetchLatestLessons() {
     }
   }
 
+  export async function fetchLatestHighStep() {
+    noStore();
+    try {
+      const data = await sql<GoalPlannerDetail>`
+        SELECT goalplanner.uniqueid, goalplanner.usergoal, goalplanner.usertimeline, goalplanner.userhours, goalplanner.chatid, goalplanner.chattime
+        FROM goalplanner
+        ORDER BY highlevelsteps.chattime DESC
+        LIMIT 1`;
+  
+      // Log the raw data response from the query
+      console.log("Raw data response:", data);
+  
+      const latestStep = data.rows.map((step) => ({
+        ...step,
+      }));
+  
+      // Log the processed data that will be returned
+      console.log("Processed latestGoals:", latestStep);
+  
+      return latestStep;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest step.');
+    }
+  }
+
   export async function fetchRandomMentalModel() {
     try {
       const result = await sql`SELECT * FROM mentalmodels ORDER BY RANDOM() LIMIT 1`;
@@ -1113,6 +1139,51 @@ export async function fetchLatestLessons() {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest specific goals.');
     }
+}
+
+export async function fetchLatestGoalAndSteps() {
+  noStore();
+  try {
+    // Fetch the latest goalplanner chattime and use it to get all related highlevelsteps
+    const data = await sql<CombinedPlannerStep2>`
+      WITH latest_goal AS (
+        SELECT 
+          uniqueid,
+          chattime
+        FROM 
+          goalplanner
+        ORDER BY 
+          chattime DESC
+        LIMIT 1
+      )
+      SELECT 
+        highlevelsteps.id AS parent_id,
+        highlevelsteps.stepdescription,
+        highlevelsteps.timeframe,
+        highlevelsteps.statuscomplete AS parent_statuscomplete,
+        highlevelsteps.statusadd AS parent_statusadd,
+        lg.chattime AS goalplanner_chattime
+      FROM 
+        highlevelsteps
+      JOIN 
+        latest_goal lg ON highlevelsteps.goalid = lg.uniqueid;`;
+
+    // Log the raw data response from the query
+    console.log("Raw data response:", data);
+
+    const latestGoalAndSteps = data.rows.map(highlevel => ({
+      ...highlevel,
+      // Further processing or renaming of fields can be done here if necessary
+    }));
+
+    // Log the processed data that will be returned
+    console.log("Processed latestGoalAndSteps:", latestGoalAndSteps);
+
+    return latestGoalAndSteps; // Return all steps related to the latest goal
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest goal and its high level steps.');
+  }
 }
 
   export async function fetchSpecificLevelStepsComplete() {
