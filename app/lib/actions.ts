@@ -12,7 +12,8 @@ import { CreateRun, CreateThread, waitForRunCompletion } from './assistant_funct
 import fs from 'fs'
 import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
-import { CombinedPlannerStep, GoalPlannerDetail, GoalPlannerStep, HighLevelDetail } from './definitions';
+import { CombinedPlannerStep, GoalPlannerDetail, GoalPlannerStep, HighLevelDetail, User } from './definitions';
+import bcrypt from 'bcrypt';
 
 
 const openai = new OpenAI();
@@ -1056,3 +1057,96 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
         throw error; // Rethrow the error after logging
     }
 }
+
+//Authentication action
+
+ 
+const SignupFormSchema = z.object({
+  firstname: z
+    .string() //Makes Sure its a string
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(), //Makes sure it gets rid of white space
+  surname: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(),
+  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+  password: z
+    .string()
+    .min(8, { message: 'Be at least 8 characters long' })
+    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+    .regex(/[0-9]/, { message: 'Contain at least one number.' })
+    .regex(/[^a-zA-Z0-9]/, {
+      message: 'Contain at least one special character.',
+    })
+    .trim(),
+})
+ 
+export type FormState =
+  | {
+      errors?: {
+        firstname?: string[]
+        surname?: string[]
+        email?: string[]
+        password?: string[]
+      }
+      message?: string
+    }
+  | undefined
+
+  export async function signup(state: FormState, formData: FormData) {
+    // Validate form fields
+    const validatedFields = SignupFormSchema.safeParse({
+      firstname: formData.get('firstname'),
+      surname: formData.get('surname'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+    })
+   
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      }
+    }
+   
+    // 2. Prepare data for insertion into database
+  const { firstname, surname, email, password } = validatedFields.data
+  // e.g. Hash the user's password before storing it
+  const hashedPassword = await bcrypt.hash(password, 10)
+ 
+  // Insert the user into the database
+  try {
+    const result = await sql`
+        INSERT INTO users (firstname, surname, email, password)
+        VALUES (${firstname}, ${surname}, ${email}, ${hashedPassword})
+        RETURNING id;  
+    `;
+ 
+  // Check if insertion was successful
+  if (result.rowCount === 0) {  // Use `rowCount` to check how many rows were affected
+    return {
+        message: 'An error occurred while creating your account.',
+    };
+}
+
+// Retrieve the inserted user's ID if needed
+const userId = result.rows[0].id;  // Access the `id` of the inserted user
+return {
+    message: 'Account successfully created.',
+    userId: userId,
+};
+
+} catch (error) {
+  console.error('Database Error:', error);
+  return {
+      message: 'An error occurred while creating your account.',
+  };
+}
+}
+
+
+ 
+  // TODO:
+  // 4. Create user session
+  // 5. Redirect user
