@@ -1149,7 +1149,10 @@ export async function fetchLatestGoalAndSteps() {
       WITH latest_goal AS (
         SELECT 
           uniqueid,
-          chattime
+          chattime,
+          usergoal, 
+          usertimeline,
+          userhours
         FROM 
           goalplanner
         ORDER BY 
@@ -1162,7 +1165,10 @@ export async function fetchLatestGoalAndSteps() {
         highlevelsteps.timeframe,
         highlevelsteps.statuscomplete AS parent_statuscomplete,
         highlevelsteps.statusadd AS parent_statusadd,
-        lg.chattime AS goalplanner_chattime
+        lg.chattime AS goalplanner_chattime,
+        lg.usergoal AS goalplanner_usergoal,
+        lg.usertimeline AS goalplanner_usertimeline,
+        lg.userhours AS goalplanner_userhours
       FROM 
         highlevelsteps
       JOIN 

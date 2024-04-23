@@ -213,6 +213,9 @@ export type CombinedPlannerStep2 = {
   stepdescription: string;
   orderindex: number;
   goalplanner_chattime:Date;
+  goalplanner_usergoal:string;
+  goalplanner_usertimeline:number;
+  goalplanner_userhours:number;
   
   
 
@@ -299,4 +302,9 @@ export type MentalModelsTable = {
 
 
 
+};
+
+export type SessionPayload = {
+userId: string;
+expiresAt: Date;
 };

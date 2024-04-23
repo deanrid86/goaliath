@@ -38,14 +38,15 @@ export default async function Page() {
   const statusadd = await fetchCountOfYesInStatusAdd ();
   const latestGoals= await fetchLatestGoals ();
   const mentalmodel = await fetchRandomMentalModel ();
+  const formattedValue = `${complete.completed_count} (${complete.percentage_complete}%)`;
   
     return (
         <div className="flex flex-col h-screen"> {/* Ensures that the container takes the full height of the viewport */}
             {/* First div, taking 1/5 of the space */}
-            <div className="flex flex-row items-center justify-between border border-black bg-gray-200 p-4"> {/* You can replace 'bg-gray-200' with your own class or style */}
+            <div className="flex flex-row items-center justify-between border border-black bg-black-500 p-4 rounded-lg"> {/* You can replace 'bg-gray-200' with your own class or style */}
 
               <Card title="Total No. of Goals" value= {complete.total_count} type="goals"/>
-              <Card title="Goals Completed / %" value= {complete.completed_count} type="goals_complete"/>
+              <Card title="Goals Completed (%)" value= {formattedValue} type="goals_complete"/>
               <Card title="No. of Specific Steps Working on" value= {statusadd} type="added_step"/>
               <Card title="Last Completed Step" value= "sean" type="steps_complete"/>
             </div>
@@ -58,10 +59,10 @@ export default async function Page() {
                       
                         {/* Goals div split into 2x2 grid */}
           
-                        <div className="flex-1 border border-black grid grid-cols-2 grid-rows-2 gap-2 p-2">
+                        <div className="flex-1 border border-black grid grid-cols-2 grid-rows-2 gap-2 p-2 ">
             {latestGoals.map((content, index) => (
-              <div key={index} className="border border-black flex flex-col items-center justify-center p-2 ">
-                <BoltIcon className="h-5 w-5 "/>
+              <div key={index} className="border border-black flex flex-col items-center justify-center p-2 bg-white ">
+                <BoltIcon className="h-5 w-5 bg-green-400 rounded-lg "/>
                 <h4><strong>Goal: </strong>{content.usergoal}</h4>
                 <p><strong>Completion Time (Months):</strong> {content.usertimeline || ''}</p>
                 <p><strong>Dedicated Daily Hours:</strong> {content.userhours || ''}</p>
@@ -75,11 +76,13 @@ export default async function Page() {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row h-1/2">
-                    <div className="flex-1 border border-black"> {/* Left half of the lower 2/5 div */}
-                        {/* Additional components or content */}
-                        <h3>Mental Models</h3>
-                        <div className='mb-2 border border-black rounded-lg bg-gray-50'> {/*Parent Div*/}
+                <div className="flex flex-row h-1/2 ">
+                    <div className="flex-1 border border-black "> {/* Left half of the lower 2/5 div */}
+                        <div className = "flex justify-center bg-white">
+                          <h3><strong>Mental Model of the Day</strong> </h3>
+                        </div>
+                        
+                        <div className='mb-2 border border-black rounded-lg bg-white'> {/*Parent Div*/}
         
       <div className="flex "> {/* Top Horizontal Div */}
   <div> {/* Div for Image */}

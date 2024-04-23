@@ -14,6 +14,8 @@ import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
 import { CombinedPlannerStep, GoalPlannerDetail, GoalPlannerStep, HighLevelDetail, User } from './definitions';
 import bcrypt from 'bcrypt';
+import { createSession } from '@/app/lib/session'
+import { deleteSession } from '@/app/lib/session'
 
 
 const openai = new OpenAI();
@@ -1132,10 +1134,14 @@ export type FormState =
 
 // Retrieve the inserted user's ID if needed
 const userId = result.rows[0].id;  // Access the `id` of the inserted user
+await createSession(userId)
 return {
     message: 'Account successfully created.',
     userId: userId,
+    
 };
+
+
 
 } catch (error) {
   console.error('Database Error:', error);
@@ -1143,10 +1149,18 @@ return {
       message: 'An error occurred while creating your account.',
   };
 }
+
+
+
+}
+
+  
+export async function logout() {
+  deleteSession()
+  redirect('/login')
 }
 
 
- 
-  // TODO:
-  // 4. Create user session
+
   // 5. Redirect user
+  //redirect('/profile')
