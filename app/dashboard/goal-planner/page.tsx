@@ -20,7 +20,7 @@ export default async function Page () {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  const message = "Hi Everybody"
+  const message = "When setting your personal goals, consider achievable yet challenging objectives. Examples of goals you might set include : becoming a world-class chef, losing 2 stone in weight or saving enough money for a house deposit.When entering the timeframe in months and the hours you can dedicate to thegoal on a daily basis, aim to be ambitious but also realistic. For instance, while aspiring to play guitar like Jimi Hendrix within a month might not be feasible, setting a more extended period for such an ambitious goal could definitely lead to success with consistent practice and dedication. Consider your daily commitments and lifestyle to ensure that the goals and timeframes you set are suitable for your current situation, allowing for gradual progress towards significant achievements.";
 
     return (
         <div>
@@ -87,6 +87,10 @@ export default async function Page () {
       <ClockIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
     </div>
     </div>
+    <div className="flex justify-end p-1">
+      <ModalBox content = {message}/>
+    </div>
+    
   </div>
   </div>
   <div className = "w-full flex justify-center">
@@ -113,7 +117,7 @@ export default async function Page () {
             <p className = "text-white text-sm font-medium">Timeframe in months: {timeline} </p> 
             <p className = "text-white text-sm font-medium">Dedicated hours a day: {hours} </p>
             <div>
-    <ModalBox content = {message}/>
+    
   </div> 
             </div>
           </div>
