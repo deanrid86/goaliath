@@ -85,6 +85,50 @@ export async function createInvoice(formData: FormData) {
     redirect('/dashboard/lessons');
     }
 
+    const GenderEnum = z.enum(['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say']);
+
+    const FormSchemaUserProfile = z.object({
+      id: z.string(),
+      firstname: z.string(),
+      middlenames: z.string(),
+      surname: z.string(),
+      dob: z.string(),
+      gender: GenderEnum,
+      occupation: z.string(),
+      about: z.string(),
+      interests: z.string(),
+      ambition: z.string(),
+    });
+
+
+  
+   
+  
+    const CreateUserProfile = FormSchemaUserProfile.omit({ id: true });
+  
+    export async function createUserProfile(formData: FormData) {
+        const { firstname, middlenames, surname, dob, gender, occupation, about, interests, ambition } = CreateUserProfile.parse({
+          firstname: formData.get('firstname'),
+          middlenames: formData.get('middlenames'),
+          surname: formData.get('surname'),
+          dob: formData.get('dob'),
+          gender: formData.get('gender'),
+          occupation: formData.get('occupation'),
+          about: formData.get('about'),
+          interests: formData.get('interests'),
+          ambition: formData.get('ambition'),
+        });
+        
+    
+        await sql`
+        INSERT INTO users (firstname, middlenames, surname, dob, gender, occupation, about, interests, ambition )
+        VALUES (${firstname}, ${middlenames}, ${surname}, ${dob}, ${gender}, ${occupation}, ${about}, ${interests}, ${ambition} )
+      `;
+    
+      revalidatePath('/dashboard/profile');
+      redirect('/dashboard/profile');
+      }
+
     const FormSchemaAssistant = z.object({
       id: z.string(),
       name: z.string(),

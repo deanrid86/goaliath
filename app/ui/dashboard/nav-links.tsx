@@ -13,7 +13,8 @@ import {
   CalendarDaysIcon,
   FingerPrintIcon,
   InboxArrowDownIcon,
-  BookOpenIcon
+  BookOpenIcon,
+  UserIcon
 
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -33,6 +34,7 @@ const links = [
   { name: 'Growth Literature', href: '/dashboard/growth_literature', icon: BookOpenIcon },
   { name: 'About', href: '/dashboard/about', icon: FingerPrintIcon },
   { name: 'Contact Us', href: '/dashboard/contactus', icon: InboxArrowDownIcon },
+  { name: 'Profile', href: '/dashboard/profile', icon: UserIcon },
 
   
 ];
