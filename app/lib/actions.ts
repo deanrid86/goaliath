@@ -14,8 +14,8 @@ import { signIn } from '../auth';
 import { AuthError } from 'next-auth';
 import { CombinedPlannerStep, GoalPlannerDetail, GoalPlannerStep, HighLevelDetail, User } from './definitions';
 import bcrypt from 'bcrypt';
-import { createSession } from '@/app/lib/session'
-import { deleteSession } from '@/app/lib/session'
+//import { createSession } from '@/app/lib/session'
+//import { deleteSession } from '@/app/lib/session'
 
 
 const openai = new OpenAI();
@@ -920,6 +920,7 @@ export async function insertChatData(uniqueID: string, chatID: string, chatTime:
     ) {
       try {
         await signIn('credentials', formData);
+        
       } catch (error) {
         if (error instanceof AuthError) {
           switch (error.type) {
@@ -1140,7 +1141,7 @@ export type FormState =
     }
   | undefined
 
-  export async function signup(state: FormState, formData: FormData) {
+ {/*export async function signup(state: FormState, formData: FormData) {
     // Validate form fields
     const validatedFields = SignupFormSchema.safeParse({
       firstname: formData.get('firstname'),
@@ -1176,7 +1177,7 @@ export type FormState =
     };
 }
 
-// Retrieve the inserted user's ID if needed
+ Retrieve the inserted user's ID if needed
 const userId = result.rows[0].id;  // Access the `id` of the inserted user
 await createSession(userId)
 return {
@@ -1207,4 +1208,4 @@ export async function logout() {
 
 
   // 5. Redirect user
-  //redirect('/profile')
+//redirect('/profile') */}

@@ -1,4 +1,4 @@
-import 'server-only'
+{/*import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { SessionPayload } from '@/app/lib/definitions'
 import { cookies } from 'next/headers'
@@ -59,3 +59,4 @@ export async function createSession(userId: string) {
   export function deleteSession() {
     cookies().delete('session')
   }
+*/}

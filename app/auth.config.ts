@@ -2,7 +2,7 @@ import type { NextAuthConfig } from 'next-auth';
  
 export const authConfig = {
   pages: {
-    signIn: '/login',
+    signIn: '/login', //Whenever Next JS has to redirect users to a login page, this is the path it will take
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {

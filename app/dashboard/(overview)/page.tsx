@@ -26,6 +26,7 @@ import {
   HandThumbUpIcon,
   ClipboardDocumentCheckIcon,
 } from '@heroicons/react/24/outline';
+import { verifySession } from '@/app/lib/dal';
 
 
 
@@ -33,6 +34,7 @@ import {
 
  
 export default async function Page() {
+  const session = await verifySession()
 
   const complete = await fetchCompletionPercentage ();
   const statusadd = await fetchCountOfYesInStatusAdd ();
